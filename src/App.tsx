@@ -39,7 +39,7 @@ const router = createBrowserRouter([
     element: <ResetFinish />,
   },
   {
-    path:"/",
+    path:"/app",
     element: <Layout />
   }
 ]);
