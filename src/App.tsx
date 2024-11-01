@@ -1,35 +1,51 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
-import { Button } from 'react-bootstrap';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import ErrorPage from './error-page';
+import { Login } from './pages/authentication/login';
+import { RegisterCode } from './pages/authentication/registeration/register-code';
+import { RegisterFinish } from './pages/authentication/registeration/register-fin';
+import { RegisterInfo } from './pages/authentication/registeration/register-info';
+import { ResetInfo } from './pages/authentication/reset/reset-info';
+import { ResetNewPassword } from './pages/authentication/reset/reset-newpw';
+import { ResetFinish } from './pages/authentication/reset/reset-fin';
+import Layout from './pages/app/layout';
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <Login />,
+    errorElement: <ErrorPage />
+  },
+  {
+    path: "/register/info",
+    element: <RegisterInfo />,
+  },
+  {
+    path: "/register/auth",
+    element: <RegisterCode />,
+  },
+  {
+    path: "/register/fin",
+    element: <RegisterFinish />,
+  },
+  {
+    path: "/reset/info",
+    element: <ResetInfo />,
+  },
+  {
+    path: "/reset/newpassword",
+    element: <ResetNewPassword />,
+  },
+  {
+    path: "/reset/fin",
+    element: <ResetFinish />,
+  },
+  {
+    path:"/",
+    element: <Layout />
+  }
+]);
 
-function App() {
+export default function App() {
   return (
-    <div className="App">
-      <Button variant="secondary">Secondary</Button>{' '}
-      <Button variant="success">Success</Button>{' '}
-      <Button variant="warning">Warning</Button>{' '}
-      <Button variant="danger">Danger</Button>{' '}
-      <Button variant="info">Info</Button>{' '}
-      <Button variant="light">Light</Button>{' '}
-      <Button variant="dark">Dark</Button>
-      <Button variant="link">Link</Button>
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <RouterProvider router={router} />
   );
 }
-
-export default App;
