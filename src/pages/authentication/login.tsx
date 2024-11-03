@@ -4,6 +4,7 @@ import { Form } from "react-bootstrap";
 export function Login() {
     return (
         <>
+            
             <Form className="w-96">
                 <Form.FloatingLabel controlId="formEmail" label="Email address" className="mb-3">
                     <Form.Control type="email" placeholder="Email address" />

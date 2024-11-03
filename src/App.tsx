@@ -11,46 +11,79 @@ import { ResetNewPassword } from './pages/authentication/reset/reset-newpw';
 import { ResetFinish } from './pages/authentication/reset/reset-fin';
 
 // App pages
-import { Profile } from './pages/app/profile/profile';
+import { Home } from './pages/app/home/home';
+import { Explore } from './pages/app/explore/explore';
+import { Follower } from './pages/app/follower/follower';
+import { Notification } from './pages/app/notification/notification';
+import { UserProfile } from './pages/app/userprofile/user-profile';
+import { ProfileEdit } from './pages/app/userprofile/profile-edit';
 
+import AuthLayout from './pages/authentication/AuthLayout';
 import Layout from './pages/app/layout';
+
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Login />,
-    errorElement: <ErrorPage />
+    element: <AuthLayout />,
+    errorElement: <ErrorPage />,
+    children: [
+      {
+        path: "login",
+        element: <Login />,
+      },
+      {
+        path: "register/info",
+        element: <RegisterInfo />,
+      },
+      {
+        path: "register/auth",
+        element: <RegisterCode />,
+      },
+      {
+        path: "register/fin",
+        element: <RegisterFinish />,
+      },
+      {
+        path: "reset/info",
+        element: <ResetInfo />,
+      },
+      {
+        path: "reset/newpassword",
+        element: <ResetNewPassword />,
+      },
+      {
+        path: "reset/fin",
+        element: <ResetFinish />,
+      },
+    ]
   },
   {
-    path: "/register/info",
-    element: <RegisterInfo />,
-  },
-  {
-    path: "/register/auth",
-    element: <RegisterCode />,
-  },
-  {
-    path: "/register/fin",
-    element: <RegisterFinish />,
-  },
-  {
-    path: "/reset/info",
-    element: <ResetInfo />,
-  },
-  {
-    path: "/reset/newpassword",
-    element: <ResetNewPassword />,
-  },
-  {
-    path: "/reset/fin",
-    element: <ResetFinish />,
-  },
-  {
-    path:"/app",
+    path: "/",
     element: <Layout />,
-    children:[
+    children: [
+      {
+        path: "home",
+        element: <Home />
+      },
+      {
+        path: "explore",
+        element: <Explore />
+      },
+      {
+        path: "follower",
+        element: <Follower />
+      },
+      {
+        path: "notification",
+        element: <Notification />
+      },
       {
         path: "profile",
-        element: <Profile />,
+        element: <UserProfile />
+      },
+      {
+        path: "profile-edit",
+        element: <ProfileEdit />,
       },
     ],
   },

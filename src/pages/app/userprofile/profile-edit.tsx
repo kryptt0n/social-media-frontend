@@ -1,11 +1,10 @@
-import { Button, Container } from "react-bootstrap";
+import { Button } from "react-bootstrap";
 import { Form } from "react-bootstrap";
 import { Image } from "react-bootstrap";
 
-export function Profile() {
+export function ProfileEdit() {
     return (
         <>
-
             <Form className="w-96">
 
                 <Image className="mb-3" src="https://robohash.org/demouser" roundedCircle />
