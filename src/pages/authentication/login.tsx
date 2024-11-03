@@ -1,7 +1,7 @@
 import { Button } from "react-bootstrap";
 import { Form } from "react-bootstrap";
 
-export function Login() {
+export default function Login() {
     return (
         <>
             

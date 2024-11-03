@@ -1,6 +1,6 @@
 import { Button } from "react-bootstrap";
 
-export function RegisterFinish() {
+export default function RegisterFinish() {
     return (
         <div className="w-96">
             <p className="text-center text-lg font-bold">Congratulations! You have registered!</p>

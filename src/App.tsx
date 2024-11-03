@@ -2,21 +2,21 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import ErrorPage from './error-page';
 
 // User auth pages
-import { Login } from './pages/authentication/login';
-import { RegisterCode } from './pages/authentication/registeration/register-code';
-import { RegisterFinish } from './pages/authentication/registeration/register-fin';
-import { RegisterInfo } from './pages/authentication/registeration/register-info';
-import { ResetInfo } from './pages/authentication/reset/reset-info';
-import { ResetNewPassword } from './pages/authentication/reset/reset-newpw';
-import { ResetFinish } from './pages/authentication/reset/reset-fin';
+import Login from './pages/authentication/login';
+import RegisterCode from './pages/authentication/registeration/register-code';
+import RegisterFinish from './pages/authentication/registeration/register-fin';
+import RegisterInfo from './pages/authentication/registeration/register-info';
+import ResetInfo from './pages/authentication/reset/reset-info';
+import ResetNewPassword from './pages/authentication/reset/reset-newpw';
+import ResetFinish from './pages/authentication/reset/reset-fin';
 
 // App pages
-import { Home } from './pages/app/home/home';
-import { Explore } from './pages/app/explore/explore';
-import { Follower } from './pages/app/follower/follower';
-import { Notification } from './pages/app/notification/notification';
-import { UserProfile } from './pages/app/userprofile/user-profile';
-import { ProfileEdit } from './pages/app/userprofile/profile-edit';
+import Home from './pages/app/home/home';
+import Explore from './pages/app/explore/explore';
+import Follower from './pages/app/follower/follower';
+import Notification from './pages/app/notification/notification';
+import UserProfile from './pages/app/userprofile/user-profile';
+import ProfileEdit from './pages/app/userprofile/profile-edit';
 
 import AuthLayout from './pages/authentication/AuthLayout';
 import Layout from './pages/app/layout';

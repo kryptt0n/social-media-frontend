@@ -1,7 +1,7 @@
 import { Button } from "react-bootstrap";
 import { Form } from "react-bootstrap";
 
-export function ResetNewPassword() {
+export default function ResetNewPassword() {
     return (
         <>
             <Form className="w-96">

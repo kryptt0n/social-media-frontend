@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Accounts, type Posts } from "../../../lib/definitions";
 import { Button, Image } from "react-bootstrap";
 
-export function UserProfile() {
+export default function UserProfile() {
     const [postList, setPostList] = useState<Posts | null>(null);
     const [user, setUser] = useState<Accounts | null>(null);
 

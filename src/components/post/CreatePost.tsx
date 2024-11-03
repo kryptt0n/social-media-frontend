@@ -2,8 +2,7 @@ import { useState } from "react";
 import { Card, Form, Button } from "react-bootstrap";
 import { GrGallery } from "react-icons/gr";
 
-
-export function CreatePost() {
+export default function CreatePost() {
     const [hasImage, setHasImage] = useState<boolean>(false);
 
     return (

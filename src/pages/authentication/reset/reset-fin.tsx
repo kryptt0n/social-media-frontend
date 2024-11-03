@@ -1,6 +1,6 @@
 import { Button } from "react-bootstrap";
 
-export function ResetFinish(){
+export default function ResetFinish(){
     return (
         <div className="w-96">
         <p className="text-center text-lg font-bold">Your password has been reset!</p>

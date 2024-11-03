@@ -1,7 +1,7 @@
 import { Button } from "react-bootstrap";
 import { Form } from "react-bootstrap";
 
-export function ResetInfo() {
+export default function ResetInfo() {
     return (
         <>
             <Form className="w-96">

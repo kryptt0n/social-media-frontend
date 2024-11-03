@@ -1,7 +1,7 @@
 import { Button } from "react-bootstrap";
 import { Form } from "react-bootstrap";
 
-export function RegisterCode() {
+export default function RegisterCode() {
     return (
         <>
             <Form className="w-96">

@@ -2,7 +2,7 @@ import { Button } from "react-bootstrap";
 import { Form } from "react-bootstrap";
 import { Image } from "react-bootstrap";
 
-export function ProfileEdit() {
+export default function ProfileEdit() {
     return (
         <>
             <Form className="w-96">

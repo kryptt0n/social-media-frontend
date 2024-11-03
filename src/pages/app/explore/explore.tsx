@@ -3,7 +3,7 @@ import { useState } from "react";
 import type { Posts } from "../../../lib/definitions";
 import { Form } from "react-bootstrap";
 
-export function Explore() {
+export default function Explore() {
     const [searchParams, setSearchParams] = useSearchParams();
     const [postList, setPostList] = useState<Posts[] | null>(null);
     const submit = useSubmit();
