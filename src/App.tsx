@@ -1,35 +1,96 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
-import { Button } from 'react-bootstrap';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import ErrorPage from './error-page';
 
-function App() {
+// User auth pages
+import Login from './pages/authentication/login';
+import RegisterCode from './pages/authentication/registeration/register-code';
+import RegisterFinish from './pages/authentication/registeration/register-fin';
+import RegisterInfo from './pages/authentication/registeration/register-info';
+import ResetInfo from './pages/authentication/reset/reset-info';
+import ResetNewPassword from './pages/authentication/reset/reset-newpw';
+import ResetFinish from './pages/authentication/reset/reset-fin';
+
+// App pages
+import Home from './pages/app/home/home';
+import Explore from './pages/app/explore/explore';
+import Follower from './pages/app/follower/follower';
+import Notification from './pages/app/notification/notification';
+import UserProfile from './pages/app/userprofile/user-profile';
+import ProfileEdit from './pages/app/userprofile/profile-edit';
+
+import AuthLayout from './pages/authentication/AuthLayout';
+import Layout from './pages/app/layout';
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <AuthLayout />,
+    errorElement: <ErrorPage />,
+    children: [
+      {
+        index: true,
+        element: <Login />,
+      },
+      {
+        path: "register/info",
+        element: <RegisterInfo />,
+      },
+      {
+        path: "register/auth",
+        element: <RegisterCode />,
+      },
+      {
+        path: "register/fin",
+        element: <RegisterFinish />,
+      },
+      {
+        path: "reset/info",
+        element: <ResetInfo />,
+      },
+      {
+        path: "reset/newpassword",
+        element: <ResetNewPassword />,
+      },
+      {
+        path: "reset/fin",
+        element: <ResetFinish />,
+      },
+    ]
+  },
+  {
+    path: "/",
+    element: <Layout />,
+    children: [
+      {
+        path: "home",
+        element: <Home />
+      },
+      {
+        path: "explore",
+        element: <Explore />
+      },
+      {
+        path: "follower",
+        element: <Follower />
+      },
+      {
+        path: "notification",
+        element: <Notification />
+      },
+      {
+        path: "profile",
+        element: <UserProfile />
+      },
+      {
+        path: "profile-edit",
+        element: <ProfileEdit />,
+      },
+    ],
+  },
+]);
+
+export default function App() {
   return (
-    <div className="App">
-      <Button variant="secondary">Secondary</Button>{' '}
-      <Button variant="success">Success</Button>{' '}
-      <Button variant="warning">Warning</Button>{' '}
-      <Button variant="danger">Danger</Button>{' '}
-      <Button variant="info">Info</Button>{' '}
-      <Button variant="light">Light</Button>{' '}
-      <Button variant="dark">Dark</Button>
-      <Button variant="link">Link</Button>
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <RouterProvider router={router} />
   );
 }
-
-export default App;
