@@ -1,0 +1,29 @@
+server {
+    listen 80;
+    server_name localhost;
+
+    # Root directory for your app
+    root /usr/share/nginx/html;
+
+    # Default index file
+    index index.html;
+
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+
+    # Optional: Configure caching
+    location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg)$ {
+        expires 1y;
+        access_log off;
+    }
+
+    # Optional: Handle API requests (adjust as needed)
+    location /api {
+        proxy_pass http://backend_service:backend_port; # Replace with your backend service and port
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
