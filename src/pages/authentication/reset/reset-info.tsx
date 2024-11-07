@@ -9,6 +9,10 @@ export default function ResetInfo() {
                     <Form.Control type="email" placeholder="Your email address" />
                 </Form.FloatingLabel>
 
+                <Form.FloatingLabel className="mb-3" controlId="formCode" label="Your username">
+                    <Form.Control type="text" placeholder="Your username" />
+                </Form.FloatingLabel>
+
                 <div className="d-grid">
                     <Button variant="primary" type="submit">
                         Submit

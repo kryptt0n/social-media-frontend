@@ -1,18 +1,18 @@
-import { useSearchParams, useSubmit } from "react-router-dom";
 import { useState } from "react";
 import type { Posts } from "../../../lib/definitions";
-import { Form } from "react-bootstrap";
+import { Form, Button } from "react-bootstrap";
 
 export default function Explore() {
-    const [searchParams, setSearchParams] = useSearchParams();
     const [postList, setPostList] = useState<Posts[] | null>(null);
-    const submit = useSubmit();
 
     return (
         <>
             <div>
-                <Form>
-                    <Form.Control className="text-xl" type="text" placeholder="Search" onChange={(e) => { submit(e.currentTarget.form); }} />
+                <Form className="flex gap-2">
+                    <Form.Control className="text-xl" type="text" placeholder="Search"  />
+                    <Button variant="primary" type="submit">
+                        Search
+                    </Button>
                 </Form>
             </div>
             <div className="mt-10">
