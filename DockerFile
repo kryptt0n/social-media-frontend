@@ -1,35 +1,53 @@
-# Stage 1: Build the React app
-FROM node:16.3.0-alpine AS build
+# # Stage 1: Build the React app
+# FROM node:16.3.0-alpine AS build
+
+# WORKDIR /app
+
+# # Copy package.json and install dependencies
+# COPY package.json package-lock.json ./
+# RUN npm install
+
+# # Copy the rest of the app's source code
+# COPY . .
+
+# # Ensure react-scripts has the right permissions
+# RUN chmod +x ./node_modules/.bin/react-scripts
+
+# # Build the app
+# RUN npm run build
+
+# # Stage 2: Serve the app with Nginx
+# FROM nginx:alpine
+
+# # Copy the build output to Nginx's default static directory
+# COPY --from=build /app/build /usr/share/nginx/html
+
+# # Copy the custom Nginx configuration if needed
+# # COPY custom-nginx.template /etc/nginx/conf.d/
+
+# # Add permissions for the script
+# WORKDIR /usr/local/bin
+# COPY generate-config.sh .
+# RUN chmod +x generate-config.sh
+
+# # Expose port 80 and set the entrypoint
+# EXPOSE 80
+# ENTRYPOINT [ "/bin/sh", "generate-config.sh" ]
+
+# Stage 1: Build the development environment
+FROM node:16.3.0-alpine AS development
 
 WORKDIR /app
 
 # Copy package.json and install dependencies
-COPY package.json package-lock.json ./
+COPY package.json package-lock.json ./ 
 RUN npm install
 
 # Copy the rest of the app's source code
 COPY . .
 
-# Ensure react-scripts has the right permissions
-RUN chmod +x ./node_modules/.bin/react-scripts
+# Expose port for the React development server
+EXPOSE 3000
 
-# Build the app
-RUN npm run build
-
-# Stage 2: Serve the app with Nginx
-FROM nginx:alpine
-
-# Copy the build output to Nginx's default static directory
-COPY --from=build /app/build /usr/share/nginx/html
-
-# Copy the custom Nginx configuration if needed
-# COPY custom-nginx.template /etc/nginx/conf.d/
-
-# Add permissions for the script
-WORKDIR /usr/local/bin
-COPY generate-config.sh .
-RUN chmod +x generate-config.sh
-
-# Expose port 80 and set the entrypoint
-EXPOSE 80
-ENTRYPOINT [ "/bin/sh", "generate-config.sh" ]
+# Set the default command to run the React development server
+CMD ["npm", "start"]
