@@ -3,7 +3,6 @@ import ErrorPage from './error-page';
 
 // User auth pages
 import Login from './pages/authentication/login';
-import RegisterCode from './pages/authentication/registeration/register-code';
 import RegisterFinish from './pages/authentication/registeration/register-fin';
 import RegisterInfo from './pages/authentication/registeration/register-info';
 import ResetInfo from './pages/authentication/reset/reset-info';
@@ -34,10 +33,6 @@ const router = createBrowserRouter([
       {
         path: "register/info",
         element: <RegisterInfo />,
-      },
-      {
-        path: "register/auth",
-        element: <RegisterCode />,
       },
       {
         path: "register/fin",
