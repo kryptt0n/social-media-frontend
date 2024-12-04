@@ -10,12 +10,12 @@ export type User = {
 
 export type Post = {
     id: number,
-    content: string,
-    image: Blob,
+    content?: string,
+    image?: Blob,
     user: {
         username: string,
-        profilePicture: Blob,
-        bio: string,
+        profilePicture?: Blob,
+        bio?: string,
         isFollowed: boolean,
     },
     createdAt: string,
