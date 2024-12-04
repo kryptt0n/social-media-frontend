@@ -14,9 +14,9 @@ export interface PostProp {
 
 export interface CommentProp {
     content: string | null,
-    post: PostProp,
+    post: { id: number },
 }
 
 export interface LikeProp {
-    post: PostProp,
+    post: { id: number },
 }

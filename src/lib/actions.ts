@@ -1,6 +1,6 @@
 import axios from "axios";
 import type { User, Post, Comment, Follow, Like, Notification } from "./definitions";
-import { PostProp, UserProp } from "./propinterfaces";
+import { CommentProp, PostProp, UserProp } from "./propinterfaces";
 
 const headers = {
     "Accept": "*/*",
@@ -105,7 +105,6 @@ export async function deletePost(postId: number): Promise<void> {
     }
 }
 
-
 // Comment
 export async function getCommentsForPost(postId: number): Promise<Comment[]> {
     try {
@@ -120,7 +119,7 @@ export async function getCommentsForPost(postId: number): Promise<Comment[]> {
     }
 }
 
-export async function createComment(formData: Comment): Promise<void> {
+export async function createComment(formData: CommentProp): Promise<void> {
     try {
         await axios.post(`${domain}/comments`,
             formData,

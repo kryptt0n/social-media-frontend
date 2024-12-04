@@ -1,17 +1,17 @@
-interface CommentProps {
-    post_id: number,
-    text: string,
-    user_id: number,
-    create_time: string,
+import type { Comment } from "../../lib/definitions";
+
+interface CommentItemProps {
+    commentData: Comment;
 }
 
-export default function Comment({post_id, text, user_id, create_time}: CommentProps){
+export default function CommentItem({ commentData }: CommentItemProps) {
+    const formattedDate = new Date(commentData.createdAt).toLocaleDateString();
+
     return (
         <>
             <div>
-                <span>{text}</span>
-                <span>{create_time}</span>
-                <span>{user_id}</span>
+                <span>{commentData.content}</span>
+                <span>{formattedDate}</span>
             </div>
         </>
     );

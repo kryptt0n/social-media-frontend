@@ -14,9 +14,3 @@ export function imageToArray(file: File): Promise<Uint8Array> {
         reader.readAsArrayBuffer(file);
     });
 }
-
-export function arrayToImage(byteArray: Uint8Array, mimeType: string): string {
-    const blob = new Blob([byteArray], { type: mimeType });
-    return URL.createObjectURL(blob);
-}
-

@@ -2,20 +2,20 @@ export type User = {
     id: number,
     username: string,
     password: string,
-    profilePicture: Blob,
-    bio: string,
+    profilePicture: Uint8Array | null,
+    bio: string | null,
     createdAt: string,
     roles: string;
 }
 
 export type Post = {
     id: number,
-    content?: string,
-    image?: Blob,
+    content: string | null,
+    image: Uint8Array | null,
     user: {
         username: string,
-        profilePicture?: Blob,
-        bio?: string,
+        profilePicture: Uint8Array | null,
+        bio: string | null,
         isFollowed: boolean,
     },
     createdAt: string,
@@ -55,4 +55,3 @@ export type Notification = {
 }
 
 export type NotificationType = 'LIKE' | 'COMMENT' | 'FOLLOW';
-

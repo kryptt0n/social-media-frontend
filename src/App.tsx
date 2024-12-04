@@ -13,6 +13,7 @@ import ResetFinish from './pages/authentication/reset/reset-fin';
 import Home from './pages/app/home/home';
 import Explore from './pages/app/explore/explore';
 import Follower from './pages/app/follower/follower';
+import Following from './pages/app/following/following';
 import Notification from './pages/app/notification/notification';
 import UserProfile from './pages/app/userprofile/user-profile';
 import ProfileEdit from './pages/app/userprofile/profile-edit';
@@ -67,6 +68,10 @@ const router = createBrowserRouter([
       {
         path: "follower",
         element: <Follower />
+      },
+      {
+        path: "following",
+        element: <Following />
       },
       {
         path: "notification",
