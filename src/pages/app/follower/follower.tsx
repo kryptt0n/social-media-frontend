@@ -1,18 +1,31 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { User } from "../../../lib/definitions";
 import { Button, Image } from "react-bootstrap";
+import { getFollowers } from "../../../lib/actions";
 
 export default function Follower() {
-    const [followerList, setFollowerList] = useState<User[] | null>(null);
+    const [followerList, setFollowerList] = useState<User[]>([]);
+
+    useEffect(() => {
+        const loadAllFollower = async () => {
+            try {
+                const allFollower = await getFollowers(localStorage.getItem("curUn"));
+                setFollowerList(allFollower);
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        loadAllFollower();
+    }, []);
 
     return (
         <>
             <div>
-                {followerList ? (
+                {followerList.length > 0 ? (
                     <ul>
                         {followerList.map((follower) => (
                             <li>
-                                {/* <Image src={follower.profilePicture} roundedCircle /> */}
                                 <a href="">{follower.username}</a>
                                 <Button variant="primary">Follow</Button>
                             </li>

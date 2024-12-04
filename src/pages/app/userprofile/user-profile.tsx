@@ -3,8 +3,10 @@ import type { User, Post } from "../../../lib/definitions";
 import { Button, Image } from "react-bootstrap";
 import { getUserPosts } from "../../../lib/actions";
 import PostItem from "../../../components/post/PostComponent";
+import { useParams } from "react-router-dom";
 
 export default function UserProfile() {
+    const { username } = useParams<{ username: string }>();
     const [postList, setPostList] = useState<Post[]>([]);
     const [user, setUser] = useState(
         {

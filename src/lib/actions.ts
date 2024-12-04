@@ -1,6 +1,7 @@
 import axios from "axios";
 import type { User, Post, Comment, Follow, Like, Notification } from "./definitions";
-import { CommentProp, PostProp, UserProp } from "./propinterfaces";
+import { CommentProp, LikeProp, PostProp, UserProp } from "./propinterfaces";
+import { NullLiteral } from "typescript";
 
 const headers = {
     "Accept": "*/*",
@@ -158,7 +159,7 @@ export async function getLikeCount(postId: number): Promise<number> {
     }
 }
 
-export async function createLike(formData: Like): Promise<void> {
+export async function createLike(formData: LikeProp): Promise<void> {
     try {
         await axios.post(`${domain}/likes`,
             formData,
@@ -171,11 +172,12 @@ export async function createLike(formData: Like): Promise<void> {
     }
 }
 
-export async function deleteLike(formData: Like): Promise<void> {
+export async function deleteLike(formData: LikeProp): Promise<void> {
     try {
         await axios.delete(`${domain}/likes`,
             {
                 headers: headers,
+                data: formData,
             },
         );
     } catch (error: any) {
@@ -208,7 +210,7 @@ export async function unfollowUser(username: string): Promise<void> {
     }
 }
 
-export async function getFollowers(username: string): Promise<User[]> {
+export async function getFollowers(username: string | null): Promise<User[]> {
     try {
         const response = await axios.get(`${domain}/follows/followers/${username}`,
             {
@@ -221,7 +223,7 @@ export async function getFollowers(username: string): Promise<User[]> {
     }
 }
 
-export async function getFollowed(username: string): Promise<User[]> {
+export async function getFollowed(username: string | null): Promise<User[]> {
     try {
         const response = await axios.get(`${domain}/follows/followed/${username}`,
             {
