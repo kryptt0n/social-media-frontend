@@ -10,7 +10,7 @@ export default function Layout() {
     return (
         <>
             <div className="flex pt-10">
-                <div className="w-[20%] min-w-[150px] ml-auto h-screen text-xl">
+                <div className="w-[20%] min-w-[150px] ml-auto mr-1 h-screen text-xl border-r-2 border-gray-100">                 
                     <Nav defaultActiveKey="/home" className="flex-column gap-3">
                         <Nav.Link href="/home" className="flex items-center gap-2 h-12"><GrHome />Home</Nav.Link>
                         <Nav.Link href="/explore" className="flex items-center gap-2 h-12"><GrSearch />Explore</Nav.Link>
@@ -19,7 +19,7 @@ export default function Layout() {
                         <Nav.Link href="/profile" className="flex items-center gap-2 h-12"><GrUser />Profile</Nav.Link>
                     </Nav>
                 </div>
-                <div className="w-[40%] min-w-[300px] mr-auto h-screen">
+                <div className="w-[40%] min-w-[300px] mr-auto ml-1 h-screen">
                     <Outlet />
                 </div>
             </div>

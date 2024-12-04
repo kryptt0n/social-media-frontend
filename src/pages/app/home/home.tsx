@@ -1,9 +1,9 @@
 import CreatePost from "../../../components/post/CreatePost";
-import type { Posts } from "../../../lib/definitions";
-import { useState } from "react";
+import type { Post } from "../../../lib/definitions";
+import { useEffect, useState } from "react";
 
 export default function Home() {
-    const [postList, setPostList] = useState<Posts[] | null>(null);
+    const [postList, setPostList] = useState<Post[] | null>(null);
 
     return (
         <>

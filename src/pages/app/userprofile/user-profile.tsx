@@ -1,17 +1,16 @@
 import { useState } from "react";
-import { Accounts, type Posts } from "../../../lib/definitions";
+import type { User, Post } from "../../../lib/definitions";
 import { Button, Image } from "react-bootstrap";
 
 export default function UserProfile() {
-    const [postList, setPostList] = useState<Posts | null>(null);
-    const [user, setUser] = useState<Accounts | null>(null);
+    const [postList, setPostList] = useState<Post | null>(null);
+    const [user, setUser] = useState<User | null>(null);
 
     return (
         <>
             <div>
-                <Image src={user?.profile} roundedCircle />
                 <p>{user?.username}</p>
-                <p>Joined {user?.create_time}</p>
+                <p>Joined {user?.createdAt}</p>
                 <Button variant="primary">Follow</Button>
                 <Button variant="primary" href="/profile-edit">Edit Profile</Button>
             </div>

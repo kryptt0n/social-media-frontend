@@ -1,46 +1,58 @@
-export type Accounts = {
+export type User = {
     id: number,
     username: string,
     password: string,
-    dob: string,
-    profile: string,
-    create_time: string,
+    profilePicture: Blob,
+    bio: string,
+    createdAt: string,
+    roles: string;
 }
 
-export type Comments = {
+export type Post = {
     id: number,
-    post_id: number,
-    text: string,
-    user_id: number,
-    create_time: string,
+    content: string,
+    image: Blob,
+    user: {
+        username: string,
+        profilePicture: Blob,
+        bio: string,
+        isFollowed: boolean,
+    },
+    createdAt: string,
+    likedByCurrentUser: boolean,
+    totalLikes: number,
 }
 
-export type Followers = {
+export type Comment = {
     id: number,
-    user_id: number,
-    follower_id: number,
-    create_time: string,
+    content: string,
+    user: User,
+    post: Post,
+    createdAt: string,
 }
 
-export type Likes = {
-    id: number,
-    post_id: number,
-    user_id: number,
-    create_time: string,
+export type Follow = {
+    id: number;
+    follower: User,
+    followed: User,
+    followedAt: string,
 }
 
-export type Messages = {
+export type Like = {
     id: number,
-    user_id: number,
-    message: string,
-    create_time: string,
+    user: User,
+    post: Post,
+    createdAt: string,
 }
 
-export type Posts = {
+export type Notification = {
     id: number,
-    text: string,
-    image: string,
-    create_time: string,
-    draft: boolean,
-    user_id: number,
+    user: User,
+    type: NotificationType,
+    content: string,
+    read: boolean,
+    createdAt: string,
 }
+
+export type NotificationType = 'LIKE' | 'COMMENT' | 'FOLLOW';
+

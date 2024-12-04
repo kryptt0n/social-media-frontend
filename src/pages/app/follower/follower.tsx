@@ -1,9 +1,9 @@
 import { useState } from "react";
-import type { Accounts } from "../../../lib/definitions";
+import type { User } from "../../../lib/definitions";
 import { Button, Image } from "react-bootstrap";
 
 export default function Follower() {
-    const [followerList, setFollowerList] = useState<Accounts[] | null>(null);
+    const [followerList, setFollowerList] = useState<User[] | null>(null);
 
     return (
         <>
@@ -12,7 +12,7 @@ export default function Follower() {
                     <ul>
                         {followerList.map((follower) => (
                             <li>
-                                <Image src={follower.profile} roundedCircle />
+                                {/* <Image src={follower.profilePicture} roundedCircle /> */}
                                 <a href="">{follower.username}</a>
                                 <Button variant="primary">Follow</Button>
                             </li>

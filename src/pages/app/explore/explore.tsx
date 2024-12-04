@@ -1,9 +1,9 @@
 import { useState } from "react";
-import type { Posts } from "../../../lib/definitions";
+import type { Post } from "../../../lib/definitions";
 import { Form, Button } from "react-bootstrap";
 
 export default function Explore() {
-    const [postList, setPostList] = useState<Posts[] | null>(null);
+    const [postList, setPostList] = useState<Post[] | null>(null);
 
     return (
         <>
