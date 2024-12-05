@@ -20,7 +20,7 @@ export default function Login() {
         e.preventDefault();
 
         try {
-            await axios.get(`${domain}/posts`,
+            await axios.get(`${domain}/users/${userData.username}`,
                 {
                     headers: {
                         "Accept": "*/*",

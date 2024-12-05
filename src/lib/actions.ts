@@ -1,5 +1,5 @@
 import axios from "axios";
-import type { User, Post, Comment, Follow, Like, Notification } from "./definitions";
+import type { User, Post, Comment, Profile, Follow, Like, Notification } from "./definitions";
 import { CommentProp, LikeProp, PostProp, UserProp } from "./propinterfaces";
 import { NullLiteral } from "typescript";
 
@@ -22,6 +22,19 @@ export async function register(formData: UserProp): Promise<void> {
                 },
             },
         );
+    } catch (error: any) {
+        throw new Error(error.message);
+    }
+}
+
+export async function getUser(username: string): Promise<Profile> {
+    try {
+        const response = await axios.get(`${domain}/users/${username}`,
+            {
+                headers: headers,
+            },
+        );
+        return response.data;
     } catch (error: any) {
         throw new Error(error.message);
     }
@@ -210,7 +223,7 @@ export async function unfollowUser(username: string): Promise<void> {
     }
 }
 
-export async function getFollowers(username: string | null): Promise<User[]> {
+export async function getFollowers(username: string | null): Promise<Profile[]> {
     try {
         const response = await axios.get(`${domain}/follows/followers/${username}`,
             {
@@ -223,7 +236,7 @@ export async function getFollowers(username: string | null): Promise<User[]> {
     }
 }
 
-export async function getFollowed(username: string | null): Promise<User[]> {
+export async function getFollowed(username: string | null): Promise<Profile[]> {
     try {
         const response = await axios.get(`${domain}/follows/followed/${username}`,
             {

@@ -5,12 +5,14 @@ import CommentItem from '../comment/CommentComponent';
 import { useState } from 'react';
 import type { Comment } from '../../lib/definitions';
 import { getCommentsForPost, createLike, deleteLike } from '../../lib/actions';
+import { useNavigate } from 'react-router-dom';
 
 interface PostItemProps {
   postData: Post;
 }
 
 export default function PostItem({ postData }: PostItemProps) {
+  const navigate = useNavigate();
   const formattedDate = new Date(postData.createdAt).toLocaleDateString();
   const [commentList, setCommentList] = useState<Comment[]>([]);
   const [showComment, setShowComment] = useState<boolean>(false);
@@ -45,7 +47,9 @@ export default function PostItem({ postData }: PostItemProps) {
 
   return (
     <div className="post-container p-4 rounded-md bg-slate-50 border-b-2 border-gray-100 hover:bg-gray-100">
-      <div className="post-header flex items-center space-x-3 mb-2">
+      <div
+        className="post-header flex items-center space-x-3 mb-2 cursor-pointer"
+        onClick={() => navigate(`/profile/${postData.user.username}`)}>
         {postData.user.profilePicture ? (
           <img
             src={"data:image/jpeg;base64," + postData.user.profilePicture}
