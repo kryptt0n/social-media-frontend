@@ -39,18 +39,18 @@ const router = createBrowserRouter([
         path: "register/fin",
         element: <RegisterFinish />,
       },
-      {
-        path: "reset/info",
-        element: <ResetInfo />,
-      },
-      {
-        path: "reset/newpassword",
-        element: <ResetNewPassword />,
-      },
-      {
-        path: "reset/fin",
-        element: <ResetFinish />,
-      },
+      // {
+      //   path: "reset/info",
+      //   element: <ResetInfo />,
+      // },
+      // {
+      //   path: "reset/newpassword",
+      //   element: <ResetNewPassword />,
+      // },
+      // {
+      //   path: "reset/fin",
+      //   element: <ResetFinish />,
+      // },
     ]
   },
   {
@@ -73,18 +73,14 @@ const router = createBrowserRouter([
         path: "following",
         element: <Following />
       },
+      // {
+      //   path: "notification",
+      //   element: <Notification />
+      // },
       {
-        path: "notification",
-        element: <Notification />
-      },
-      {
-        path: "profile",
+        path: "profile/:username",
         element: <UserProfile />
-      },
-      {
-        path: "profile-edit",
-        element: <ProfileEdit />,
-      },
+      }
     ],
   },
 ]);

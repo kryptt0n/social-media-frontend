@@ -13,8 +13,8 @@ export default function Layout() {
                         <Nav.Link href="/explore" className="flex items-center gap-2 h-12 hover:bg-slate-200 rounded-lg"><GrSearch />Explore</Nav.Link>
                         <Nav.Link href="/follower" className="flex items-center gap-2 h-12 hover:bg-slate-200 rounded-lg"><GrNodes />Follower</Nav.Link>
                         <Nav.Link href="/following" className="flex items-center gap-2 h-12 hover:bg-slate-200 rounded-lg"><GrStatusGood />Following</Nav.Link>
-                        <Nav.Link href="/notification" className="flex items-center gap-2 h-12 hover:bg-slate-200 rounded-lg"><GrTooltip />Messages</Nav.Link>
-                        <Nav.Link href="/profile" className="flex items-center gap-2 h-12 hover:bg-slate-200 rounded-lg"><GrUser />Profile</Nav.Link>
+                        {/* <Nav.Link href="/notification" className="flex items-center gap-2 h-12 hover:bg-slate-200 rounded-lg"><GrTooltip />Messages</Nav.Link> */}
+                        <Nav.Link href={`/profile/${localStorage.getItem("curUn")}`} className="flex items-center gap-2 h-12 hover:bg-slate-200 rounded-lg"><GrUser />Profile</Nav.Link>
                     </Nav>
                 </div>
                 <div className="flex-1 sm:ml-[36%] ml-[20%] mt-10">

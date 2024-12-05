@@ -8,6 +8,13 @@ export type User = {
     roles: string;
 }
 
+export type Profile = {
+    username: string,
+    profilePicture: Uint8Array | null,
+    bio: string,
+    isFollowed: boolean,
+}
+
 export type Post = {
     id: number,
     content: string | null,
