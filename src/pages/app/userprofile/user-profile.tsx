@@ -13,7 +13,7 @@ export default function UserProfile() {
             username: "",
             profilePicture: null,
             bio: "",
-            isFollowed: true,
+            isFollowed: false,
         }
     );
 
@@ -49,14 +49,19 @@ export default function UserProfile() {
             if (username) {
                 if (user.isFollowed) {
                     await unfollowUser(username);
+                    setUser(prevUser => ({ ...prevUser, isFollowed: false }));
                 } else {
                     await followUser(username);
+                    setUser(prevUser => ({ ...prevUser, isFollowed: true }));
                 }
-                setUser({ ...user, isFollowed: !user.isFollowed });
             }
         } catch (error) {
             console.error('Error following:', error);
         }
+    };
+
+    const handlePostDeleted = (postId: number) => {
+        setPostList(prevPosts => prevPosts.filter(post => post.id !== postId));
     };
 
     return (
@@ -69,19 +74,22 @@ export default function UserProfile() {
                         className="w-24 h-24 rounded-full object-cover"
                     />
                 ) : (
-                    <div className="w-24 h-24 rounded-lg object-cover border-2 border-gray-200">
-                        <GrUser className="h-full w-full text-gray-600 overflow-hidden" />
+                    <div className="w-24 h-24 rounded-lg object-cover border-2 border-gray-200 flex items-center justify-center aspect-square">
+                        <GrUser className="h-full w-full text-gray-600 p-1" />
                     </div>
                 )}
                 <div className="flex flex-col space-y-2 w-full">
                     <div className="flex justify-between w-full">
                         <h1 className="text-2xl font-bold text-gray-800">{user.username}</h1>
-                        <button
-                            className="follow-button px-4 py-1 text-white bg-blue-500 rounded-full hover:bg-blue-600"
-                            onClick={handleFollowClick}
-                        >
-                            {user.isFollowed ? "Unfollow" : "Follow"}
-                        </button>
+                        {(user.username !== sessionStorage.getItem("curUn")) && (
+                            <button
+                                className="follow-button px-4 py-1 text-white bg-blue-500 rounded-full hover:bg-blue-600"
+                                onClick={handleFollowClick}
+                            >
+                                {user.isFollowed ? "Unfollow" : "Follow"}
+                            </button>
+                        )}
+
                     </div>
 
                     <p className="text-gray-600">{user.bio}</p>
@@ -89,9 +97,9 @@ export default function UserProfile() {
                 </div>
             </div>
 
-            <div className="user-posts space-y-4">
+            <div className="user-posts space-y-2">
                 {postList.length > 0 ? (
-                    postList.map((post) => <PostItem key={post.id} postData={post} />)
+                    postList.map((post) => <PostItem key={post.id} postData={post} allowDelete={true} onPostDeleted={handlePostDeleted} />)
                 ) : (
                     <div className="no-posts text-center mt-10">
                         <p className="text-xl text-gray-700">This account doesn't have any posts.</p>

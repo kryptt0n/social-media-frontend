@@ -30,8 +30,8 @@ export default function Login() {
                 }
             );
 
-            localStorage.setItem("curUn", userData.username);
-            localStorage.setItem("curPw", userData.password);
+            sessionStorage.setItem("curUn", userData.username);
+            sessionStorage.setItem("curPw", userData.password);
 
             navigate("/home");
         } catch (error: any) {
@@ -42,7 +42,12 @@ export default function Login() {
 
     return (
         <>
+
             <Form className="w-96" onSubmit={handleSubmit}>
+                <div className="mb-10">
+                    <h1 className="w-full text-center text-3xl ">Social Media</h1>
+                    <p className="w-full text-center text-gray-600" >v 0.1</p>
+                </div>
                 <Form.FloatingLabel controlId="formUsername" label="Username" className="mb-3">
                     <Form.Control
                         type="text"
@@ -73,7 +78,7 @@ export default function Login() {
 
                 <div className="d-grid">
                     <Button variant="primary" className="w-auto" type="submit">
-                        Submit
+                        Login
                     </Button>
                 </div>
 

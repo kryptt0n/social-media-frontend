@@ -1,13 +1,7 @@
 import axios from "axios";
 import type { User, Post, Comment, Profile, Follow, Like, Notification } from "./definitions";
 import { CommentProp, LikeProp, PostProp, UserProp } from "./propinterfaces";
-import { NullLiteral } from "typescript";
 
-const headers = {
-    "Accept": "*/*",
-    "Content-Type": "application/json",
-    "Authorization": `Basic ${btoa(`${localStorage.getItem("curUn")}:${localStorage.getItem("curPw")}`)}`,
-};
 export const domain = 'http://localhost:8080';
 
 // Auth
@@ -31,7 +25,11 @@ export async function getUser(username: string): Promise<Profile> {
     try {
         const response = await axios.get(`${domain}/users/${username}`,
             {
-                headers: headers,
+                headers: {
+                    "Accept": "*/*",
+                    "Content-Type": "application/json",
+                    "Authorization": `Basic ${btoa(`${sessionStorage.getItem("curUn")}:${sessionStorage.getItem("curPw")}`)}`,
+                },
             },
         );
         return response.data;
@@ -46,7 +44,11 @@ export async function getUserPosts(username: string): Promise<Post[]> {
     try {
         const response = await axios.get(`${domain}/posts/user/${username}`,
             {
-                headers: headers,
+                headers: {
+                    "Accept": "*/*",
+                    "Content-Type": "application/json",
+                    "Authorization": `Basic ${btoa(`${sessionStorage.getItem("curUn")}:${sessionStorage.getItem("curPw")}`)}`,
+                },
             },
         );
         return response.data;
@@ -59,7 +61,11 @@ export async function getAllPosts(): Promise<Post[]> {
     try {
         const response = await axios.get(`${domain}/posts`,
             {
-                headers: headers,
+                headers: {
+                    "Accept": "*/*",
+                    "Content-Type": "application/json",
+                    "Authorization": `Basic ${btoa(`${sessionStorage.getItem("curUn")}:${sessionStorage.getItem("curPw")}`)}`,
+                },
             },
         );
         return response.data;
@@ -72,7 +78,11 @@ export async function getFollowedPosts(): Promise<Post[]> {
     try {
         const response = await axios.get(`${domain}/posts/followed`,
             {
-                headers: headers,
+                headers: {
+                    "Accept": "*/*",
+                    "Content-Type": "application/json",
+                    "Authorization": `Basic ${btoa(`${sessionStorage.getItem("curUn")}:${sessionStorage.getItem("curPw")}`)}`,
+                },
             },
         );
         return response.data;
@@ -86,7 +96,11 @@ export async function createPost(formData: PostProp): Promise<void> {
         await axios.post(`${domain}/posts`,
             formData,
             {
-                headers: headers,
+                headers: {
+                    "Accept": "*/*",
+                    "Content-Type": "application/json",
+                    "Authorization": `Basic ${btoa(`${sessionStorage.getItem("curUn")}:${sessionStorage.getItem("curPw")}`)}`,
+                },
             },
         );
     } catch (error: any) {
@@ -99,7 +113,11 @@ export async function updatePost(postId: number, formData: Post): Promise<void> 
         await axios.put(`${domain}/posts/${postId}`,
             formData,
             {
-                headers: headers,
+                headers: {
+                    "Accept": "*/*",
+                    "Content-Type": "application/json",
+                    "Authorization": `Basic ${btoa(`${sessionStorage.getItem("curUn")}:${sessionStorage.getItem("curPw")}`)}`,
+                },
             },
         );
     } catch (error: any) {
@@ -111,7 +129,11 @@ export async function deletePost(postId: number): Promise<void> {
     try {
         await axios.delete(`${domain}/posts/${postId}`,
             {
-                headers: headers,
+                headers: {
+                    "Accept": "*/*",
+                    "Content-Type": "application/json",
+                    "Authorization": `Basic ${btoa(`${sessionStorage.getItem("curUn")}:${sessionStorage.getItem("curPw")}`)}`,
+                },
             },
         );
     } catch (error: any) {
@@ -124,7 +146,11 @@ export async function getCommentsForPost(postId: number): Promise<Comment[]> {
     try {
         const response = await axios.get(`${domain}/comments/post/${postId}`,
             {
-                headers: headers,
+                headers: {
+                    "Accept": "*/*",
+                    "Content-Type": "application/json",
+                    "Authorization": `Basic ${btoa(`${sessionStorage.getItem("curUn")}:${sessionStorage.getItem("curPw")}`)}`,
+                },
             },
         );
         return response.data;
@@ -138,7 +164,11 @@ export async function createComment(formData: CommentProp): Promise<void> {
         await axios.post(`${domain}/comments`,
             formData,
             {
-                headers: headers,
+                headers: {
+                    "Accept": "*/*",
+                    "Content-Type": "application/json",
+                    "Authorization": `Basic ${btoa(`${sessionStorage.getItem("curUn")}:${sessionStorage.getItem("curPw")}`)}`,
+                },
             },
         );
     } catch (error: any) {
@@ -150,7 +180,11 @@ export async function deleteComment(commentId: number): Promise<void> {
     try {
         await axios.delete(`${domain}/comments/${commentId}`,
             {
-                headers: headers,
+                headers: {
+                    "Accept": "*/*",
+                    "Content-Type": "application/json",
+                    "Authorization": `Basic ${btoa(`${sessionStorage.getItem("curUn")}:${sessionStorage.getItem("curPw")}`)}`,
+                },
             },
         );
     } catch (error: any) {
@@ -163,7 +197,11 @@ export async function getLikeCount(postId: number): Promise<number> {
     try {
         const response = await axios.get(`${domain}/likes/post/${postId}`,
             {
-                headers: headers,
+                headers: {
+                    "Accept": "*/*",
+                    "Content-Type": "application/json",
+                    "Authorization": `Basic ${btoa(`${sessionStorage.getItem("curUn")}:${sessionStorage.getItem("curPw")}`)}`,
+                },
             },
         );
         return response.data;
@@ -177,7 +215,11 @@ export async function createLike(formData: LikeProp): Promise<void> {
         await axios.post(`${domain}/likes`,
             formData,
             {
-                headers: headers,
+                headers: {
+                    "Accept": "*/*",
+                    "Content-Type": "application/json",
+                    "Authorization": `Basic ${btoa(`${sessionStorage.getItem("curUn")}:${sessionStorage.getItem("curPw")}`)}`,
+                },
             },
         );
     } catch (error: any) {
@@ -189,7 +231,11 @@ export async function deleteLike(formData: LikeProp): Promise<void> {
     try {
         await axios.delete(`${domain}/likes`,
             {
-                headers: headers,
+                headers: {
+                    "Accept": "*/*",
+                    "Content-Type": "application/json",
+                    "Authorization": `Basic ${btoa(`${sessionStorage.getItem("curUn")}:${sessionStorage.getItem("curPw")}`)}`,
+                },
                 data: formData,
             },
         );
@@ -202,8 +248,13 @@ export async function deleteLike(formData: LikeProp): Promise<void> {
 export async function followUser(username: string): Promise<void> {
     try {
         await axios.post(`${domain}/follows/${username}`,
+            {},
             {
-                headers: headers,
+                headers: {
+                    "Accept": "*/*",
+                    "Content-Type": "application/json",
+                    "Authorization": `Basic ${btoa(`${sessionStorage.getItem("curUn")}:${sessionStorage.getItem("curPw")}`)}`,
+                },
             },
         );
     } catch (error: any) {
@@ -215,7 +266,11 @@ export async function unfollowUser(username: string): Promise<void> {
     try {
         await axios.delete(`${domain}/follows/${username}`,
             {
-                headers: headers,
+                headers: {
+                    "Accept": "*/*",
+                    "Content-Type": "application/json",
+                    "Authorization": `Basic ${btoa(`${sessionStorage.getItem("curUn")}:${sessionStorage.getItem("curPw")}`)}`,
+                },
             },
         );
     } catch (error: any) {
@@ -227,7 +282,11 @@ export async function getFollowers(username: string | null): Promise<Profile[]> 
     try {
         const response = await axios.get(`${domain}/follows/followers/${username}`,
             {
-                headers: headers,
+                headers: {
+                    "Accept": "*/*",
+                    "Content-Type": "application/json",
+                    "Authorization": `Basic ${btoa(`${sessionStorage.getItem("curUn")}:${sessionStorage.getItem("curPw")}`)}`,
+                },
             },
         );
         return response.data;
@@ -240,7 +299,11 @@ export async function getFollowed(username: string | null): Promise<Profile[]> {
     try {
         const response = await axios.get(`${domain}/follows/followed/${username}`,
             {
-                headers: headers,
+                headers: {
+                    "Accept": "*/*",
+                    "Content-Type": "application/json",
+                    "Authorization": `Basic ${btoa(`${sessionStorage.getItem("curUn")}:${sessionStorage.getItem("curPw")}`)}`,
+                },
             },
         );
         return response.data;

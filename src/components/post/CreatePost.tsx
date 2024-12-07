@@ -21,13 +21,13 @@ export default function CreatePost() {
 
             try {
                 const byteArray = await imageToArray(file);
-        
+
                 setImage(byteArray);
-        
+
                 setPreviewUrl(URL.createObjectURL(file));
-              } catch (error) {
+            } catch (error) {
                 console.error('Error converting image to byte array:', error);
-              }
+            }
         }
     };
 
@@ -57,19 +57,20 @@ export default function CreatePost() {
         <>
             <Card>
                 <Form onSubmit={handleSubmit}>
-                    <Form.Group className="mb-3" controlId="controlTextarea">
+                    <Form.Group className="mb-1" controlId="controlTextarea">
                         <Form.Control
                             as="textarea"
                             placeholder="What is happening?!"
-                            rows={4}
+                            rows={3}
                             value={content}
                             onChange={(e) => setContent(e.target.value)}
+                            required
                         />
                     </Form.Group>
 
                     {hasImage && (
                         <>
-                            <Form.Group className="mb-3" controlId="controlFile">
+                            <Form.Group className="mb-1 px-5" controlId="controlFile">
                                 <Form.Control
                                     type="file"
                                     accept="image/*"
@@ -77,16 +78,22 @@ export default function CreatePost() {
                                 />
                             </Form.Group>
                             {previewUrl && (
-                                <div className="mb-3">
+                                <div className="mb-1 p-5">
                                     <img src={previewUrl} alt="Preview" className="img-fluid" />
                                 </div>
                             )}
                         </>
                     )}
 
-                    <div className="items-center flex justify-between px-6 pb-2">
-                        <GrGallery onClick={() => setHasImage(!hasImage)} />
-                        <Button variant="primary" type="submit">
+                    <div className="items-center flex justify-between px-6 pb-1">
+                        <GrGallery
+                            className="cursor-pointer"
+                            onClick={() => {
+                                setHasImage(!hasImage);
+                                setPreviewUrl(null);
+                            }}
+                        />
+                        <Button variant="primary" type="submit" className="rounded-full">
                             Post
                         </Button>
                     </div>

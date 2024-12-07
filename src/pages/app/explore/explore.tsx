@@ -7,7 +7,7 @@ import PostItem from "../../../components/post/PostComponent";
 
 export default function Explore() {
     const [postList, setPostList] = useState<Post[]>([]);
-    const [searchParams, setSearchParams] = useSearchParams();
+    const [filteredPostList, setFilteredPostList] = useState<Post[]>([]);
     const [searchQuery, setSearchQuery] = useState("");
 
     useEffect(() => {
@@ -15,17 +15,14 @@ export default function Explore() {
             try {
                 const allPosts = await getAllPosts();
                 setPostList(allPosts);
+                setFilteredPostList(allPosts);
             } catch (error) {
                 console.error(error);
             }
-        }
+        };
 
         loadAllPosts();
-
-        if (searchParams.toString()) {
-            setSearchParams({});
-        }
-    }, [searchParams, setSearchParams]);
+    }, []);
 
     const handleSearch = (e: React.FormEvent) => {
         e.preventDefault();
@@ -35,10 +32,14 @@ export default function Explore() {
             const filteredPosts = postList.filter(post =>
                 post.content?.toLowerCase().includes(query)
             );
-            setPostList(filteredPosts);
+            setFilteredPostList(filteredPosts);
         } else {
-            getAllPosts().then(setPostList).catch(console.error);
+            setFilteredPostList(postList);
         }
+    };
+
+    const handlePostDeleted = (postId: number) => {
+        setPostList(prevPosts => prevPosts.filter(post => post.id !== postId));
     };
 
     return (
@@ -49,6 +50,7 @@ export default function Explore() {
                         className="text-xl"
                         type="text"
                         placeholder="Search posts..."
+                        value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                     />
                     <Button variant="primary" type="submit">
@@ -56,10 +58,10 @@ export default function Explore() {
                     </Button>
                 </Form>
             </div>
-            <div className="mt-10">
-                {postList.length > 0 ? (
-                    postList.map((post) => (
-                        <PostItem postData={post} />
+            <div className="mt-4 space-y-2">
+                {filteredPostList.length > 0 ? (
+                    filteredPostList.map((post) => (
+                        <PostItem key={post.id} postData={post} allowDelete={false} onPostDeleted={handlePostDeleted} />
                     ))
                 ) : (
                     <div className="flex justify-center">

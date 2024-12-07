@@ -112,6 +112,9 @@ export default function RegisterInfo() {
                         Register
                     </Button>
                 </div>
+
+                <p className="text-sm">Already have an account? <a className="underline" href="/">Login</a></p>
+
             </Form>
         </>
     );
