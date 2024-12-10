@@ -19,8 +19,8 @@ export default function Layout() {
                     <Nav defaultActiveKey="/home" className="flex-column gap-3">
                         <Nav.Link href="/home" className="flex items-center gap-2 h-12 hover:bg-slate-200 rounded-full"><GrHome /><p className="sm:block hidden">Home</p></Nav.Link>
                         <Nav.Link href="/explore" className="flex items-center gap-2 h-12 hover:bg-slate-200 rounded-full"><GrSearch /><p className="sm:block hidden">Explore</p></Nav.Link>
-                        <Nav.Link href="/follower" className="flex items-center gap-2 h-12 hover:bg-slate-200 rounded-full"><GrNodes /><p className="sm:block hidden">Follower</p></Nav.Link>
-                        <Nav.Link href="/following" className="flex items-center gap-2 h-12 hover:bg-slate-200 rounded-full"><GrStatusGood /><p className="sm:block hidden">Following</p></Nav.Link>
+                        <Nav.Link href={`/follower/${sessionStorage.getItem("curUn")}`} className="flex items-center gap-2 h-12 hover:bg-slate-200 rounded-full"><GrNodes /><p className="sm:block hidden">Follower</p></Nav.Link>
+                        <Nav.Link href={`/following/${sessionStorage.getItem("curUn")}`} className="flex items-center gap-2 h-12 hover:bg-slate-200 rounded-full"><GrStatusGood /><p className="sm:block hidden">Following</p></Nav.Link>
                         {/* <Nav.Link href="/notification" className="flex items-center gap-2 h-12 hover:bg-slate-200 rounded-lg"><GrTooltip />Messages</Nav.Link> */}
                         <Nav.Link href={`/profile/${sessionStorage.getItem("curUn")}`} className="flex items-center gap-2 h-12 hover:bg-slate-200 rounded-full"><GrUser /><p className="sm:block hidden">Profile</p></Nav.Link>
                         <Nav.Link

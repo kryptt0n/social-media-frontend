@@ -4,16 +4,20 @@ import { getFollowed } from "../../../lib/actions";
 import { Button } from "react-bootstrap";
 import { GrUser } from "react-icons/gr";
 import { useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 export default function Following() {
+    const { username } = useParams<{ username: string }>();
     const navigate = useNavigate();
     const [followingList, setFollowingList] = useState<Profile[]>([]);
 
     useEffect(() => {
         const loadAllFollowing = async () => {
             try {
-                const allFollowing = await getFollowed(sessionStorage.getItem("curUn"));
-                setFollowingList(allFollowing);
+                if (username) {
+                    const allFollowing = await getFollowed(username);
+                    setFollowingList(allFollowing);
+                }
             } catch (error) {
                 console.error(error);
             }
@@ -24,11 +28,12 @@ export default function Following() {
 
     return (
         <>
+            <h1 className="border-b-2 text-3xl items-center border-sky-600 mb-2 pb-2">{username}'s Following</h1>
             <div className="space-y-1">
                 {followingList.length > 0 ? (
                     followingList.map((following) => (
                         <div
-                            className="user-header flex items-center space-x-6 bg-slate-50 p-3 border-2 border-gray-400 rounded-3xl cursor-pointer"
+                            className="user-header flex items-center space-x-6 bg-slate-50 p-3 border-2 border-gray-400 rounded-md cursor-pointer hover:bg-slate-200"
                             onClick={() => navigate(`/profile/${following.username}`)}
                         >
                             {following.profilePicture ? (
@@ -50,7 +55,7 @@ export default function Following() {
                     ))
                 ) : (
                     <div className="flex justify-center">
-                        <p className="text-xl text-grey-700 ">You are not following anyone.</p>
+                        <p className="text-xl text-grey-700 ">Not following anyone.</p>
                     </div>
                 )}
             </div>

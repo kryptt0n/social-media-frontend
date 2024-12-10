@@ -66,11 +66,11 @@ const router = createBrowserRouter([
         element: <Explore />
       },
       {
-        path: "follower",
+        path: "follower/:username",
         element: <Follower />
       },
       {
-        path: "following",
+        path: "following/:username",
         element: <Following />
       },
       // {

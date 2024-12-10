@@ -4,10 +4,12 @@ import { getUser, getUserPosts, followUser, unfollowUser } from "../../../lib/ac
 import PostItem from "../../../components/post/PostComponent";
 import { useParams } from "react-router-dom";
 import { GrUser } from 'react-icons/gr';
+import { useNavigate } from "react-router-dom";
 
 export default function UserProfile() {
     const { username } = useParams<{ username: string }>();
     const [postList, setPostList] = useState<Post[]>([]);
+    const navigate = useNavigate();
     const [user, setUser] = useState<Profile>(
         {
             username: "",
@@ -66,7 +68,7 @@ export default function UserProfile() {
 
     return (
         <div className="user-profile-container max-w-4xl mx-auto space-y-6">
-            <div className="user-header flex items-center space-x-6 p-6 border-b-4 rounded-md border-sky-600 bg-sky-100">
+            <div className="user-header flex items-center space-x-6 p-6 border-b-4 rounded-md border-sky-600 bg-stone-200">
                 {user.profilePicture ? (
                     <img
                         src={"data:image/jpeg;base64," + user.profilePicture}
@@ -78,6 +80,7 @@ export default function UserProfile() {
                         <GrUser className="h-full w-full text-gray-600 p-1" />
                     </div>
                 )}
+
                 <div className="flex flex-col space-y-2 w-full">
                     <div className="flex justify-between w-full">
                         <h1 className="text-2xl font-bold text-gray-800">{user.username}</h1>
@@ -94,7 +97,13 @@ export default function UserProfile() {
 
                     <p className="text-gray-600">{user.bio}</p>
 
+                    <div className="flex flex-row space-x-3">
+                        <div onClick={() => navigate(`/following/${username}`)} className="cursor-pointer hover:underline text-gray-700">Following</div>
+                        <div onClick={() => navigate(`/follower/${username}`)} className="cursor-pointer hover:underline text-gray-700">Followers</div>
+                    </div>
                 </div>
+
+
             </div>
 
             <div className="user-posts space-y-2">
