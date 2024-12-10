@@ -13,7 +13,10 @@ export default function RegisterInfo() {
     const [username, setUsername] = useState<string | null>(null);
     const [password, setPassword] = useState<string | null>(null);
     const [bio, setBio] = useState<string | null>(null);
-    const navigate = useNavigate(); 
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
+    const [isFileValid, setIsFileValid] = useState<boolean>(true);
+
+    const navigate = useNavigate();
 
     const [userData, setUserData] = useState<UserProp>({
         "username": null,
@@ -26,20 +29,41 @@ export default function RegisterInfo() {
         if (e.target.files && e.target.files[0]) {
             const file = e.target.files[0];
 
+            const allowedExtensions = ["jpg", "jpeg", "png"];
+            const maxFileSize = 50 * 1024;
+            const fileExtension = file.name.split(".").pop()?.toLowerCase();
+            if (!allowedExtensions.includes(fileExtension || "")) {
+                setErrorMessage("Invalid file type. Please upload an image file (jpg, jpeg, png).");
+                setIsFileValid(false);
+                return;
+            }
+            if (file.size > maxFileSize) {
+                setErrorMessage("File size too large. Please upload a smaller file.");
+                setIsFileValid(false);
+                return;
+            }
+
             try {
                 const byteArray = await imageToArray(file);
-
                 setImage(byteArray);
-
                 setPreviewUrl(URL.createObjectURL(file));
+                setErrorMessage(null);
+                setIsFileValid(true);
             } catch (error) {
                 console.error('Error converting image to byte array:', error);
+                setErrorMessage("Failed to process the image. Please try again.");
+                setIsFileValid(false);
             }
         }
     };
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+
+        if (!isFileValid) {
+            setErrorMessage("Please upload a valid profile.");
+            return;
+        }
 
         const payload = {
             ...userData,
@@ -53,7 +77,7 @@ export default function RegisterInfo() {
             await register(payload);
             console.log("Registered successfully!");
 
-            navigate('/register/fin'); 
+            navigate('/register/fin');
         } catch (error) {
             console.error("Error creating post:", error);
         }
@@ -82,12 +106,14 @@ export default function RegisterInfo() {
                     />
                 </Form.Group>
 
+                {errorMessage && <p className="text-red-500 text-sm">{errorMessage}</p>}
 
                 <Form.FloatingLabel className="mb-3" controlId="formUsername" label="Username">
                     <Form.Control
                         type="text"
                         placeholder="Username"
                         onChange={(e) => setUsername(e.target.value)}
+                        required
                     />
                 </Form.FloatingLabel>
 
@@ -96,6 +122,7 @@ export default function RegisterInfo() {
                         type="password"
                         placeholder="Password"
                         onChange={(e) => setPassword(e.target.value)}
+                        required
                     />
                 </Form.FloatingLabel>
 

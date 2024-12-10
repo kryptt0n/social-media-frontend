@@ -10,6 +10,9 @@ export default function CreatePost() {
     const [image, setImage] = useState<Uint8Array | null>(null);
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
     const [hasImage, setHasImage] = useState<boolean>(false);
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
+    const [isFileValid, setIsFileValid] = useState<boolean>(true);
+
     const [postData, setPostData] = useState<PostProp>({
         "content": null,
         "image": null,
@@ -19,20 +22,40 @@ export default function CreatePost() {
         if (e.target.files && e.target.files[0]) {
             const file = e.target.files[0];
 
+            const allowedExtensions = ["jpg", "jpeg", "png"];
+            const maxFileSize = 50 * 1024;
+            const fileExtension = file.name.split(".").pop()?.toLowerCase();
+            if (!allowedExtensions.includes(fileExtension || "")) {
+                setErrorMessage("Invalid file type. Please upload an image file (jpg, jpeg, png).");
+                setIsFileValid(false); 
+                return;
+            }
+            if (file.size > maxFileSize) {
+                setErrorMessage("File size too large. Please upload a smaller file.");
+                setIsFileValid(false);
+                return;
+            }
+
             try {
                 const byteArray = await imageToArray(file);
-
                 setImage(byteArray);
-
                 setPreviewUrl(URL.createObjectURL(file));
+                setErrorMessage(null);
+                setIsFileValid(true);
             } catch (error) {
                 console.error('Error converting image to byte array:', error);
+                setIsFileValid(false);
             }
         }
     };
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+
+        if (hasImage && (!isFileValid || !image)) {
+            setErrorMessage("Please upload a valid image file before submitting.");
+            return;
+        }
 
         const payload = {
             ...postData,
@@ -48,6 +71,7 @@ export default function CreatePost() {
             setImage(null);
             setPreviewUrl(null);
             setHasImage(false);
+            setErrorMessage(null);
         } catch (error) {
             console.error("Error creating post:", error);
         }
@@ -85,12 +109,19 @@ export default function CreatePost() {
                         </>
                     )}
 
+                    {errorMessage && <p className="text-red-500 text-sm">{errorMessage}</p>}
+
+
                     <div className="items-center flex justify-between px-6 pb-1">
                         <GrGallery
                             className="cursor-pointer"
                             onClick={() => {
                                 setHasImage(!hasImage);
-                                setPreviewUrl(null);
+                                if (hasImage) {
+                                    setImage(null);
+                                    setPreviewUrl(null);
+                                    setErrorMessage(null);
+                                }
                             }}
                         />
                         <Button variant="primary" type="submit" className="rounded-full">
