@@ -65,8 +65,8 @@ export default function UserProfile() {
     };
 
     return (
-        <div className="user-profile-container max-w-4xl mx-auto p-4 space-y-6">
-            <div className="user-header flex items-center space-x-6 bg-slate-50 p-6 border-b-4 border-teal-600">
+        <div className="user-profile-container max-w-4xl mx-auto space-y-6">
+            <div className="user-header flex items-center space-x-6 p-6 border-b-4 rounded-md border-sky-600 bg-sky-100">
                 {user.profilePicture ? (
                     <img
                         src={"data:image/jpeg;base64," + user.profilePicture}
@@ -74,7 +74,7 @@ export default function UserProfile() {
                         className="w-24 h-24 rounded-full object-cover"
                     />
                 ) : (
-                    <div className="w-24 h-24 rounded-lg object-cover border-2 border-gray-200 flex items-center justify-center aspect-square">
+                    <div className="w-24 h-24 rounded-lg object-cover border-2 border-gray-200 flex items-center justify-center aspect-square bg-slate-100">
                         <GrUser className="h-full w-full text-gray-600 p-1" />
                     </div>
                 )}
