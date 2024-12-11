@@ -13,6 +13,8 @@ export type Profile = {
     profilePicture: Uint8Array | null,
     bio: string,
     isFollowed: boolean,
+    followersCount: number,
+    followingCount: number,
 }
 
 export type Post = {

@@ -16,6 +16,8 @@ export default function UserProfile() {
             profilePicture: null,
             bio: "",
             isFollowed: false,
+            followersCount: 0,
+            followingCount: 0,
         }
     );
 
@@ -98,8 +100,8 @@ export default function UserProfile() {
                     <p className="text-gray-600">{user.bio}</p>
 
                     <div className="flex flex-row space-x-3">
-                        <div onClick={() => navigate(`/following/${username}`)} className="cursor-pointer hover:underline text-gray-700">Following</div>
-                        <div onClick={() => navigate(`/follower/${username}`)} className="cursor-pointer hover:underline text-gray-700">Followers</div>
+                        <div onClick={() => navigate(`/following/${username}`)} className="cursor-pointer hover:underline text-gray-700">{user.followingCount} Following</div>
+                        <div onClick={() => navigate(`/follower/${username}`)} className="cursor-pointer hover:underline text-gray-700">{user.followersCount} Followers</div>
                     </div>
                 </div>
 
