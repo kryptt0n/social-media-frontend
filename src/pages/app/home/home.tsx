@@ -7,16 +7,16 @@ import PostItem from "../../../components/post/PostComponent";
 export default function Home() {
     const [postList, setPostList] = useState<Post[]>([]);
 
-    useEffect(() => {
-        const loadAllPosts = async () => {
-            try {
-                const allPosts = await getFollowedPosts();
-                setPostList(allPosts);
-            } catch (error) {
-                console.error(error);
-            }
+    const loadAllPosts = async () => {
+        try {
+            const allPosts = await getFollowedPosts();
+            setPostList(allPosts);
+        } catch (error) {
+            console.error(error);
         }
+    };
 
+    useEffect(() => {
         loadAllPosts();
     }, []);
 
@@ -26,7 +26,7 @@ export default function Home() {
 
     return (
         <>
-            <CreatePost />
+            <CreatePost onPostCreated={loadAllPosts} />
             <div className="space-y-2">
                 {postList.length > 0 ? (
                     postList.map((post) => (

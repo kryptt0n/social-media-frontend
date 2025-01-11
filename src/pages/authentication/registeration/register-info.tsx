@@ -3,7 +3,7 @@ import { Button } from "react-bootstrap";
 import { Form } from "react-bootstrap";
 import { UserProp } from "../../../lib/propinterfaces";
 import { imageToArray } from "../../../lib/utils";
-import { register } from "../../../lib/actions";
+import { register, followUser, followSelf } from "../../../lib/actions";
 import { GrUser } from "react-icons/gr";
 import { useNavigate } from "react-router-dom";
 
@@ -77,6 +77,10 @@ export default function RegisterInfo() {
             await register(payload);
             console.log("Registered successfully!");
 
+            // Follow the user itself
+            const authHeader = `Basic ${btoa(`${username}:${password}`)}`;
+            await followSelf(username as string, authHeader);
+
             navigate('/register/fin');
         } catch (error) {
             console.error("Error creating post:", error);
@@ -85,26 +89,18 @@ export default function RegisterInfo() {
     return (
         <>
             <Form className="w-96" onSubmit={handleSubmit}>
-                <div className="w-full flex justify-center">
+                <label className="w-full flex justify-center">
                     {previewUrl ? (
-                        <div className="mb-3 w-32 h-32 rounded-full overflow-hidden flex justify-center items-center">
-                            <img src={previewUrl} alt="Preview" className="w-full h-full object-cover" />
+                        <div className="mb-3 w-32 h-32 rounded-full overflow-hidden flex justify-center items-center border-gray-200 border-2">
+                            <img src={previewUrl} alt="Profile Preview" className="w-full h-full object-cover" />
                         </div>
                     ) : (
                         <div className="mb-3 w-32 h-32 rounded-full bg-gray-200 flex justify-center items-center">
                             <GrUser className="text-4xl text-gray-600" />
                         </div>
                     )}
-                </div>
-
-
-                <Form.Group className="mb-3" controlId="controlFile">
-                    <Form.Control
-                        type="file"
-                        accept="image/*"
-                        onChange={handleImageChange}
-                    />
-                </Form.Group>
+                    <input type="file" accept="image/*" onChange={handleImageChange} className="hidden" />
+                </label>
 
                 {errorMessage && <p className="text-red-500 text-sm">{errorMessage}</p>}
 

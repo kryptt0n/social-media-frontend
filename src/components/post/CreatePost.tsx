@@ -1,11 +1,15 @@
 import { useState } from "react";
 import { Card, Form, Button } from "react-bootstrap";
-import { GrGallery } from "react-icons/gr";
+import { GrGallery, GrClose } from "react-icons/gr";
 import { PostProp } from "../../lib/propinterfaces";
 import { createPost } from "../../lib/actions";
 import { imageToArray } from "../../lib/utils";
 
-export default function CreatePost() {
+interface CreatePostProps {
+    onPostCreated: () => void;
+}
+
+export default function CreatePost({ onPostCreated }: CreatePostProps) {
     const [content, setContent] = useState<string>("");
     const [image, setImage] = useState<Uint8Array | null>(null);
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -27,7 +31,7 @@ export default function CreatePost() {
             const fileExtension = file.name.split(".").pop()?.toLowerCase();
             if (!allowedExtensions.includes(fileExtension || "")) {
                 setErrorMessage("Invalid file type. Please upload an image file (jpg, jpeg, png).");
-                setIsFileValid(false); 
+                setIsFileValid(false);
                 return;
             }
             if (file.size > maxFileSize) {
@@ -40,6 +44,7 @@ export default function CreatePost() {
                 const byteArray = await imageToArray(file);
                 setImage(byteArray);
                 setPreviewUrl(URL.createObjectURL(file));
+                setHasImage(true);
                 setErrorMessage(null);
                 setIsFileValid(true);
             } catch (error) {
@@ -49,13 +54,15 @@ export default function CreatePost() {
         }
     };
 
+    const handleDeleteImage = () => {
+        setImage(null);
+        setHasImage(false);
+        setPreviewUrl(null);
+        setErrorMessage(null);
+    };
+
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-
-        if (hasImage && (!isFileValid || !image)) {
-            setErrorMessage("Please upload a valid image file before submitting.");
-            return;
-        }
 
         const payload = {
             ...postData,
@@ -72,6 +79,9 @@ export default function CreatePost() {
             setPreviewUrl(null);
             setHasImage(false);
             setErrorMessage(null);
+
+            // Call the onPostCreated callback
+            onPostCreated();
         } catch (error) {
             console.error("Error creating post:", error);
         }
@@ -88,23 +98,21 @@ export default function CreatePost() {
                             rows={3}
                             value={content}
                             onChange={(e) => setContent(e.target.value)}
-                            required
                         />
                     </Form.Group>
 
                     {hasImage && (
                         <>
-                            <Form.Group className="mb-1 px-5" controlId="controlFile">
-                                <Form.Control
-                                    type="file"
-                                    accept="image/*"
-                                    onChange={handleImageChange}
-                                />
-                            </Form.Group>
                             {previewUrl && (
-                                <div className="mb-1 p-5">
-                                    <img src={previewUrl} alt="Preview" className="img-fluid" />
-                                </div>
+                                <>
+                                    <div className="mb-1 p-2 position-relative">
+                                        <img src={previewUrl} alt="Preview" className="w-full h-auto rounded-lg" />
+                                        <GrClose
+                                            className="position-absolute top-4 end-4 cursor-pointer text-white bg-gray-700 rounded-full p-2 text-4xl"
+                                            onClick={handleDeleteImage}
+                                        />
+                                    </div>
+                                </>
                             )}
                         </>
                     )}
@@ -113,18 +121,21 @@ export default function CreatePost() {
 
 
                     <div className="items-center flex justify-between px-6 pb-1">
-                        <GrGallery
-                            className="cursor-pointer"
-                            onClick={() => {
-                                setHasImage(!hasImage);
-                                if (hasImage) {
-                                    setImage(null);
-                                    setPreviewUrl(null);
-                                    setErrorMessage(null);
-                                }
-                            }}
-                        />
-                        <Button variant="primary" type="submit" className="rounded-full">
+                        <label className="cursor-pointer text-blue-400">
+                            <GrGallery />
+                            <input
+                                type="file"
+                                accept="image/*"
+                                onChange={handleImageChange}
+                                className="hidden"
+                            />
+                        </label>
+                        <Button
+                            variant="primary"
+                            type="submit"
+                            className="rounded-full"
+                            disabled={!content && !hasImage}
+                        >
                             Post
                         </Button>
                     </div>

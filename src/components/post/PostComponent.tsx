@@ -39,11 +39,11 @@ export default function PostItem({ postData, allowDelete, onPostDeleted }: PostI
     try {
       if (isLiked) {
         await deleteLike({ post: { id: postData.id } });
-        setIsLiked(!isLiked);
+        setIsLiked(false);
         setTotalLikes(totalLikes - 1);
       } else {
         await createLike({ post: { id: postData.id } });
-        setIsLiked(!isLiked);
+        setIsLiked(true);
         setTotalLikes(totalLikes + 1);
       }
     } catch (error) {
@@ -63,14 +63,14 @@ export default function PostItem({ postData, allowDelete, onPostDeleted }: PostI
   const handleDeletePost = async () => {
     try {
       await deletePost(postData.id);
-      onPostDeleted(postData.id); // Notify the parent component
+      onPostDeleted(postData.id); 
     } catch (error) {
       console.error('Error deleting the post:', error);
     }
   };
 
   return (
-    <div className="post-container p-4 rounded-xl bg-slate-50 border-b-2 border-gray-100 hover:bg-gray-100">
+    <div className="post-container px-3 py-2 rounded-xl bg-slate-50 border-b-2 border-gray-100 hover:bg-gray-100">
       <div
         className="post-header flex items-center space-x-3 mb-2 cursor-pointer"
         onClick={() => navigate(`/profile/${postData.user.username}`)}>
@@ -104,7 +104,7 @@ export default function PostItem({ postData, allowDelete, onPostDeleted }: PostI
 
       <div className="post-footer flex items-center justify-normal mt-4 pl-14 space-x-6">
         <div
-          className={`post-like-icon flex items-center space-x-1 cursor-pointer text-gray-500`}
+          className={`post-like-icon flex items-center space-x-1 cursor-pointer ${isLiked ? 'text-red-500' : 'text-gray-500'}`}
           onClick={handleLikeClick}
         >
           <span><GrLike /></span>
@@ -131,7 +131,7 @@ export default function PostItem({ postData, allowDelete, onPostDeleted }: PostI
       </div>
 
       {showComment && (
-        <div className='p-4 border-t-2 border-gray-300 mt-2'>
+        <div className='px-2 pt-1 border-t-2 border-gray-300 mt-2'>
 
           <CreateComment postId={postData.id} onCommentSubmitted={handleReloadComments} />
           {commentList.length > 0 && (

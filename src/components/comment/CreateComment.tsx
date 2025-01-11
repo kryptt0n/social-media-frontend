@@ -37,7 +37,7 @@ export default function CreateComment({ postId, onCommentSubmitted }: CreateComm
 
     return (
         <>
-            <div className="bg-white shadow-md rounded-md p-2 mb-1 border border-gray-200">
+            <div className="bg-white shadow-md rounded-md p-1 mb-1 border border-gray-200">
                 <Form onSubmit={handleSubmit}>
                     <Form.Group className="mb-3" controlId="comment">
                         <Form.Control

@@ -312,3 +312,20 @@ export async function getFollowed(username: string | null): Promise<Profile[]> {
     }
 }
 
+export async function followSelf(username: string, authHeader: string): Promise<void> {
+    try {
+        await axios.post(`${domain}/follows/${username}`,
+            {},
+            {
+                headers: {
+                    "Accept": "*/*",
+                    "Content-Type": "application/json",
+                    "Authorization": authHeader,
+                },
+            },
+        );
+    } catch (error: any) {
+        throw new Error(error.message);
+    }
+}
+
