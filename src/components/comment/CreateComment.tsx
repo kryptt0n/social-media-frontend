@@ -46,7 +46,6 @@ export default function CreateComment({ postId, onCommentSubmitted }: CreateComm
                             rows={1}
                             value={content}
                             onChange={(e) => setContent(e.target.value)}
-                            required
                         />
                     </Form.Group>
                     <div className="flex justify-end">
