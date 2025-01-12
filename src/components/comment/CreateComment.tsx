@@ -50,13 +50,17 @@ export default function CreateComment({ postId, onCommentSubmitted }: CreateComm
                         />
                     </Form.Group>
                     <div className="flex justify-end">
-                        <Button variant="primary" type="submit">
+                        <Button
+                            variant="primary"
+                            type="submit"
+                            className="rounded-full"
+                            disabled={!content}
+                        >
                             Reply
                         </Button>
                     </div>
                 </Form>
             </div>
-
         </>
     );
 }
