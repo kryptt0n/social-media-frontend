@@ -3,7 +3,7 @@ import { Button } from "react-bootstrap";
 import { Form } from "react-bootstrap";
 import { UserProp } from "../../../lib/propinterfaces";
 import { imageToArray } from "../../../lib/utils";
-import { register, followUser, followSelf } from "../../../lib/actions";
+import { register } from "../../../lib/actions";
 import { GrUser } from "react-icons/gr";
 import { useNavigate } from "react-router-dom";
 
@@ -76,10 +76,6 @@ export default function RegisterInfo() {
         try {
             await register(payload);
             console.log("Registered successfully!");
-
-            // Follow the user itself
-            const authHeader = `Basic ${btoa(`${username}:${password}`)}`;
-            await followSelf(username as string, authHeader);
 
             navigate('/register/fin');
         } catch (error) {

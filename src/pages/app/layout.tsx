@@ -2,13 +2,13 @@ import { Outlet } from "react-router-dom";
 import Nav from 'react-bootstrap/Nav';
 import { GrHome, GrSearch, GrNodes, GrUser, GrStatusGood, GrLogout } from "react-icons/gr";
 import { useNavigate } from "react-router-dom";
+import { removeCookie } from 'typescript-cookie';
 
 export default function Layout() {
     const navigate = useNavigate();
     const handleLogout = () => {
         sessionStorage.clear();
-        localStorage.clear();
-        document.cookie = "session_id=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
+        removeCookie('token');
         navigate("/");
     };
 

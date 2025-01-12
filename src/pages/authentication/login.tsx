@@ -2,8 +2,8 @@ import { Button } from "react-bootstrap";
 import { Form } from "react-bootstrap";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { domain } from "../../lib/actions";
-import axios from "axios";
+import { login } from "../../lib/actions";
+import { setCookie } from 'typescript-cookie';
 
 export default function Login() {
     const [error, setError] = useState<string | null>(null);
@@ -20,23 +20,19 @@ export default function Login() {
         e.preventDefault();
 
         try {
-            await axios.get(`${domain}/users/${userData.username}`,
-                {
-                    headers: {
-                        "Accept": "*/*",
-                        "Content-Type": "application/json",
-                        "Authorization": `Basic ${btoa(`${userData.username}:${userData.password}`)}`
-                    }
-                }
-            );
+            const response = await login(userData);
 
-            sessionStorage.setItem("curUn", userData.username);
-            sessionStorage.setItem("curPw", userData.password);
-
-            navigate("/home");
+            if (response) {
+                const token = response;
+                setCookie('token', token, { expires: 1 });
+                sessionStorage.setItem("curUn", userData.username);
+                navigate("/home");
+            } else {
+                setError("Incorrect credentials 2");
+            }
         } catch (error: any) {
-            console.error(error);
-            setError("Incorrect credentials");
+            console.error("Error during login:", error);
+            setError("Incorrect credentials 3");
         }
     }
 

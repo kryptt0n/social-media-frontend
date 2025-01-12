@@ -1,5 +1,10 @@
 import type { User, Post } from "./definitions";
 
+export interface LoginProp {
+    username: string,
+    password: string,
+}
+
 export interface UserProp {
     username: string | null,
     password: string | null,

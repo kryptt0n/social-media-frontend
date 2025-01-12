@@ -1,6 +1,7 @@
 import axios from "axios";
-import type { User, Post, Comment, Profile, Follow, Like, Notification } from "./definitions";
-import { CommentProp, LikeProp, PostProp, UserProp } from "./propinterfaces";
+import type { Post, Comment, Profile } from "./definitions";
+import { CommentProp, LikeProp, LoginProp, PostProp, UserProp } from "./propinterfaces";
+import { getCookie, setCookie } from 'typescript-cookie'
 
 export const domain = 'http://localhost:8080';
 
@@ -21,6 +22,23 @@ export async function register(formData: UserProp): Promise<void> {
     }
 }
 
+export async function login(formData: LoginProp): Promise<any> {
+    try {
+        const response = await axios.post(`${domain}/login`,
+            formData,
+            {
+                headers: {
+                    "Accept": "*/*",
+                    "Content-Type": "application/json",
+                },
+            },
+        );
+        return response.data;
+    } catch (error: any) {
+        throw new Error(error.message);
+    }
+}
+
 export async function getUser(username: string): Promise<Profile> {
     try {
         const response = await axios.get(`${domain}/users/${username}`,
@@ -28,7 +46,7 @@ export async function getUser(username: string): Promise<Profile> {
                 headers: {
                     "Accept": "*/*",
                     "Content-Type": "application/json",
-                    "Authorization": `Basic ${btoa(`${sessionStorage.getItem("curUn")}:${sessionStorage.getItem("curPw")}`)}`,
+                    "Authorization": `Bearer ${getCookie('token')}`,
                 },
             },
         );
@@ -47,7 +65,7 @@ export async function getUserPosts(username: string): Promise<Post[]> {
                 headers: {
                     "Accept": "*/*",
                     "Content-Type": "application/json",
-                    "Authorization": `Basic ${btoa(`${sessionStorage.getItem("curUn")}:${sessionStorage.getItem("curPw")}`)}`,
+                    "Authorization": `Bearer ${getCookie('token')}`,
                 },
             },
         );
@@ -64,7 +82,7 @@ export async function getAllPosts(): Promise<Post[]> {
                 headers: {
                     "Accept": "*/*",
                     "Content-Type": "application/json",
-                    "Authorization": `Basic ${btoa(`${sessionStorage.getItem("curUn")}:${sessionStorage.getItem("curPw")}`)}`,
+                    "Authorization": `Bearer ${getCookie('token')}`,
                 },
             },
         );
@@ -81,7 +99,7 @@ export async function getFollowedPosts(): Promise<Post[]> {
                 headers: {
                     "Accept": "*/*",
                     "Content-Type": "application/json",
-                    "Authorization": `Basic ${btoa(`${sessionStorage.getItem("curUn")}:${sessionStorage.getItem("curPw")}`)}`,
+                    "Authorization": `Bearer ${getCookie('token')}`,
                 },
             },
         );
@@ -99,7 +117,7 @@ export async function createPost(formData: PostProp): Promise<void> {
                 headers: {
                     "Accept": "*/*",
                     "Content-Type": "application/json",
-                    "Authorization": `Basic ${btoa(`${sessionStorage.getItem("curUn")}:${sessionStorage.getItem("curPw")}`)}`,
+                    "Authorization": `Bearer ${getCookie('token')}`,
                 },
             },
         );
@@ -116,7 +134,7 @@ export async function updatePost(postId: number, formData: Post): Promise<void> 
                 headers: {
                     "Accept": "*/*",
                     "Content-Type": "application/json",
-                    "Authorization": `Basic ${btoa(`${sessionStorage.getItem("curUn")}:${sessionStorage.getItem("curPw")}`)}`,
+                    "Authorization": `Bearer ${getCookie('token')}`,
                 },
             },
         );
@@ -132,7 +150,7 @@ export async function deletePost(postId: number): Promise<void> {
                 headers: {
                     "Accept": "*/*",
                     "Content-Type": "application/json",
-                    "Authorization": `Basic ${btoa(`${sessionStorage.getItem("curUn")}:${sessionStorage.getItem("curPw")}`)}`,
+                    "Authorization": `Bearer ${getCookie('token')}`,
                 },
             },
         );
@@ -149,7 +167,7 @@ export async function getCommentsForPost(postId: number): Promise<Comment[]> {
                 headers: {
                     "Accept": "*/*",
                     "Content-Type": "application/json",
-                    "Authorization": `Basic ${btoa(`${sessionStorage.getItem("curUn")}:${sessionStorage.getItem("curPw")}`)}`,
+                    "Authorization": `Bearer ${getCookie('token')}`,
                 },
             },
         );
@@ -167,7 +185,7 @@ export async function createComment(formData: CommentProp): Promise<void> {
                 headers: {
                     "Accept": "*/*",
                     "Content-Type": "application/json",
-                    "Authorization": `Basic ${btoa(`${sessionStorage.getItem("curUn")}:${sessionStorage.getItem("curPw")}`)}`,
+                    "Authorization": `Bearer ${getCookie('token')}`,
                 },
             },
         );
@@ -183,7 +201,7 @@ export async function deleteComment(commentId: number): Promise<void> {
                 headers: {
                     "Accept": "*/*",
                     "Content-Type": "application/json",
-                    "Authorization": `Basic ${btoa(`${sessionStorage.getItem("curUn")}:${sessionStorage.getItem("curPw")}`)}`,
+                    "Authorization": `Bearer ${getCookie('token')}`,
                 },
             },
         );
@@ -200,7 +218,7 @@ export async function getLikeCount(postId: number): Promise<number> {
                 headers: {
                     "Accept": "*/*",
                     "Content-Type": "application/json",
-                    "Authorization": `Basic ${btoa(`${sessionStorage.getItem("curUn")}:${sessionStorage.getItem("curPw")}`)}`,
+                    "Authorization": `Bearer ${getCookie('token')}`,
                 },
             },
         );
@@ -218,7 +236,7 @@ export async function createLike(formData: LikeProp): Promise<void> {
                 headers: {
                     "Accept": "*/*",
                     "Content-Type": "application/json",
-                    "Authorization": `Basic ${btoa(`${sessionStorage.getItem("curUn")}:${sessionStorage.getItem("curPw")}`)}`,
+                    "Authorization": `Bearer ${getCookie('token')}`,
                 },
             },
         );
@@ -234,7 +252,7 @@ export async function deleteLike(formData: LikeProp): Promise<void> {
                 headers: {
                     "Accept": "*/*",
                     "Content-Type": "application/json",
-                    "Authorization": `Basic ${btoa(`${sessionStorage.getItem("curUn")}:${sessionStorage.getItem("curPw")}`)}`,
+                    "Authorization": `Bearer ${getCookie('token')}`,
                 },
                 data: formData,
             },
@@ -253,7 +271,7 @@ export async function followUser(username: string): Promise<void> {
                 headers: {
                     "Accept": "*/*",
                     "Content-Type": "application/json",
-                    "Authorization": `Basic ${btoa(`${sessionStorage.getItem("curUn")}:${sessionStorage.getItem("curPw")}`)}`,
+                    "Authorization": `Bearer ${getCookie('token')}`,
                 },
             },
         );
@@ -269,7 +287,7 @@ export async function unfollowUser(username: string): Promise<void> {
                 headers: {
                     "Accept": "*/*",
                     "Content-Type": "application/json",
-                    "Authorization": `Basic ${btoa(`${sessionStorage.getItem("curUn")}:${sessionStorage.getItem("curPw")}`)}`,
+                    "Authorization": `Bearer ${getCookie('token')}`,
                 },
             },
         );
@@ -285,7 +303,7 @@ export async function getFollowers(username: string | null): Promise<Profile[]> 
                 headers: {
                     "Accept": "*/*",
                     "Content-Type": "application/json",
-                    "Authorization": `Basic ${btoa(`${sessionStorage.getItem("curUn")}:${sessionStorage.getItem("curPw")}`)}`,
+                    "Authorization": `Bearer ${getCookie('token')}`,
                 },
             },
         );
@@ -302,7 +320,7 @@ export async function getFollowed(username: string | null): Promise<Profile[]> {
                 headers: {
                     "Accept": "*/*",
                     "Content-Type": "application/json",
-                    "Authorization": `Basic ${btoa(`${sessionStorage.getItem("curUn")}:${sessionStorage.getItem("curPw")}`)}`,
+                    "Authorization": `Bearer ${getCookie('token')}`,
                 },
             },
         );
@@ -312,7 +330,7 @@ export async function getFollowed(username: string | null): Promise<Profile[]> {
     }
 }
 
-export async function followSelf(username: string, authHeader: string): Promise<void> {
+export async function followSelf(username: string): Promise<void> {
     try {
         await axios.post(`${domain}/follows/${username}`,
             {},
@@ -320,7 +338,7 @@ export async function followSelf(username: string, authHeader: string): Promise<
                 headers: {
                     "Accept": "*/*",
                     "Content-Type": "application/json",
-                    "Authorization": authHeader,
+                    "Authorization": `Bearer ${getCookie('token')}`,
                 },
             },
         );
