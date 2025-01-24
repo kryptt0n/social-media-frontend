@@ -31,7 +31,7 @@ export default function Login() {
                 setError("Incorrect credentials 2");
             }
         } catch (error: any) {
-            console.error("Error during login:", error);
+            console.error("Error during login:", error.message);
             setError("Incorrect credentials 3");
         }
     }
