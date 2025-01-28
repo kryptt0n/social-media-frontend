@@ -80,8 +80,9 @@ function devServerPlugin(): Plugin {
 			return {
 				server: {
 					host: HOST || "0.0.0.0",
-					port: parseInt(PORT || "3000", 10),
-					open: true,
+					// port: parseInt(PORT || "3000", 80),
+					port: 3000,
+					open: false,
 					...(https &&
 						SSL_CRT_FILE &&
 						SSL_KEY_FILE && {

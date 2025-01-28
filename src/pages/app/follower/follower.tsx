@@ -56,9 +56,9 @@ export default function Follower() {
                                 className="space-x-6 flex"
                                 onClick={() => navigate(`/profile/${follower.username}`)}
                             >
-                                {follower.profilePicture ? (
+                                {follower.imageUrl ? (
                                     <img
-                                        src={"data:image/jpeg;base64," + follower.profilePicture}
+                                        src={follower.imageUrl.toString()}
                                         alt={`${follower.username}'s profile`}
                                         className="w-10 h-10 rounded-full object-cover"
                                     />

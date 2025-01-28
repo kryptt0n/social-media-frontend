@@ -6,14 +6,14 @@ import { getCookie, setCookie } from 'typescript-cookie'
 export const domain = 'http://localhost:8080';
 
 // Auth
-export async function register(formData: UserProp): Promise<void> {
+export async function register(formData: FormData): Promise<void> {
     try {
         await axios.post(`${domain}/register`,
             formData,
             {
                 headers: {
                     "Accept": "*/*",
-                    "Content-Type": "application/json",
+                    "Content-Type": "multipart/form-data",
                 },
             },
         );
@@ -116,7 +116,7 @@ export async function createPost(formData: PostProp): Promise<void> {
             {
                 headers: {
                     "Accept": "*/*",
-                    "Content-Type": "application/json",
+                    "Content-Type": "multipart/form-data",
                     "Authorization": `Bearer ${getCookie('token')}`,
                 },
             },

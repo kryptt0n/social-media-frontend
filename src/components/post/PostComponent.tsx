@@ -74,9 +74,9 @@ export default function PostItem({ postData, allowDelete, onPostDeleted }: PostI
       <div
         className="post-header flex items-center space-x-3 mb-2 cursor-pointer"
         onClick={() => navigate(`/profile/${postData.user.username}`)}>
-        {postData.user.profilePicture ? (
+        {postData.user.imageUrl ? (
           <img
-            src={"data:image/jpeg;base64," + postData.user.profilePicture}
+            src={postData.user.imageUrl.toString()}
             alt={`${postData.user.username}'s profile`}
             className="w-10 h-10 rounded-full object-cover"
           />
@@ -93,9 +93,9 @@ export default function PostItem({ postData, allowDelete, onPostDeleted }: PostI
 
       <div className="post-content flex flex-col space-y-2 mb-2 pl-14">
         <p className="post-content text-gray-800 ">{postData.content}</p>
-        {postData.image && (
+        {postData.imageUrl && (
           <img
-            src={"data:image/jpeg;base64," + postData.image}
+            src={postData.imageUrl.toString()}
             alt="Post content"
             className="post-image w-full h-auto rounded-lg"
           />

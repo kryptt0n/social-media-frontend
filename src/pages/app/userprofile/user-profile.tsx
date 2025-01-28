@@ -13,7 +13,7 @@ export default function UserProfile() {
     const [user, setUser] = useState<Profile>(
         {
             username: "",
-            profilePicture: null,
+            imageUrl: null,
             bio: "",
             isFollowed: false,
             followersCount: 0,
@@ -71,9 +71,9 @@ export default function UserProfile() {
     return (
         <div className="user-profile-container max-w-4xl mx-auto space-y-6">
             <div className="user-header flex items-center space-x-6 p-6 border-b-4 rounded-md border-sky-600 bg-stone-200">
-                {user.profilePicture ? (
+                {user.imageUrl ? (
                     <img
-                        src={"data:image/jpeg;base64," + user.profilePicture}
+                        src={user.imageUrl.toString()}
                         alt={`${user.username}'s profile`}
                         className="w-24 h-24 rounded-full object-cover"
                     />

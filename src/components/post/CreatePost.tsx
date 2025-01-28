@@ -11,38 +11,28 @@ interface CreatePostProps {
 
 export default function CreatePost({ onPostCreated }: CreatePostProps) {
     const [content, setContent] = useState<string>("");
-    const [image, setImage] = useState<Uint8Array | null>(null);
+    const [image, setImage] = useState<File | null>(null);
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
     const [hasImage, setHasImage] = useState<boolean>(false);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [isFileValid, setIsFileValid] = useState<boolean>(true);
-
-    const [postData, setPostData] = useState<PostProp>({
-        "content": null,
-        "image": null,
-    });
 
     const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files[0]) {
             const file = e.target.files[0];
 
             const allowedExtensions = ["jpg", "jpeg", "png"];
-            const maxFileSize = 50 * 1024;
             const fileExtension = file.name.split(".").pop()?.toLowerCase();
             if (!allowedExtensions.includes(fileExtension || "")) {
                 setErrorMessage("Invalid file type. Please upload an image file (jpg, jpeg, png).");
                 setIsFileValid(false);
                 return;
             }
-            if (file.size > maxFileSize) {
-                setErrorMessage("File size too large. Please upload a smaller file.");
-                setIsFileValid(false);
-                return;
-            }
+
 
             try {
                 const byteArray = await imageToArray(file);
-                setImage(byteArray);
+                setImage(file);
                 setPreviewUrl(URL.createObjectURL(file));
                 setHasImage(true);
                 setErrorMessage(null);
@@ -64,14 +54,13 @@ export default function CreatePost({ onPostCreated }: CreatePostProps) {
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        const payload = {
-            ...postData,
-            "content": content,
-            "image": image ? Array.from(image as Uint8Array) : null,
+        const formData: PostProp = {
+            post: new Blob([JSON.stringify({ content })], { type: "application/json" }),
+            file: image,
         };
 
         try {
-            await createPost(payload);
+            await createPost(formData);
             console.log("Post created successfully!");
 
             setContent("");
@@ -80,7 +69,6 @@ export default function CreatePost({ onPostCreated }: CreatePostProps) {
             setHasImage(false);
             setErrorMessage(null);
 
-            // Call the onPostCreated callback
             onPostCreated();
         } catch (error) {
             console.error("Error creating post:", error);

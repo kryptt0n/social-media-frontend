@@ -2,7 +2,7 @@ export type User = {
     id: number,
     username: string,
     password: string,
-    profilePicture: Uint8Array | null,
+    imageUrl: String | null,
     bio: string | null,
     createdAt: string,
     roles: string;
@@ -10,7 +10,7 @@ export type User = {
 
 export type Profile = {
     username: string,
-    profilePicture: Uint8Array | null,
+    imageUrl: String | null,
     bio: string,
     isFollowed: boolean,
     followersCount: number,
@@ -20,10 +20,10 @@ export type Profile = {
 export type Post = {
     id: number,
     content: string | null,
-    image: Uint8Array | null,
+    imageUrl: String | null,
     user: {
         username: string,
-        profilePicture: Uint8Array | null,
+        imageUrl: String | null,
         bio: string | null,
         isFollowed: boolean,
     },

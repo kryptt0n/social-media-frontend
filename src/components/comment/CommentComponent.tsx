@@ -28,9 +28,9 @@ export default function CommentItem({ commentData, onCommentDeleted }: CommentIt
             >
 
 
-                {commentData.user.profilePicture ? (
+                {commentData.user.imageUrl ? (
                     <img
-                        src={"data:image/jpeg;base64," + commentData.user.profilePicture}
+                        src={commentData.user.imageUrl.toString()}
                         alt={`${commentData.user.username}'s profile`}
                         className="w-8 h-8 rounded-full object-cover"
                         onClick={() => navigate(`/profile/${commentData.user.username}`)}

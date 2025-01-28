@@ -56,9 +56,9 @@ export default function Following() {
                                 className="space-x-6 flex"
                                 onClick={() => navigate(`/profile/${following.username}`)}
                             >
-                                {following.profilePicture ? (
+                                {following.imageUrl ? (
                                     <img
-                                        src={"data:image/jpeg;base64," + following.profilePicture}
+                                        src={following.imageUrl.toString()}
                                         alt={`${following.username}'s profile`}
                                         className="w-10 h-10 rounded-full object-cover"
                                     />

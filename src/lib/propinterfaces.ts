@@ -6,15 +6,17 @@ export interface LoginProp {
 }
 
 export interface UserProp {
-    username: string | null,
-    password: string | null,
-    profilePicture: Uint8Array | number[] | null,
-    bio: string | null,
+    user: {
+        username: string | null,
+        password: string | null,
+        bio: string | null,
+    },
+    file: File | null,
 }
 
 export interface PostProp {
-    content: string | null,
-    image: Uint8Array | number[] | null,
+    post: Blob;
+    file: File | null;
 }
 
 export interface CommentProp {

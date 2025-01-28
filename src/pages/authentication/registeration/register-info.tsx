@@ -2,13 +2,12 @@ import { useState } from "react";
 import { Button } from "react-bootstrap";
 import { Form } from "react-bootstrap";
 import { UserProp } from "../../../lib/propinterfaces";
-import { imageToArray } from "../../../lib/utils";
 import { register } from "../../../lib/actions";
 import { GrUser } from "react-icons/gr";
 import { useNavigate } from "react-router-dom";
 
 export default function RegisterInfo() {
-    const [image, setImage] = useState<Uint8Array | null>(null);
+    const [image, setImage] = useState<File | null>(null);
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
     const [username, setUsername] = useState<string | null>(null);
     const [password, setPassword] = useState<string | null>(null);
@@ -18,34 +17,20 @@ export default function RegisterInfo() {
 
     const navigate = useNavigate();
 
-    const [userData, setUserData] = useState<UserProp>({
-        "username": null,
-        "password": null,
-        "profilePicture": null,
-        "bio": null,
-    });
-
     const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files[0]) {
             const file = e.target.files[0];
 
             const allowedExtensions = ["jpg", "jpeg", "png"];
-            const maxFileSize = 50 * 1024;
             const fileExtension = file.name.split(".").pop()?.toLowerCase();
             if (!allowedExtensions.includes(fileExtension || "")) {
                 setErrorMessage("Invalid file type. Please upload an image file (jpg, jpeg, png).");
                 setIsFileValid(false);
                 return;
             }
-            if (file.size > maxFileSize) {
-                setErrorMessage("File size too large. Please upload a smaller file.");
-                setIsFileValid(false);
-                return;
-            }
 
             try {
-                const byteArray = await imageToArray(file);
-                setImage(byteArray);
+                setImage(file);
                 setPreviewUrl(URL.createObjectURL(file));
                 setErrorMessage(null);
                 setIsFileValid(true);
@@ -65,16 +50,19 @@ export default function RegisterInfo() {
             return;
         }
 
-        const payload = {
-            ...userData,
-            "username": username,
-            "password": password,
-            "profilePicture": image ? Array.from(image as Uint8Array) : null,
-            "bio": bio,
+        const formData = new FormData();
+        formData.append("user", new Blob([JSON.stringify({
+            username: username,
+            password: password,
+            bio: bio,
+        })], { type: "application/json" }));
+
+        if (image) {
+            formData.append("file", image);
         }
 
         try {
-            await register(payload);
+            await register(formData);
             console.log("Registered successfully!");
 
             navigate('/register/fin');
@@ -82,6 +70,7 @@ export default function RegisterInfo() {
             console.error("Error creating post:", error);
         }
     }
+
     return (
         <>
             <Form className="w-96" onSubmit={handleSubmit}>
