@@ -21,6 +21,11 @@ import ProfileEdit from './pages/app/userprofile/profile-edit';
 import AuthLayout from './pages/authentication/AuthLayout';
 import Layout from './pages/app/layout';
 
+import AdminLayout from "./pages/admin/AdminLayout";
+import Dashboard from "./pages/admin/Dashboard";
+import UsersList from "./pages/admin/UserList";
+import ReportedPosts from "./pages/admin/ReportedPost";
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -83,6 +88,16 @@ const router = createBrowserRouter([
       }
     ],
   },
+  {
+    path: "/admin",
+    element: <AdminLayout />,
+    children: [
+      { path: "dashboard", element: <Dashboard /> },
+      { path: "users", element: <UsersList /> },
+      { path: "reported-posts", element: <ReportedPosts /> },
+    ],
+  },
+  
 ]);
 
 export default function App() {

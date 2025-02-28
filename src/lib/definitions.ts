@@ -64,3 +64,11 @@ export type Notification = {
 }
 
 export type NotificationType = 'LIKE' | 'COMMENT' | 'FOLLOW';
+
+export type DashboardStats = {
+    totalUsers: number;
+    totalPosts: number;
+    reportedPosts: number;
+    dailyPosts: { date: string; count: number }[];
+    accountTypes: { public: number; private: number };
+  }
