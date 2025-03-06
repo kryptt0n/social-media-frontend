@@ -1,5 +1,7 @@
+import axios from "axios";
 import axiosInstance from "./axiosInstance";
-import type { Post, Comment, Profile } from "./definitions";
+import {domain} from "./axiosInstance"
+import type { Post, Comment, Profile, User, DashboardStats } from "./definitions";
 import { CommentProp, LikeProp, LoginProp, PostProp, UserProp } from "./propinterfaces";
 import { getCookie } from 'typescript-cookie'
 
@@ -341,6 +343,53 @@ export async function followSelf(username: string): Promise<void> {
                 },
             },
         );
+    } catch (error: any) {
+        throw new Error(error.message);
+    }
+
+    
+}
+
+export async function getAllUsers(): Promise<User[]> {
+    try {
+        const response = await axios.get(`${domain}/api/admin/users`, {
+            headers: {
+                "Accept": "*/*",
+                "Content-Type": "application/json",
+                // "Authorization": `Bearer ${getCookie('token')}`,
+            },
+        });
+        return response.data;
+    } catch (error: any) {
+        throw new Error(error.message);
+    }
+}
+
+export async function getAllReportedPost(): Promise<Post[]> {
+    try {
+        const response = await axios.get(`${domain}/api/admin/posts/reported`, {
+            headers: {
+                "Accept": "*/*",
+                "Content-Type": "application/json",
+                // "Authorization": `Bearer ${getCookie('token')}`,
+            },
+        });
+        return response.data;
+    } catch (error: any) {
+        throw new Error(error.message);
+    }
+}
+
+export async function getStats(): Promise<DashboardStats> {
+    try {
+        const response = await axios.get(`${domain}/api/admin/stats`, {
+            headers: {
+                "Accept": "*/*",
+                "Content-Type": "application/json",
+                // "Authorization": `Bearer ${getCookie('token')}`,
+            },
+        });
+        return response.data;
     } catch (error: any) {
         throw new Error(error.message);
     }

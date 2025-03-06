@@ -3,31 +3,24 @@ import ChartComponent from "../../components/admin/Chart";
 import PieChartComponent from "../../components/admin/PieChart";
 import { DashboardStats } from "../../lib/definitions";
 import { Box, Card, CardContent, Typography, Stack } from "@mui/material";
+import { getStats } from "../../lib/actions";
 
 
   const Dashboard = () => {
     const [dashboardStats, setDashboardStats] = useState<DashboardStats | null>(null);
   
-    useEffect(() => {
-      // Simulated API response (Dummy Data)
-      const dummyData: DashboardStats = {
-        totalUsers: 1200,
-        totalPosts: 5400,
-        reportedPosts: 150,
-        dailyPosts: [
-          { date: "2024-02-20", count: 120 },
-          { date: "2024-02-21", count: 140 },
-          { date: "2024-02-22", count: 180 },
-          { date: "2024-02-23", count: 200 },
-          { date: "2024-02-24", count: 250 },
-        ],
-        accountTypes: { public: 900, private: 300 },
-      };
+      useEffect(() => {
+        getStats()
+          .then(response => {
+            console.log("API Response:", response);
+            setTimeout(() => {
+              setDashboardStats(response);
+            }, 1000); 
+          })
+          .catch(error => console.error("Error fetching users:", error));
   
       // Simulate API delay
-      setTimeout(() => {
-        setDashboardStats(dummyData);
-      }, 1000); // Simulating a 1-second delay
+     // Simulating a 1-second delay
     }, []);
   
   if (!dashboardStats) return <p>Loading...</p>;

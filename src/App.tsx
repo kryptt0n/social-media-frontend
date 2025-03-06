@@ -45,26 +45,32 @@ function AppRoutes() {
       ],
     },
     {
-      path: "/",
-      element: <Layout />,
+      element: <ProtectedRoute />,
       children: [
-        { path: "home", element: <ProtectedRoute ><Home /></ProtectedRoute> },
-        { path: "explore", element: <ProtectedRoute ><Explore /></ProtectedRoute> },
-        { path: "follower/:username", element: <ProtectedRoute ><Follower /></ProtectedRoute> },
-        { path: "following/:username", element: <ProtectedRoute ><Following /></ProtectedRoute> },
-        { path: "profile/:username", element: <ProtectedRoute ><UserProfile /></ProtectedRoute> },
-        { path: "profile-edit", element: <ProtectedRoute><ProfileEdit /></ProtectedRoute> },
-      ],
-    },
-    {
-      path: "/admin",
-      element: <AdminLayout />,
-      children: [
-        { path: "dashboard", element: <Dashboard /> },
-        { path: "users", element: <UsersList /> },
-        { path: "reported-posts", element: <ReportedPosts /> },
-      ],
-    },
+        {
+          path: "/",
+          element: <Layout />,
+          children: [
+            { path: "home", element: <Home /> },
+            { path: "explore", element: <Explore /> },
+            { path: "follower/:username", element: <Follower /> },
+            { path: "following/:username", element: <Following /> },
+            { path: "profile/:username", element: <UserProfile /> },
+            { path: "profile-edit", element: <ProfileEdit /> },
+          ],
+        },
+        {
+          path: "/admin",
+          element: <AdminLayout />,
+          children: [
+            { path: "dashboard", element: <Dashboard /> },
+            { path: "users", element: <UsersList /> },
+            { path: "reported-posts", element: <ReportedPosts /> },
+          ],
+        },
+      ]
+    }
+
   ]);
 
   return <RouterProvider router={router} />;
