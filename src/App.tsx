@@ -85,6 +85,10 @@ const router = createBrowserRouter([
       {
         path: "profile/:username",
         element: <UserProfile />
+      },
+      {
+        path: "profile-edit",
+        element: <ProfileEdit />
       }
     ],
   },

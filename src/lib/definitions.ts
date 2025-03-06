@@ -6,6 +6,8 @@ export type User = {
     bio: string | null,
     createdAt: string,
     roles: string;
+    isActive: boolean,
+    isPublic: boolean,
 }
 
 export type Profile = {
@@ -15,6 +17,8 @@ export type Profile = {
     isFollowed: boolean,
     followersCount: number,
     followingCount: number,
+    isActive: boolean,
+    isPublic: boolean,
 }
 
 export type Post = {
@@ -71,4 +75,4 @@ export type DashboardStats = {
     reportedPosts: number;
     dailyPosts: { date: string; count: number }[];
     accountTypes: { public: number; private: number };
-  }
+}

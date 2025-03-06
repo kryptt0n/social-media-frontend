@@ -43,7 +43,7 @@ export default function Explore() {
     };
 
     return (
-        <>
+        <div className="max-w-3xl mx-auto space-y-6">
             <div>
                 <Form className="flex gap-2" onSubmit={handleSearch}>
                     <Form.Control
@@ -69,6 +69,6 @@ export default function Explore() {
                     </div>
                 )}
             </div>
-        </>
+        </div>
     );
 }

@@ -46,7 +46,7 @@ export default function Following() {
     };
 
     return (
-        <>
+        <div className="max-w-3xl mx-auto space-y-6">
             <h1 className="border-b-2 text-3xl items-center border-sky-600 mb-2 pb-2">{username}'s Following</h1>
             <div className="space-y-1">
                 {followingList.length > 0 ? (
@@ -93,6 +93,6 @@ export default function Following() {
                     </div>
                 )}
             </div>
-        </>
+        </div>
     );
 }

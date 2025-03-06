@@ -347,3 +347,104 @@ export async function followSelf(username: string): Promise<void> {
     }
 }
 
+// profile management
+export async function deactivateUser(username: string): Promise<void> {
+    try {
+        await axios.post(`${domain}/deactivate/${username}`,
+            {
+                headers: {
+                    "Accept": "*/*",
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${getCookie('token')}`,
+                },
+            }
+        );
+    } catch (error: any) {
+        throw new Error(error.message);
+    }
+}
+
+export async function recoverUser(username: string): Promise<void> {
+    try {
+        await axios.post(`${domain}/recovery/${username}`,
+            {
+                headers: {
+                    "Accept": "*/*",
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${getCookie('token')}`,
+                },
+            }
+        );
+    } catch (error: any) {
+        throw new Error(error.message);
+    }
+}
+
+export async function setPublic(): Promise<void> {
+    try {
+        await axios.post(`${domain}/set-public`,
+            {},
+            {
+                headers: {
+                    "Accept": "*/*",
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${getCookie('token')}`,
+                },
+            }
+        );
+    } catch (error: any) {
+        throw new Error(error.message);
+    }
+}
+
+export async function setPrivate(): Promise<void> {
+    try {
+        await axios.post(`${domain}/set-private`,
+            {},
+            {
+                headers: {
+                    "Accept": "*/*",
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${getCookie('token')}`,
+                },
+            }
+        );
+    } catch (error: any) {
+        throw new Error(error.message);
+    }
+}
+
+export async function deleteUser(): Promise<void> {
+    try {
+        await axios.post(`${domain}/delete-user`,
+            {},
+            {
+                headers: {
+                    "Accept": "*/*",
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${getCookie('token')}`,
+                },
+            }
+        );
+    } catch (error: any) {
+        throw new Error(error.message);
+    }
+}
+
+export async function updateUser(username: string, formData: FormData): Promise<void> {
+    try {
+        await axios.patch(`${domain}/update-profile/${username}`,
+            formData,
+            {
+                headers: {
+                    "Accept": "*/*",
+                    "Content-Type": "multipart/form-data",
+                    "Authorization": `Bearer ${getCookie('token')}`,
+                },
+            }
+        );
+
+    } catch (error: any) {
+        throw new Error(error.message);
+    }
+}
