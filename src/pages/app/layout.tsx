@@ -3,15 +3,17 @@ import Nav from 'react-bootstrap/Nav';
 import { GrHome, GrSearch, GrNodes, GrUser, GrStatusGood, GrLogout } from "react-icons/gr";
 import { useNavigate } from "react-router-dom";
 import { removeCookie } from 'typescript-cookie';
+import { useAuth } from "../../lib/authContext";
 
 export default function Layout() {
     const navigate = useNavigate();
+    const auth = useAuth();
+
     const handleLogout = () => {
-        sessionStorage.clear();
-        removeCookie('token');
+        auth.logout();
         navigate("/");
     };
-
+    
     const links = [
         {
             href: "/home",

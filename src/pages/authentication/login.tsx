@@ -1,14 +1,12 @@
-import { Button } from "react-bootstrap";
-import { Form } from "react-bootstrap";
+import { Button, Form } from "react-bootstrap";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { login } from "../../lib/actions";
-import { setCookie } from 'typescript-cookie';
+import { useAuth } from "../../lib/authContext";
 
 export default function Login() {
     const [error, setError] = useState<string | null>(null);
     const navigate = useNavigate();
-
+    const auth = useAuth();
     const [userData, setUserData] = useState(
         {
             "username": "",
@@ -19,22 +17,14 @@ export default function Login() {
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        try {
-            const response = await login(userData);
+        const response = await auth.login(userData);
 
-            if (response) {
-                const token = response;
-                setCookie('token', token, { expires: 1 });
-                sessionStorage.setItem("curUn", userData.username);
-                navigate("/home");
-            } else {
-                setError("Incorrect credentials 2");
-            }
-        } catch (error: any) {
-            console.error("Error during login:", error.message);
-            setError("Incorrect credentials 3");
+        if (response) {
+            navigate("/home");
+        } else {
+            setError("Incorrect credentials");
         }
-    }
+    };
 
     return (
         <>

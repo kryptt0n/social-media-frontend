@@ -1,4 +1,7 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { AuthProvider, useAuth } from './lib/authContext';
+import ProtectedRoute from './lib/protectedRoute';
+
 import ErrorPage from './error-page';
 
 // User auth pages
@@ -26,86 +29,48 @@ import Dashboard from "./pages/admin/Dashboard";
 import UsersList from "./pages/admin/UserList";
 import ReportedPosts from "./pages/admin/ReportedPost";
 
-const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <AuthLayout />,
-    errorElement: <ErrorPage />,
-    children: [
-      {
-        index: true,
-        element: <Login />,
-      },
-      {
-        path: "register/info",
-        element: <RegisterInfo />,
-      },
-      {
-        path: "register/fin",
-        element: <RegisterFinish />,
-      },
-      // {
-      //   path: "reset/info",
-      //   element: <ResetInfo />,
-      // },
-      // {
-      //   path: "reset/newpassword",
-      //   element: <ResetNewPassword />,
-      // },
-      // {
-      //   path: "reset/fin",
-      //   element: <ResetFinish />,
-      // },
-    ]
-  },
-  {
-    path: "/",
-    element: <Layout />,
-    children: [
-      {
-        path: "home",
-        element: <Home />
-      },
-      {
-        path: "explore",
-        element: <Explore />
-      },
-      {
-        path: "follower/:username",
-        element: <Follower />
-      },
-      {
-        path: "following/:username",
-        element: <Following />
-      },
-      // {
-      //   path: "notification",
-      //   element: <Notification />
-      // },
-      {
-        path: "profile/:username",
-        element: <UserProfile />
-      },
-      {
-        path: "profile-edit",
-        element: <ProfileEdit />
-      }
-    ],
-  },
-  {
-    path: "/admin",
-    element: <AdminLayout />,
-    children: [
-      { path: "dashboard", element: <Dashboard /> },
-      { path: "users", element: <UsersList /> },
-      { path: "reported-posts", element: <ReportedPosts /> },
-    ],
-  },
-  
-]);
+function AppRoutes() {
+  const router = createBrowserRouter([
+    {
+      path: "/",
+      element: <AuthLayout />,
+      errorElement: <ErrorPage />,
+      children: [
+        { index: true, element: <Login /> },
+        { path: "register/info", element: <RegisterInfo /> },
+        { path: "register/fin", element: <RegisterFinish /> },
+      ],
+    },
+    {
+      path: "/",
+      element: <ProtectedRoute><Layout /></ProtectedRoute>,
+      children: [
+        { path: "home", element: <ProtectedRoute ><Home /></ProtectedRoute> },
+        { path: "explore", element: <ProtectedRoute ><Explore /></ProtectedRoute> },
+        { path: "follower/:username", element: <ProtectedRoute ><Follower /></ProtectedRoute> },
+        { path: "following/:username", element: <ProtectedRoute ><Following /></ProtectedRoute> },
+        { path: "profile/:username", element: <ProtectedRoute ><UserProfile /></ProtectedRoute> },
+        { path: "profile-edit", element: <ProtectedRoute><ProfileEdit /></ProtectedRoute> },
+      ],
+    },
+    {
+      path: "/admin",
+      element: <AdminLayout />,
+      children: [
+        { path: "dashboard", element: <Dashboard /> },
+        { path: "users", element: <UsersList /> },
+        { path: "reported-posts", element: <ReportedPosts /> },
+      ],
+    },
+  ]);
+
+  return <RouterProvider router={router} />;
+}
 
 export default function App() {
   return (
-    <RouterProvider router={router} />
+    <AuthProvider>
+      <AppRoutes />
+    </AuthProvider>
   );
 }
