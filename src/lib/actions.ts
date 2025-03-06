@@ -1,14 +1,15 @@
 import axios from "axios";
+import axiosInstance from "./axiosInstance";
+import {domain} from "./axiosInstance"
 import type { Post, Comment, Profile, User, DashboardStats } from "./definitions";
 import { CommentProp, LikeProp, LoginProp, PostProp, UserProp } from "./propinterfaces";
-import { getCookie, setCookie } from 'typescript-cookie'
+import { getCookie } from 'typescript-cookie'
 
-export const domain = 'http://localhost:8080';
 
 // Auth
 export async function register(formData: FormData): Promise<void> {
     try {
-        await axios.post(`${domain}/register`,
+        await axiosInstance.post(`/register`,
             formData,
             {
                 headers: {
@@ -22,9 +23,9 @@ export async function register(formData: FormData): Promise<void> {
     }
 }
 
-export async function login(formData: LoginProp): Promise<any> {
+export async function login(formData: LoginProp): Promise<string> {
     try {
-        const response = await axios.post(`${domain}/login`,
+        const response = await axiosInstance.post(`/login`,
             formData,
             {
                 headers: {
@@ -41,7 +42,7 @@ export async function login(formData: LoginProp): Promise<any> {
 
 export async function getUser(username: string): Promise<Profile> {
     try {
-        const response = await axios.get(`${domain}/users/${username}`,
+        const response = await axiosInstance.get(`/users/${username}`,
             {
                 headers: {
                     "Accept": "*/*",
@@ -60,7 +61,7 @@ export async function getUser(username: string): Promise<Profile> {
 // Posts
 export async function getUserPosts(username: string): Promise<Post[]> {
     try {
-        const response = await axios.get(`${domain}/posts/user/${username}`,
+        const response = await axiosInstance.get(`/posts/user/${username}`,
             {
                 headers: {
                     "Accept": "*/*",
@@ -77,7 +78,7 @@ export async function getUserPosts(username: string): Promise<Post[]> {
 
 export async function getAllPosts(): Promise<Post[]> {
     try {
-        const response = await axios.get(`${domain}/posts`,
+        const response = await axiosInstance.get(`/posts`,
             {
                 headers: {
                     "Accept": "*/*",
@@ -94,7 +95,7 @@ export async function getAllPosts(): Promise<Post[]> {
 
 export async function getFollowedPosts(): Promise<Post[]> {
     try {
-        const response = await axios.get(`${domain}/posts/followed`,
+        const response = await axiosInstance.get(`/posts/followed`,
             {
                 headers: {
                     "Accept": "*/*",
@@ -111,7 +112,7 @@ export async function getFollowedPosts(): Promise<Post[]> {
 
 export async function createPost(formData: PostProp): Promise<void> {
     try {
-        await axios.post(`${domain}/posts`,
+        await axiosInstance.post(`/posts`,
             formData,
             {
                 headers: {
@@ -128,7 +129,7 @@ export async function createPost(formData: PostProp): Promise<void> {
 
 export async function updatePost(postId: number, formData: Post): Promise<void> {
     try {
-        await axios.put(`${domain}/posts/${postId}`,
+        await axiosInstance.put(`/posts/${postId}`,
             formData,
             {
                 headers: {
@@ -145,7 +146,7 @@ export async function updatePost(postId: number, formData: Post): Promise<void> 
 
 export async function deletePost(postId: number): Promise<void> {
     try {
-        await axios.delete(`${domain}/posts/${postId}`,
+        await axiosInstance.delete(`/posts/${postId}`,
             {
                 headers: {
                     "Accept": "*/*",
@@ -162,7 +163,7 @@ export async function deletePost(postId: number): Promise<void> {
 // Comment
 export async function getCommentsForPost(postId: number): Promise<Comment[]> {
     try {
-        const response = await axios.get(`${domain}/comments/post/${postId}`,
+        const response = await axiosInstance.get(`/comments/post/${postId}`,
             {
                 headers: {
                     "Accept": "*/*",
@@ -179,7 +180,7 @@ export async function getCommentsForPost(postId: number): Promise<Comment[]> {
 
 export async function createComment(formData: CommentProp): Promise<void> {
     try {
-        await axios.post(`${domain}/comments`,
+        await axiosInstance.post(`/comments`,
             formData,
             {
                 headers: {
@@ -196,7 +197,7 @@ export async function createComment(formData: CommentProp): Promise<void> {
 
 export async function deleteComment(commentId: number): Promise<void> {
     try {
-        await axios.delete(`${domain}/comments/${commentId}`,
+        await axiosInstance.delete(`/comments/${commentId}`,
             {
                 headers: {
                     "Accept": "*/*",
@@ -213,7 +214,7 @@ export async function deleteComment(commentId: number): Promise<void> {
 // Like
 export async function getLikeCount(postId: number): Promise<number> {
     try {
-        const response = await axios.get(`${domain}/likes/post/${postId}`,
+        const response = await axiosInstance.get(`/likes/post/${postId}`,
             {
                 headers: {
                     "Accept": "*/*",
@@ -230,7 +231,7 @@ export async function getLikeCount(postId: number): Promise<number> {
 
 export async function createLike(formData: LikeProp): Promise<void> {
     try {
-        await axios.post(`${domain}/likes`,
+        await axiosInstance.post(`/likes`,
             formData,
             {
                 headers: {
@@ -247,7 +248,7 @@ export async function createLike(formData: LikeProp): Promise<void> {
 
 export async function deleteLike(formData: LikeProp): Promise<void> {
     try {
-        await axios.delete(`${domain}/likes`,
+        await axiosInstance.delete(`/likes`,
             {
                 headers: {
                     "Accept": "*/*",
@@ -265,7 +266,7 @@ export async function deleteLike(formData: LikeProp): Promise<void> {
 // Follow
 export async function followUser(username: string): Promise<void> {
     try {
-        await axios.post(`${domain}/follows/${username}`,
+        await axiosInstance.post(`/follows/${username}`,
             {},
             {
                 headers: {
@@ -282,7 +283,7 @@ export async function followUser(username: string): Promise<void> {
 
 export async function unfollowUser(username: string): Promise<void> {
     try {
-        await axios.delete(`${domain}/follows/${username}`,
+        await axiosInstance.delete(`/follows/${username}`,
             {
                 headers: {
                     "Accept": "*/*",
@@ -298,7 +299,7 @@ export async function unfollowUser(username: string): Promise<void> {
 
 export async function getFollowers(username: string | null): Promise<Profile[]> {
     try {
-        const response = await axios.get(`${domain}/follows/followers/${username}`,
+        const response = await axiosInstance.get(`/follows/followers/${username}`,
             {
                 headers: {
                     "Accept": "*/*",
@@ -315,7 +316,7 @@ export async function getFollowers(username: string | null): Promise<Profile[]> 
 
 export async function getFollowed(username: string | null): Promise<Profile[]> {
     try {
-        const response = await axios.get(`${domain}/follows/followed/${username}`,
+        const response = await axiosInstance.get(`/follows/followed/${username}`,
             {
                 headers: {
                     "Accept": "*/*",
@@ -332,7 +333,7 @@ export async function getFollowed(username: string | null): Promise<Profile[]> {
 
 export async function followSelf(username: string): Promise<void> {
     try {
-        await axios.post(`${domain}/follows/${username}`,
+        await axiosInstance.post(`/follows/${username}`,
             {},
             {
                 headers: {
@@ -397,7 +398,8 @@ export async function getStats(): Promise<DashboardStats> {
 // profile management
 export async function deactivateUser(username: string): Promise<void> {
     try {
-        await axios.post(`${domain}/deactivate/${username}`,
+        await axiosInstance.post(`/deactivate/${username}`,
+            {},
             {
                 headers: {
                     "Accept": "*/*",
@@ -411,10 +413,10 @@ export async function deactivateUser(username: string): Promise<void> {
     }
 }
 
-
-export async function recoverUser(username: string): Promise<void> {
+export async function recoverUser(username: string): Promise<string> {
     try {
-        await axios.post(`${domain}/recovery/${username}`,
+        const response = await axiosInstance.post(`/recovery/${username}`,
+            {},
             {
                 headers: {
                     "Accept": "*/*",
@@ -423,6 +425,8 @@ export async function recoverUser(username: string): Promise<void> {
                 },
             }
         );
+        console.log(response);
+        return response.data;
     } catch (error: any) {
         throw new Error(error.message);
     }
@@ -430,7 +434,7 @@ export async function recoverUser(username: string): Promise<void> {
 
 export async function setPublic(): Promise<void> {
     try {
-        await axios.post(`${domain}/set-public`,
+        await axiosInstance.post(`/set-public`,
             {},
             {
                 headers: {
@@ -447,7 +451,7 @@ export async function setPublic(): Promise<void> {
 
 export async function setPrivate(): Promise<void> {
     try {
-        await axios.post(`${domain}/set-private`,
+        await axiosInstance.post(`/set-private`,
             {},
             {
                 headers: {
@@ -464,7 +468,7 @@ export async function setPrivate(): Promise<void> {
 
 export async function deleteUser(): Promise<void> {
     try {
-        await axios.post(`${domain}/delete-user`,
+        await axiosInstance.post(`/delete-user`,
             {},
             {
                 headers: {
@@ -481,7 +485,7 @@ export async function deleteUser(): Promise<void> {
 
 export async function updateUser(username: string, formData: FormData): Promise<void> {
     try {
-        await axios.patch(`${domain}/update-profile/${username}`,
+        await axiosInstance.patch(`/update-profile/${username}`,
             formData,
             {
                 headers: {

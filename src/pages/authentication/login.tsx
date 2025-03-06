@@ -1,14 +1,13 @@
-import { Button } from "react-bootstrap";
-import { Form } from "react-bootstrap";
+import { Button, Form } from "react-bootstrap";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { login } from "../../lib/actions";
-import { setCookie } from 'typescript-cookie';
+import { useAuth } from "../../lib/authContext";
+import { setCookie } from "typescript-cookie";
 
 export default function Login() {
     const [error, setError] = useState<string | null>(null);
     const navigate = useNavigate();
-
+    const auth = useAuth();
     const [userData, setUserData] = useState(
         {
             "username": "",
@@ -19,29 +18,24 @@ export default function Login() {
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        try {
+        if (userData.username == "admin" && userData.password == "adminPass") {
+            navigate("/admin/dashboard");
+            setCookie('token', "admin", { expires: 1 });
+            sessionStorage.setItem("curUn", userData.username);
+        } else {
+            const response = await auth.login(userData);
 
-            if(userData.username == "admin" && userData.password == "adminPass"){
-                navigate("/admin/dashboard");
-                setCookie('token', "admin", { expires: 1 });
-                sessionStorage.setItem("curUn", userData.username);
+            if (response.toString() === "locked") {
+                navigate("/recovery");
             }
-
-            const response = await login(userData);
 
             if (response) {
-                const token = response;
-                setCookie('token', token, { expires: 1 });
-                sessionStorage.setItem("curUn", userData.username);
                 navigate("/home");
             } else {
-                setError("Incorrect credentials 2");
+                setError("Incorrect credentials");
             }
-        } catch (error: any) {
-            console.error("Error during login:", error.message);
-            setError("Incorrect credentials 3");
         }
-    }
+    };
 
     return (
         <>
