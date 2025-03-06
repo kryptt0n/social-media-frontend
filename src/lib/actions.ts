@@ -21,7 +21,7 @@ export async function register(formData: FormData): Promise<void> {
     }
 }
 
-export async function login(formData: LoginProp): Promise<any> {
+export async function login(formData: LoginProp): Promise<string> {
     try {
         const response = await axiosInstance.post(`/login`,
             formData,
@@ -364,9 +364,9 @@ export async function deactivateUser(username: string): Promise<void> {
     }
 }
 
-export async function recoverUser(username: string): Promise<void> {
+export async function recoverUser(username: string): Promise<string> {
     try {
-        await axiosInstance.post(`/recovery/${username}`,
+        const response = await axiosInstance.post(`/recovery/${username}`,
             {},
             {
                 headers: {
@@ -376,6 +376,8 @@ export async function recoverUser(username: string): Promise<void> {
                 },
             }
         );
+        console.log(response);
+        return response.data;
     } catch (error: any) {
         throw new Error(error.message);
     }

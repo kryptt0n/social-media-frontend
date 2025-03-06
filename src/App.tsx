@@ -29,6 +29,8 @@ import Dashboard from "./pages/admin/Dashboard";
 import UsersList from "./pages/admin/UserList";
 import ReportedPosts from "./pages/admin/ReportedPost";
 
+import RecoveryUser from './pages/authentication/recovery';
+
 function AppRoutes() {
   const router = createBrowserRouter([
     {
@@ -39,11 +41,12 @@ function AppRoutes() {
         { index: true, element: <Login /> },
         { path: "register/info", element: <RegisterInfo /> },
         { path: "register/fin", element: <RegisterFinish /> },
+        { path: "recovery", element: <RecoveryUser /> },
       ],
     },
     {
       path: "/",
-      element: <ProtectedRoute><Layout /></ProtectedRoute>,
+      element: <Layout />,
       children: [
         { path: "home", element: <ProtectedRoute ><Home /></ProtectedRoute> },
         { path: "explore", element: <ProtectedRoute ><Explore /></ProtectedRoute> },

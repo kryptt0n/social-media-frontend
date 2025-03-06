@@ -5,7 +5,7 @@ import { setCookie, getCookie, removeCookie } from 'typescript-cookie';
 
 interface AuthContextType {
     isAuthenticated: boolean | undefined;
-    login: (formData: LoginProp) => Promise<boolean>;
+    login: (formData: LoginProp) => Promise<string>;
     logout: () => void;
 }
 
@@ -18,7 +18,6 @@ interface AuthProviderProps {
 export const AuthProvider = ({ children }: AuthProviderProps) => {
     const [isAuthenticated, setIsAuthenticated] = useState<boolean | undefined>(undefined);
 
-
     // Update useEffect to redirect when authenticated
     useEffect(() => {
         const token = getCookie('token');
@@ -29,25 +28,26 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         } else {
             setIsAuthenticated(false);
         }
-    }, []);   
+    }, []);
 
     useEffect(() => {
         console.log("Authentication State Changed:", isAuthenticated);
-    }, [isAuthenticated]); 
+    }, [isAuthenticated]);
 
-    const handleLogin = async (formData: LoginProp): Promise<boolean> => {
+    const handleLogin = async (formData: LoginProp): Promise<string> => {
         try {
             const response = await login(formData);
             if (response) {
                 setCookie('token', response, { expires: 1, path: "/" });
                 sessionStorage.setItem("curUn", formData.username);
                 setIsAuthenticated(true);
-                return true;
+                console.log(response);
+                return response;
             }
-            return false;
+            return "unable to login";
         } catch (error: any) {
             console.error("Error during login:", error.message);
-            return false;
+            return "unable to login";
         }
     };
 

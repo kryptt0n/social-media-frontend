@@ -5,6 +5,7 @@ import type { Profile } from "../../../lib/definitions";
 import { deactivateUser, deleteUser, getUser, recoverUser, setPrivate, setPublic, updateUser } from "../../../lib/actions";
 import { GrUser } from "react-icons/gr";
 import { redirect } from "react-router-dom";
+import { useAuth } from "../../../lib/authContext";
 
 export default function ProfileEdit() {
     const [profile, setProfile] = useState<Profile>({} as Profile);
@@ -18,6 +19,8 @@ export default function ProfileEdit() {
     const reloadPage = () => {
         window.location.reload();
     };
+
+    const auth = useAuth();
 
     useEffect(() => {
         const fetchProfile = async () => {
@@ -93,7 +96,12 @@ export default function ProfileEdit() {
     const handleToggleActive = async () => {
         if (currentUser) {
             if (profile.isActive) {
-                await deactivateUser(currentUser);
+                const confirmDeactivate = window.confirm("Are you sure you want to deactivate your account? You will lost your access to your account.");
+
+                if (confirmDeactivate) {
+                    await deactivateUser(currentUser);
+                    auth.logout();
+                }
             } else {
                 await recoverUser(currentUser);
             }
@@ -102,8 +110,11 @@ export default function ProfileEdit() {
     };
 
     const handleDelete = async () => {
-        await deleteUser();
-        redirect("/");
+        const confirmDelete = window.confirm("Are you sure you want to delete your account? You will lost all your data. This action cannot be undone.");
+        if (confirmDelete) {
+            await deleteUser();
+            redirect("/");
+        }
     }
 
     return (

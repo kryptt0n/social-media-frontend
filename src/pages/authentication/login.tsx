@@ -19,6 +19,10 @@ export default function Login() {
 
         const response = await auth.login(userData);
 
+        if (response.toString() === "locked") {
+            navigate("/recovery");
+        }
+
         if (response) {
             navigate("/home");
         } else {
