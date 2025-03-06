@@ -12,30 +12,58 @@ export default function Layout() {
         navigate("/");
     };
 
+    const links = [
+        {
+            href: "/home",
+            text: "Home",
+            icon: <GrHome />,
+        },
+        {
+            href: "/explore",
+            text: "Explore",
+            icon: <GrSearch />,
+        },
+        {
+            href: `/follower/${sessionStorage.getItem("curUn")}`,
+            text: "Follower",
+            icon: <GrNodes />,
+        },
+        {
+            href: `/following/${sessionStorage.getItem("curUn")}`,
+            text: "Following",
+            icon: <GrStatusGood />,
+        },
+        {
+            href: `/profile/${sessionStorage.getItem("curUn")}`,
+            text: "Profile",
+            icon: <GrUser />,
+        },
+    ]
+
     return (
         <>
-            <div className="flex h-screen sm:px-[20%]">
-                <div className="w-[15%] h-full text-xl border-r-2 border-gray-100 fixed top-0 sm:left-[20%] overflow-hidden bg-white pt-10">
+            <div className="flex h-screen w-full">
+                <div className="flex-column space-y-5 w-[17.5%] h-screen text-xl border-r-2 border-gray-100 fixed top-0 overflow-hidden bg-[#e2e9ee] pt-10 px-1" >
                     <Nav defaultActiveKey="/home" className="flex-column gap-3">
-                        <Nav.Link href="/home" className="flex items-center gap-2 h-12 hover:bg-slate-200 rounded-full"><GrHome /><p className="sm:block hidden">Home</p></Nav.Link>
-                        <Nav.Link href="/explore" className="flex items-center gap-2 h-12 hover:bg-slate-200 rounded-full"><GrSearch /><p className="sm:block hidden">Explore</p></Nav.Link>
-                        <Nav.Link href={`/follower/${sessionStorage.getItem("curUn")}`} className="flex items-center gap-2 h-12 hover:bg-slate-200 rounded-full"><GrNodes /><p className="sm:block hidden">Follower</p></Nav.Link>
-                        <Nav.Link href={`/following/${sessionStorage.getItem("curUn")}`} className="flex items-center gap-2 h-12 hover:bg-slate-200 rounded-full"><GrStatusGood /><p className="sm:block hidden">Following</p></Nav.Link>
-                        {/* <Nav.Link href="/notification" className="flex items-center gap-2 h-12 hover:bg-slate-200 rounded-lg"><GrTooltip />Messages</Nav.Link> */}
-                        <Nav.Link href={`/profile/${sessionStorage.getItem("curUn")}`} className="flex items-center gap-2 h-12 hover:bg-slate-200 rounded-full"><GrUser /><p className="sm:block hidden">Profile</p></Nav.Link>
+
+                        {links.map(({ href, text, icon }) => (
+                            <Nav.Link key={href} href={href} className="flex items-center gap-2 h-12 hover:bg-blue-500 hover:text-white rounded-full py-2 justify-center md:justify-normal px-4 text-2xl md:text-lg lg:text-2xl overflow-hidden transition-all duration-300 ">
+                                {icon} <span className="md:block hidden overflow-hidden">{text}</span>
+                            </Nav.Link>
+                        ))}
+
                         <Nav.Link
                             as="button"
-                            className="flex items-center gap-2 h-12 hover:bg-red-100 text-red-600 rounded-full cursor-pointer"
-                            onClick={handleLogout}
+                            className="flex items-center gap-2 h-12 hover:bg-blue-500 hover:text-white rounded-full py-2 justify-center md:justify-normal px-4 text-2xl md:text-lg lg:text-2xl overflow-hidden transition-all duration-300 text-red-400" onClick={handleLogout}
                         >
-                            <GrLogout /><p className="sm:block hidden">Logout</p>
+                            <GrLogout /><p className="md:block hidden overflow-hidden">Logout</p>
                         </Nav.Link>
                     </Nav>
                 </div>
-                <div className="flex-1 sm:ml-[25%] ml-[15%] sm:mr-[15%] pt-10 px-3 min-w-96">
+                <div className="flex-1 transition-all duration-300 ml-[17.5%] px-4 pt-10">
                     <Outlet />
                 </div>
-            </div>
+            </div >
         </>
     );
 }
