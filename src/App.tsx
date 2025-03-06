@@ -69,8 +69,22 @@ const router = createBrowserRouter([
           { path: "home", element: <Home /> },
           { path: "explore", element: <Explore /> },
           { path: "follower/:username", element: <Follower /> },
-          { path: "following/:username", element: <Following /> },
-          { path: "profile/:username", element: <UserProfile /> },
+          {
+        path: "following/:username",
+        element: <Following />
+      },
+      // {
+      //   path: "notification",
+      //   element: <Notification />
+      // },
+      {
+        path: "profile/:username",
+        element: <UserProfile />
+      },
+      {
+        path: "profile-edit",
+        element: <ProfileEdit />
+      }
         ],
       },
       {

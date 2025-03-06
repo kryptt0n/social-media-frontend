@@ -25,7 +25,7 @@ export default function Home() {
     };
 
     return (
-        <>
+        <div className="max-w-3xl mx-auto space-y-6">
             <CreatePost onPostCreated={loadAllPosts} />
             <div className="space-y-2">
                 {postList.length > 0 ? (
@@ -38,6 +38,6 @@ export default function Home() {
                     </div>
                 )}
             </div>
-        </>
+        </div>
     );
 }

@@ -10,23 +10,14 @@ export default function UserProfile() {
     const { username } = useParams<{ username: string }>();
     const [postList, setPostList] = useState<Post[]>([]);
     const navigate = useNavigate();
-    const [user, setUser] = useState<Profile>(
-        {
-            username: "",
-            imageUrl: null,
-            bio: "",
-            isFollowed: false,
-            followersCount: 0,
-            followingCount: 0,
-        }
-    );
+    const [profile, setProfile] = useState<Profile>({} as Profile);
 
     useEffect(() => {
         const loadProfile = async () => {
             try {
                 if (username) {
                     const profile = await getUser(username);
-                    setUser(profile);
+                    setProfile(profile);
                 }
             } catch (error) {
                 console.error(error);
@@ -51,12 +42,12 @@ export default function UserProfile() {
     const handleFollowClick = async () => {
         try {
             if (username) {
-                if (user.isFollowed) {
+                if (profile.isFollowed) {
                     await unfollowUser(username);
-                    setUser(prevUser => ({ ...prevUser, isFollowed: false }));
+                    setProfile(prevUser => ({ ...prevUser, isFollowed: false }));
                 } else {
                     await followUser(username);
-                    setUser(prevUser => ({ ...prevUser, isFollowed: true }));
+                    setProfile(prevUser => ({ ...prevUser, isFollowed: true }));
                 }
             }
         } catch (error) {
@@ -69,12 +60,12 @@ export default function UserProfile() {
     };
 
     return (
-        <div className="user-profile-container max-w-4xl mx-auto space-y-6">
-            <div className="user-header flex items-center space-x-6 p-6 border-b-4 rounded-md border-sky-600 bg-stone-200">
-                {user.imageUrl ? (
+        <div className="max-w-3xl mx-auto space-y-6">
+            <div className="flex items-center space-x-6 p-6 border-b-4 rounded-md border-sky-600 bg-stone-200">
+                {profile.imageUrl ? (
                     <img
-                        src={user.imageUrl.toString()}
-                        alt={`${user.username}'s profile`}
+                        src={profile.imageUrl.toString()}
+                        alt={`${profile.username}'s profile`}
                         className="w-24 h-24 rounded-full object-cover"
                     />
                 ) : (
@@ -85,23 +76,25 @@ export default function UserProfile() {
 
                 <div className="flex flex-col space-y-2 w-full">
                     <div className="flex justify-between w-full">
-                        <h1 className="text-2xl font-bold text-gray-800">{user.username}</h1>
-                        {(user.username !== sessionStorage.getItem("curUn")) && (
+                        <h1 className="text-2xl font-bold text-gray-800">{profile.username}</h1>
+                        {(profile.username !== sessionStorage.getItem("curUn")) ? (
                             <button
-                                className="follow-button px-4 py-1 text-white bg-blue-500 rounded-full hover:bg-blue-600"
+                                className="px-4 py-1 text-white bg-blue-500 rounded-full hover:bg-blue-600"
                                 onClick={handleFollowClick}
                             >
-                                {user.isFollowed ? "Unfollow" : "Follow"}
+                                {profile.isFollowed ? "Unfollow" : "Follow"}
                             </button>
+                        ) : (
+                            <a className="px-4 py-1 text-white bg-blue-500 rounded-full hover:bg-blue-600" href={`/profile-edit`}>Edit profile</a>
                         )}
 
                     </div>
 
-                    <p className="text-gray-600">{user.bio}</p>
+                    <p className="text-gray-600">{profile.bio}</p>
 
                     <div className="flex flex-row space-x-3">
-                        <div onClick={() => navigate(`/following/${username}`)} className="cursor-pointer hover:underline text-gray-700">{user.followingCount} Following</div>
-                        <div onClick={() => navigate(`/follower/${username}`)} className="cursor-pointer hover:underline text-gray-700">{user.followersCount} Followers</div>
+                        <div onClick={() => navigate(`/following/${username}`)} className="cursor-pointer hover:underline text-gray-700">{profile.followingCount} Following</div>
+                        <div onClick={() => navigate(`/follower/${username}`)} className="cursor-pointer hover:underline text-gray-700">{profile.followersCount} Followers</div>
                     </div>
                 </div>
 
