@@ -25,6 +25,7 @@ import AdminLayout from "./pages/admin/AdminLayout";
 import Dashboard from "./pages/admin/Dashboard";
 import UsersList from "./pages/admin/UserList";
 import ReportedPosts from "./pages/admin/ReportedPost";
+import PrivateRoute from './pages/authentication/PrivateRoute';
 
 const router = createBrowserRouter([
   {
@@ -59,45 +60,30 @@ const router = createBrowserRouter([
     ]
   },
   {
-    path: "/",
-    element: <Layout />,
+    element: <PrivateRoute />, // <-- Wrap protected routes here
     children: [
       {
-        path: "home",
-        element: <Home />
+        path: "/",
+        element: <Layout />,
+        children: [
+          { path: "home", element: <Home /> },
+          { path: "explore", element: <Explore /> },
+          { path: "follower/:username", element: <Follower /> },
+          { path: "following/:username", element: <Following /> },
+          { path: "profile/:username", element: <UserProfile /> },
+        ],
       },
       {
-        path: "explore",
-        element: <Explore />
+        path: "/admin",
+        element: <AdminLayout />,
+        children: [
+          { path: "dashboard", element: <Dashboard /> },
+          { path: "users", element: <UsersList /> },
+          { path: "reported-posts", element: <ReportedPosts /> },
+        ],
       },
-      {
-        path: "follower/:username",
-        element: <Follower />
-      },
-      {
-        path: "following/:username",
-        element: <Following />
-      },
-      // {
-      //   path: "notification",
-      //   element: <Notification />
-      // },
-      {
-        path: "profile/:username",
-        element: <UserProfile />
-      }
     ],
   },
-  {
-    path: "/admin",
-    element: <AdminLayout />,
-    children: [
-      { path: "dashboard", element: <Dashboard /> },
-      { path: "users", element: <UsersList /> },
-      { path: "reported-posts", element: <ReportedPosts /> },
-    ],
-  },
-  
 ]);
 
 export default function App() {
