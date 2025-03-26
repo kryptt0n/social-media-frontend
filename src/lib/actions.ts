@@ -2,7 +2,15 @@ import axios from "axios";
 import axiosInstance from "./axiosInstance";
 import {domain} from "./axiosInstance"
 import type { Post, Comment, Profile, User, DashboardStats } from "./definitions";
-import { CommentProp, LikeProp, LoginProp, PostProp, UserProp } from "./propinterfaces";
+import {
+    CommentProp,
+    ForgotPasswordProp,
+    LikeProp,
+    LoginProp,
+    PostProp,
+    ResetPasswordProp,
+    UserProp
+} from "./propinterfaces";
 import { getCookie } from 'typescript-cookie'
 
 
@@ -492,6 +500,33 @@ export async function updateUser(username: string, formData: FormData): Promise<
                     "Accept": "*/*",
                     "Content-Type": "multipart/form-data",
                     "Authorization": `Bearer ${getCookie('token')}`,
+                },
+            }
+        );
+
+    } catch (error: any) {
+        throw new Error(error.message);
+    }
+}
+
+export async function sendForgotPassword(formData: ForgotPasswordProp): Promise<void> {
+    try {
+        await axiosInstance.post(`/forgot-password`,
+            formData
+        );
+
+    } catch (error: any) {
+        throw new Error(error.message);
+    }
+}
+
+export async function resetPassword(resetToken: string, formData: ResetPasswordProp): Promise<void> {
+    try {
+        await axiosInstance.post(`/reset`,
+            formData,
+            {
+                headers: {
+                    "Authorization": `Bearer ${resetToken}`,
                 },
             }
         );

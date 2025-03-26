@@ -27,3 +27,11 @@ export interface CommentProp {
 export interface LikeProp {
     post: { id: number },
 }
+
+export interface ForgotPasswordProp {
+    email: string,
+}
+
+export interface ResetPasswordProp {
+    newPassword: string,
+}

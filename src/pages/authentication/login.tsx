@@ -43,7 +43,7 @@ export default function Login() {
             <Form className="w-96" onSubmit={handleSubmit}>
                 <div className="mb-10">
                     <h1 className="w-full text-center text-3xl ">Social Media</h1>
-                    <p className="w-full text-center text-gray-600" >v 0.3</p>
+                    <p className="w-full text-center text-gray-600">v 0.3</p>
                 </div>
                 <Form.FloatingLabel controlId="formUsername" label="Username" className="mb-3">
                     <Form.Control
@@ -79,7 +79,9 @@ export default function Login() {
                     </Button>
                 </div>
 
-                <p className="text-sm">Don't have an account? <a className="underline" href="/register/info">Register</a></p>
+                <p className="text-sm">Don't have an account? <a className="underline"
+                                                                 href="/register/info">Register</a></p>
+                <a className="underline" href="/forgot-password">Forgot password</a>
             </Form>
         </>
     );

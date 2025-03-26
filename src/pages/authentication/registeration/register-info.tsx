@@ -14,6 +14,7 @@ export default function RegisterInfo() {
     const [bio, setBio] = useState<string | null>(null);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [isFileValid, setIsFileValid] = useState<boolean>(true);
+    const [email, setEmail] = useState<string | null>(null);
 
     const navigate = useNavigate();
 
@@ -55,6 +56,7 @@ export default function RegisterInfo() {
             username: username,
             password: password,
             bio: bio,
+            email: email,
         })], { type: "application/json" }));
 
         if (image) {
@@ -94,6 +96,15 @@ export default function RegisterInfo() {
                         type="text"
                         placeholder="Username"
                         onChange={(e) => setUsername(e.target.value)}
+                        required
+                    />
+                </Form.FloatingLabel>
+
+                <Form.FloatingLabel className="mb-3" controlId="formEmail" label="Email">
+                    <Form.Control
+                        type="text"
+                        placeholder="Email"
+                        onChange={(e) => setEmail(e.target.value)}
                         required
                     />
                 </Form.FloatingLabel>
