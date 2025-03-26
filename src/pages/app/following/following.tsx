@@ -1,41 +1,41 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import type { Profile } from "../../../lib/definitions";
-import { Button, Image } from "react-bootstrap";
-import { getFollowers, followUser, unfollowUser } from "../../../lib/actions";
+import { getFollowed, followUser, unfollowUser } from "../../../lib/actions";
+import { Button } from "react-bootstrap";
 import { GrUser } from "react-icons/gr";
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
 
-export default function Follower() {
+export default function Following() {
     const { username } = useParams<{ username: string }>();
     const navigate = useNavigate();
-    const [followerList, setFollowerList] = useState<Profile[]>([]);
+    const [followingList, setFollowingList] = useState<Profile[]>([]);
 
     useEffect(() => {
-        const loadAllFollower = async () => {
+        const loadAllFollowing = async () => {
             try {
                 if (username) {
-                    const allFollower = await getFollowers(username);
-                    setFollowerList(allFollower);
+                    const allFollowing = await getFollowed(username);
+                    setFollowingList(allFollowing);
                 }
             } catch (error) {
                 console.error(error);
             }
         }
 
-        loadAllFollower();
+        loadAllFollowing();
     }, []);
 
-    const handleFollowToggle = async (follower: Profile) => {
+    const handleFollowToggle = async (following: Profile) => {
         try {
-            if (follower.isFollowed) {
-                await unfollowUser(follower.username);
+            if (following.isFollowed) {
+                await unfollowUser(following.username);
             } else {
-                await followUser(follower.username);
+                await followUser(following.username);
             }
-            setFollowerList((prev) =>
+            setFollowingList((prev) =>
                 prev.map((user) =>
-                    user.username === follower.username
+                    user.username === following.username
                         ? { ...user, isFollowed: !user.isFollowed }
                         : user
                 )
@@ -47,19 +47,19 @@ export default function Follower() {
 
     return (
         <div className="max-w-3xl mx-auto space-y-6">
-            <h1 className="border-b-2 text-3xl items-center border-sky-600 mb-2 pb-2">{username}'s Followers</h1>
+            <h1 className="border-b-2 text-3xl items-center border-sky-600 mb-2 pb-2">{username}'s Following</h1>
             <div className="space-y-1">
-                {followerList.length > 0 ? (
-                    followerList.map((follower) => (
-                        <div className="user-header flex items-center justify-between bg-slate-50 p-3 border-2 border-gray-400 rounded-md cursor-pointer" >
+                {followingList.length > 0 ? (
+                    followingList.map((following) => (
+                        <div className="user-header flex items-center justify-between bg-slate-50 p-3 border-2 border-gray-400 rounded-md cursor-pointer hover:bg-slate-200"   >
                             <div
                                 className="space-x-6 flex"
-                                onClick={() => navigate(`/profile/${follower.username}`)}
+                                onClick={() => navigate(`/profile/${following.username}`)}
                             >
-                                {follower.imageUrl ? (
+                                {following.imageUrl ? (
                                     <img
-                                        src={follower.imageUrl.toString()}
-                                        alt={`${follower.username}'s profile`}
+                                        src={following.imageUrl.toString()}
+                                        alt={`${following.username}'s profile`}
                                         className="w-10 h-10 rounded-full object-cover"
                                     />
                                 ) : (
@@ -68,29 +68,28 @@ export default function Follower() {
                                     </div>
                                 )}
                                 <div className="flex flex-col space-y-1">
-                                    <h1 className="text-2xl font-bold text-gray-800">{follower.username}</h1>
-                                    <p className="text-gray-600">{follower.bio}</p>
+                                    <h1 className="text-2xl font-bold text-gray-800">{following.username}</h1>
+                                    <p className="text-gray-600">{following.bio}</p>
                                 </div>
                             </div>
                             <div>
-                                {(follower.username !== sessionStorage.getItem("curUn")) && (
+                                {(following.username !== sessionStorage.getItem("curUn")) && (
                                     <button
                                         className="follow-button px-4 py-1 text-white bg-blue-500 rounded-full hover:bg-blue-600"
                                         onClick={(e) => {
                                             e.stopPropagation();
-                                            handleFollowToggle(follower);
+                                            handleFollowToggle(following);
                                         }}
                                     >
-                                        {follower.isFollowed ? "Unfollow" : "Follow"}
+                                        {following.isFollowed ? "Unfollow" : "Follow"}
                                     </button>
                                 )}
                             </div>
                         </div>
                     ))
-
                 ) : (
                     <div className="flex justify-center">
-                        <p className="text-xl text-grey-700 ">No followers.</p>
+                        <p className="text-xl text-grey-700 ">Not following anyone.</p>
                     </div>
                 )}
             </div>

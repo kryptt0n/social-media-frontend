@@ -1,46 +1,78 @@
-export type Accounts = {
+export type User = {
     id: number,
     username: string,
     password: string,
-    dob: string,
-    profile: string,
-    create_time: string,
+    imageUrl: String | null,
+    bio: string | null,
+    createdAt: string,
+    roles: string;
+    isActive: boolean,
+    isPublic: boolean,
 }
 
-export type Comments = {
-    id: number,
-    post_id: number,
-    text: string,
-    user_id: number,
-    create_time: string,
+export type Profile = {
+    username: string,
+    imageUrl: String | null,
+    bio: string,
+    isFollowed: boolean,
+    followersCount: number,
+    followingCount: number,
+    isActive: boolean,
+    isPublic: boolean,
 }
 
-export type Followers = {
+export type Post = {
     id: number,
-    user_id: number,
-    follower_id: number,
-    create_time: string,
+    content: string | null,
+    imageUrl: String | null,
+    user: {
+        username: string,
+        imageUrl: String | null,
+        bio: string | null,
+        isFollowed: boolean,
+    },
+    createdAt: string,
+    likedByCurrentUser: boolean,
+    totalLikes: number,
 }
 
-export type Likes = {
+export type Comment = {
     id: number,
-    post_id: number,
-    user_id: number,
-    create_time: string,
+    content: string,
+    user: User,
+    post: Post,
+    createdAt: string,
 }
 
-export type Messages = {
-    id: number,
-    user_id: number,
-    message: string,
-    create_time: string,
+export type Follow = {
+    id: number;
+    follower: User,
+    followed: User,
+    followedAt: string,
 }
 
-export type Posts = {
+export type Like = {
     id: number,
-    text: string,
-    image: string,
-    create_time: string,
-    draft: boolean,
-    user_id: number,
+    user: User,
+    post: Post,
+    createdAt: string,
+}
+
+export type Notification = {
+    id: number,
+    user: User,
+    type: NotificationType,
+    content: string,
+    read: boolean,
+    createdAt: string,
+}
+
+export type NotificationType = 'LIKE' | 'COMMENT' | 'FOLLOW';
+
+export type DashboardStats = {
+    totalUsers: number;
+    totalPosts: number;
+    reportedPosts: number;
+    dailyPosts: { date: string; count: number }[];
+    accountTypes: { public: number; private: number };
 }

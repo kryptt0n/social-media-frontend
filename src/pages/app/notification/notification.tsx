@@ -1,8 +1,8 @@
-import type { Messages } from "../../../lib/definitions";
+import type { Notification } from "../../../lib/definitions";
 import { useState } from "react";
 
 export default function Notification() {
-    const [messageList, setMessageList] = useState<Messages[] | null>(null);
+    const [messageList, setMessageList] = useState<Notification[] | null>(null);
     return (
         <>
             <div>
@@ -10,7 +10,7 @@ export default function Notification() {
                     <ul>
                         {messageList.map((message) => (
                             <li>
-                                <p>{message.message}</p>
+                                <p>{message.content}</p>
                             </li>
                         ))}
                     </ul>

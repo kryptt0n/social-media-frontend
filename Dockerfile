@@ -1,5 +1,5 @@
 # Base image for Node.js
-FROM node:18 AS build
+FROM node:22.11.0-alpine AS build
 
 # Set the working directory
 WORKDIR /usr/src/app
@@ -18,6 +18,9 @@ RUN npm run build
 
 # Serve the application
 FROM nginx:alpine AS production
+
+# Copy custom Nginx config
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 # Copy the build files to Nginx's default public folder
 COPY --from=build /usr/src/app/build /usr/share/nginx/html
