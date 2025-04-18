@@ -5,6 +5,8 @@ import { UserProp } from "../../../lib/propinterfaces";
 import { register } from "../../../lib/actions";
 import { GrUser } from "react-icons/gr";
 import { useNavigate } from "react-router-dom";
+import imageEncoder from "../../../lib/imageEncoder";
+import { User } from "../../../lib/definitions";
 
 export default function RegisterInfo() {
     const [image, setImage] = useState<File | null>(null);
@@ -51,17 +53,14 @@ export default function RegisterInfo() {
             return;
         }
 
-        const formData = new FormData();
-        formData.append("user", new Blob([JSON.stringify({
-            username: username,
-            password: password,
-            bio: bio,
-            email: email,
-        })], { type: "application/json" }));
-
-        if (image) {
-            formData.append("file", image);
-        }
+        const formData: UserProp = {
+            username: username || "",
+            password: password || "",
+            email: email || "",
+            bio: bio || "",
+            base64Image: image ? await imageEncoder(image) : "",
+            isPublic: true,
+        };
 
         try {
             await register(formData);

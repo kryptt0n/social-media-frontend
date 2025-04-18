@@ -1,6 +1,6 @@
 import axios from "axios";
 import axiosInstance from "./axiosInstance";
-import {domain} from "./axiosInstance"
+import { domain } from "./axiosInstance"
 import type { Post, Comment, Profile, User, DashboardStats } from "./definitions";
 import {
     CommentProp,
@@ -11,18 +11,18 @@ import {
     ResetPasswordProp,
     UserProp
 } from "./propinterfaces";
-import { getCookie } from 'typescript-cookie'
+import { getCookie } from 'typescript-cookie';
 
 
 // Auth
-export async function register(formData: FormData): Promise<void> {
+export async function register(userForm: UserProp): Promise<void> {
     try {
-        await axiosInstance.post(`/register`,
-            formData,
+        await axiosInstance.post(`/users/register`,
+            userForm,
             {
                 headers: {
                     "Accept": "*/*",
-                    "Content-Type": "multipart/form-data",
+                    "Content-Type": "application/json",
                 },
             },
         );
@@ -33,7 +33,7 @@ export async function register(formData: FormData): Promise<void> {
 
 export async function login(formData: LoginProp): Promise<string> {
     try {
-        const response = await axiosInstance.post(`/login`,
+        const response = await axiosInstance.post(`/identity/token`,
             formData,
             {
                 headers: {
@@ -355,7 +355,7 @@ export async function followSelf(username: string): Promise<void> {
         throw new Error(error.message);
     }
 
-    
+
 }
 
 export async function getAllUsers(): Promise<User[]> {
