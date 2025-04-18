@@ -1,10 +1,11 @@
-import { createContext, useState, useEffect, ReactNode, useContext } from "react";
-import { login } from "./actions";
-import { LoginProp } from "./propinterfaces";
-import { setCookie, getCookie, removeCookie } from 'typescript-cookie';
+import {createContext, useState, useEffect, ReactNode, useContext} from "react";
+import {login, validate} from "./actions";
+import {LoginProp, ValidateProp} from "./propinterfaces";
+import {setCookie, getCookie, removeCookie} from 'typescript-cookie';
 
 interface AuthContextType {
     isAuthenticated: boolean | undefined;
+    isLoading: boolean,
     login: (formData: LoginProp) => Promise<string>;
     logout: () => void;
 }
@@ -15,19 +16,41 @@ interface AuthProviderProps {
     children: ReactNode;
 }
 
-export const AuthProvider = ({ children }: AuthProviderProps) => {
+export const AuthProvider = ({children}: AuthProviderProps) => {
     const [isAuthenticated, setIsAuthenticated] = useState<boolean | undefined>(undefined);
+    const [isLoading, setIsLoading] = useState(true);
 
     // Update useEffect to redirect when authenticated
     useEffect(() => {
-        const token = getCookie('token');
-        const username = sessionStorage.getItem("curUn");
+        const checkAuth = async () => {
+            const token = getCookie('token');
+            const username = sessionStorage.getItem("curUn");
 
-        if (token && username) {
-            setIsAuthenticated(true);
-        } else {
-            setIsAuthenticated(false);
-        }
+            if (token && username) {
+                try {
+                    const validateForm: ValidateProp = {
+                        token: token,
+                        username: username
+                    };
+                    const response = await validate(validateForm);
+
+                    if (response) {
+                        setIsAuthenticated(true);
+                    } else {
+                        setIsAuthenticated(false);
+                    }
+                } catch (err) {
+                    console.error("Validation error:", err);
+                    setIsAuthenticated(false);
+                }
+            } else {
+                setIsAuthenticated(false);
+            }
+
+            setIsLoading(false);
+        };
+
+        checkAuth();
     }, []);
 
     useEffect(() => {
@@ -38,7 +61,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         try {
             const response = await login(formData);
             if (response) {
-                setCookie('token', response, { expires: 1, path: "/" });
+                setCookie('token', response, {expires: 1, path: "/"});
                 sessionStorage.setItem("curUn", formData.username);
                 setIsAuthenticated(true);
                 console.log(response);
@@ -58,7 +81,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     };
 
     return (
-        <AuthContext.Provider value={{ isAuthenticated, login: handleLogin, logout: handleLogout }}>
+        <AuthContext.Provider value={{isAuthenticated, isLoading, login: handleLogin, logout: handleLogout}}>
             {children}
         </AuthContext.Provider>
     );

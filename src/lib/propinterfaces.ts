@@ -5,6 +5,11 @@ export interface LoginProp {
     password: string,
 }
 
+export interface ValidateProp {
+    token: string,
+    username: string,
+}
+
 export interface UserProp {
     username: string,
     password: string,
@@ -15,17 +20,20 @@ export interface UserProp {
 }
 
 export interface PostProp {
-    post: Blob;
-    file: File | null;
+    username: string,
+    content: string,
+    base64Image: string,
 }
 
 export interface CommentProp {
-    content: string | null,
-    post: { id: number },
+    username: string,
+    content: string,
+    postId: number,
 }
 
 export interface LikeProp {
-    post: { id: number },
+    username: string,
+    postId: number,
 }
 
 export interface ForgotPasswordProp {

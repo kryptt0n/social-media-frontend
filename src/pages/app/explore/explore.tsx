@@ -1,45 +1,41 @@
 import { useEffect, useState } from "react";
 import type { Post } from "../../../lib/definitions";
 import { Form, Button } from "react-bootstrap";
-import { getAllPosts } from "../../../lib/actions";
-import { useSearchParams } from "react-router-dom";
+import { searchPosts } from "../../../lib/actions";
 import PostItem from "../../../components/post/PostComponent";
 
 export default function Explore() {
     const [postList, setPostList] = useState<Post[]>([]);
-    const [filteredPostList, setFilteredPostList] = useState<Post[]>([]);
     const [searchQuery, setSearchQuery] = useState("");
+    const [page, setPage] = useState(0);
+    const [totalPages, setTotalPages] = useState(0);
 
-    useEffect(() => {
-        const loadAllPosts = async () => {
-            try {
-                const allPosts = await getAllPosts();
-                setPostList(allPosts);
-                setFilteredPostList(allPosts);
-            } catch (error) {
-                console.error(error);
-            }
-        };
-
-        loadAllPosts();
-    }, []);
-
-    const handleSearch = (e: React.FormEvent) => {
-        e.preventDefault();
-        const query = searchQuery.trim().toLowerCase();
-
-        if (query) {
-            const filteredPosts = postList.filter(post =>
-                post.content?.toLowerCase().includes(query)
-            );
-            setFilteredPostList(filteredPosts);
-        } else {
-            setFilteredPostList(postList);
+    const fetchPosts = async (keyword = "", pageNumber = 0) => {
+        try {
+            const result = await searchPosts(keyword, pageNumber);
+            setPostList(result.content);
+            setTotalPages(result.totalPages);
+        } catch (error) {
+            console.error(error);
         }
     };
 
+    useEffect(() => {
+        fetchPosts(searchQuery, page);
+    }, [page]);
+
+    const handleSearch = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setPage(0);
+        fetchPosts(searchQuery, 0);
+    };
+
     const handlePostDeleted = (postId: number) => {
-        setPostList(prevPosts => prevPosts.filter(post => post.id !== postId));
+        setPostList(prevPosts => prevPosts.filter(post => post.postId !== postId));
+    };
+
+    const handlePageChange = (newPage: number) => {
+        setPage(newPage);
     };
 
     return (
@@ -59,9 +55,9 @@ export default function Explore() {
                 </Form>
             </div>
             <div className="mt-4 space-y-2">
-                {filteredPostList.length > 0 ? (
-                    filteredPostList.map((post) => (
-                        <PostItem key={post.id} postData={post} allowDelete={false} onPostDeleted={handlePostDeleted} />
+                {postList.length > 0 ? (
+                    postList.map((post) => (
+                        <PostItem key={post.postId} postData={post} allowDelete={true} onPostDeleted={handlePostDeleted} />
                     ))
                 ) : (
                     <div className="flex justify-center">
@@ -69,6 +65,19 @@ export default function Explore() {
                     </div>
                 )}
             </div>
+            {totalPages > 1 && (
+                <div className="flex justify-center gap-2 mt-4">
+                    {Array.from({ length: totalPages }, (_, idx) => (
+                        <Button
+                            key={idx}
+                            variant={idx === page ? "primary" : "outline-primary"}
+                            onClick={() => handlePageChange(idx)}
+                        >
+                            {idx + 1}
+                        </Button>
+                    ))}
+                </div>
+            )}
         </div>
     );
 }

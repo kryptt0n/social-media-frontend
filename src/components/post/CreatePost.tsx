@@ -1,21 +1,24 @@
-import { useState } from "react";
-import { Card, Form, Button } from "react-bootstrap";
-import { GrGallery, GrClose } from "react-icons/gr";
-import { PostProp } from "../../lib/propinterfaces";
-import { createPost } from "../../lib/actions";
-import { imageToArray } from "../../lib/utils";
+import {useState} from "react";
+import {Card, Form, Button} from "react-bootstrap";
+import {GrGallery, GrClose} from "react-icons/gr";
+import {PostProp} from "../../lib/propinterfaces";
+import {createPost} from "../../lib/actions";
+import {imageToArray} from "../../lib/utils";
+import {useAuth} from "../../lib/authContext";
+import imageEncoder from "../../lib/imageEncoder";
 
 interface CreatePostProps {
     onPostCreated: () => void;
 }
 
-export default function CreatePost({ onPostCreated }: CreatePostProps) {
+export default function CreatePost({onPostCreated}: CreatePostProps) {
     const [content, setContent] = useState<string>("");
     const [image, setImage] = useState<File | null>(null);
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
     const [hasImage, setHasImage] = useState<boolean>(false);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
-    const [isFileValid, setIsFileValid] = useState<boolean>(true);
+
+    const currentUser = sessionStorage.getItem("curUn");
 
     const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files[0]) {
@@ -25,7 +28,6 @@ export default function CreatePost({ onPostCreated }: CreatePostProps) {
             const fileExtension = file.name.split(".").pop()?.toLowerCase();
             if (!allowedExtensions.includes(fileExtension || "")) {
                 setErrorMessage("Invalid file type. Please upload an image file (jpg, jpeg, png).");
-                setIsFileValid(false);
                 return;
             }
 
@@ -36,10 +38,8 @@ export default function CreatePost({ onPostCreated }: CreatePostProps) {
                 setPreviewUrl(URL.createObjectURL(file));
                 setHasImage(true);
                 setErrorMessage(null);
-                setIsFileValid(true);
             } catch (error) {
                 console.error('Error converting image to byte array:', error);
-                setIsFileValid(false);
             }
         }
     };
@@ -55,8 +55,9 @@ export default function CreatePost({ onPostCreated }: CreatePostProps) {
         e.preventDefault();
 
         const formData: PostProp = {
-            post: new Blob([JSON.stringify({ content })], { type: "application/json" }),
-            file: image,
+            username: currentUser!,
+            content: content,
+            base64Image: image ? await imageEncoder(image) : "",
         };
 
         try {
@@ -94,11 +95,10 @@ export default function CreatePost({ onPostCreated }: CreatePostProps) {
                             {previewUrl && (
                                 <>
                                     <div className="mb-1 p-2 position-relative">
-                                        <img src={previewUrl} alt="Preview" className="w-full h-auto rounded-lg" />
+                                        <img src={previewUrl} alt="Preview" className="w-full h-auto rounded-lg"/>
                                         <GrClose
                                             className="position-absolute top-4 end-4 cursor-pointer text-white bg-gray-700 rounded-full p-2 text-4xl"
-                                            onClick={handleDeleteImage}
-                                        />
+                                            onClick={handleDeleteImage}/>
                                     </div>
                                 </>
                             )}
@@ -110,7 +110,7 @@ export default function CreatePost({ onPostCreated }: CreatePostProps) {
 
                     <div className="items-center flex justify-between px-6 pb-1">
                         <label className="cursor-pointer text-blue-400">
-                            <GrGallery />
+                            <GrGallery/>
                             <input
                                 type="file"
                                 accept="image/*"
