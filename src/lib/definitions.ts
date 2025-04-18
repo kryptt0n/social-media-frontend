@@ -12,35 +12,32 @@ export type User = {
 
 export type Profile = {
     username: string,
-    imageUrl: String | null,
+    imageUrl: string | null,
     bio: string,
-    isFollowed: boolean,
-    followersCount: number,
+    followerCount: number,
     followingCount: number,
     isActive: boolean,
     isPublic: boolean,
 }
 
 export type Post = {
-    id: number,
+    postId: number,
+    username: string,
     content: string | null,
-    imageUrl: String | null,
-    user: {
-        username: string,
-        imageUrl: String | null,
-        bio: string | null,
-        isFollowed: boolean,
-    },
+    imageUrl: string | null,
+    avatarUrl: string | null,
+    likeCount: number,
+    likeByCurrentUser: boolean,
     createdAt: string,
-    likedByCurrentUser: boolean,
-    totalLikes: number,
+    comments: Comment[],
 }
 
 export type Comment = {
     id: number,
     content: string,
-    user: User,
-    post: Post,
+    username: string,
+    avatarUrl: string | null,
+    postId: number,
     createdAt: string,
 }
 

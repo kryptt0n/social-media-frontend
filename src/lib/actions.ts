@@ -1,7 +1,7 @@
 import axios from "axios";
 import axiosInstance from "./axiosInstance";
-import { domain } from "./axiosInstance"
-import type { Post, Comment, Profile, User, DashboardStats } from "./definitions";
+import {domain} from "./axiosInstance"
+import type {Post, Comment, Profile, User, DashboardStats} from "./definitions";
 import {
     CommentProp,
     ForgotPasswordProp,
@@ -9,9 +9,9 @@ import {
     LoginProp,
     PostProp,
     ResetPasswordProp,
-    UserProp
+    UserProp, ValidateProp
 } from "./propinterfaces";
-import { getCookie } from 'typescript-cookie';
+import {getCookie} from 'typescript-cookie';
 
 
 // Auth
@@ -42,15 +42,33 @@ export async function login(formData: LoginProp): Promise<string> {
                 },
             },
         );
-        return response.data;
+        return response.data.key;
     } catch (error: any) {
         throw new Error(error.message);
     }
 }
 
-export async function getUser(username: string): Promise<Profile> {
+export async function validate(formData: ValidateProp): Promise<String> {
     try {
-        const response = await axiosInstance.get(`/users/${username}`,
+        const response = await axiosInstance.post(`/identity/validate`,
+            formData,
+            {
+                headers: {
+                    "Accept": "*/*",
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${getCookie('token')}`,
+                },
+            },
+        );
+        return response.data.key;
+    } catch (error: any) {
+        throw new Error(error.message);
+    }
+}
+
+export async function getUserProfile(username: string): Promise<Profile> {
+    try {
+        const response = await axiosInstance.get(`/users/profile/${username}`,
             {
                 headers: {
                     "Accept": "*/*",
@@ -67,10 +85,19 @@ export async function getUser(username: string): Promise<Profile> {
 
 
 // Posts
-export async function getUserPosts(username: string): Promise<Post[]> {
+export interface PaginatedResponse<T> {
+    content: T[];
+    totalElements: number;
+    totalPages: number;
+    size: number;
+    number: number;
+}
+
+export async function getUserPosts(username: string, page: number = 0, size: number = 10): Promise<PaginatedResponse<Post>> {
     try {
         const response = await axiosInstance.get(`/posts/user/${username}`,
             {
+                params: {page, size},
                 headers: {
                     "Accept": "*/*",
                     "Content-Type": "application/json",
@@ -84,26 +111,26 @@ export async function getUserPosts(username: string): Promise<Post[]> {
     }
 }
 
-export async function getAllPosts(): Promise<Post[]> {
+export async function searchPosts(keyword: string = '', page: number = 0, size: number = 10): Promise<PaginatedResponse<Post>> {
     try {
-        const response = await axiosInstance.get(`/posts`,
-            {
-                headers: {
-                    "Accept": "*/*",
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${getCookie('token')}`,
-                },
+        const response = await axiosInstance.get(`/posts/search`, {
+            params: {keyword, page, size},
+            headers: {
+                "Accept": "*/*",
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${getCookie('token')}`,
             },
-        );
+        });
         return response.data;
     } catch (error: any) {
         throw new Error(error.message);
     }
 }
 
-export async function getFollowedPosts(): Promise<Post[]> {
+// todo
+export async function getFollowedPosts(username: string): Promise<Post[]> {
     try {
-        const response = await axiosInstance.get(`/posts/followed`,
+        const response = await axiosInstance.get(`/posts/followed/${username}`,
             {
                 headers: {
                     "Accept": "*/*",
@@ -120,24 +147,7 @@ export async function getFollowedPosts(): Promise<Post[]> {
 
 export async function createPost(formData: PostProp): Promise<void> {
     try {
-        await axiosInstance.post(`/posts`,
-            formData,
-            {
-                headers: {
-                    "Accept": "*/*",
-                    "Content-Type": "multipart/form-data",
-                    "Authorization": `Bearer ${getCookie('token')}`,
-                },
-            },
-        );
-    } catch (error: any) {
-        throw new Error(error.message);
-    }
-}
-
-export async function updatePost(postId: number, formData: Post): Promise<void> {
-    try {
-        await axiosInstance.put(`/posts/${postId}`,
+        await axiosInstance.post(`/posts/create`,
             formData,
             {
                 headers: {
@@ -171,7 +181,7 @@ export async function deletePost(postId: number): Promise<void> {
 // Comment
 export async function getCommentsForPost(postId: number): Promise<Comment[]> {
     try {
-        const response = await axiosInstance.get(`/comments/post/${postId}`,
+        const response = await axiosInstance.get(`/comment/post/${postId}`,
             {
                 headers: {
                     "Accept": "*/*",
@@ -188,7 +198,7 @@ export async function getCommentsForPost(postId: number): Promise<Comment[]> {
 
 export async function createComment(formData: CommentProp): Promise<void> {
     try {
-        await axiosInstance.post(`/comments`,
+        await axiosInstance.post(`/comment`,
             formData,
             {
                 headers: {
@@ -205,7 +215,7 @@ export async function createComment(formData: CommentProp): Promise<void> {
 
 export async function deleteComment(commentId: number): Promise<void> {
     try {
-        await axiosInstance.delete(`/comments/${commentId}`,
+        await axiosInstance.delete(`/comment/${commentId}`,
             {
                 headers: {
                     "Accept": "*/*",
@@ -339,28 +349,9 @@ export async function getFollowed(username: string | null): Promise<Profile[]> {
     }
 }
 
-export async function followSelf(username: string): Promise<void> {
-    try {
-        await axiosInstance.post(`/follows/${username}`,
-            {},
-            {
-                headers: {
-                    "Accept": "*/*",
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${getCookie('token')}`,
-                },
-            },
-        );
-    } catch (error: any) {
-        throw new Error(error.message);
-    }
-
-
-}
-
 export async function getAllUsers(): Promise<User[]> {
     try {
-        const response = await axios.get(`${domain}/api/admin/users`, {
+        const response = await axios.get(`${domain}/admin/users`, {
             headers: {
                 "Accept": "*/*",
                 "Content-Type": "application/json",
@@ -375,7 +366,7 @@ export async function getAllUsers(): Promise<User[]> {
 
 export async function getAllReportedPost(): Promise<Post[]> {
     try {
-        const response = await axios.get(`${domain}/api/admin/posts/reported`, {
+        const response = await axios.get(`${domain}/admin/posts/reported`, {
             headers: {
                 "Accept": "*/*",
                 "Content-Type": "application/json",
@@ -390,7 +381,7 @@ export async function getAllReportedPost(): Promise<Post[]> {
 
 export async function getStats(): Promise<DashboardStats> {
     try {
-        const response = await axios.get(`${domain}/api/admin/stats`, {
+        const response = await axios.get(`${domain}/admin/stats`, {
             headers: {
                 "Accept": "*/*",
                 "Content-Type": "application/json",

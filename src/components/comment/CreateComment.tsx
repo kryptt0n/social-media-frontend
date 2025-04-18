@@ -1,32 +1,28 @@
-import { Card, Form, Button } from "react-bootstrap";
-import { createComment } from "../../lib/actions";
-import { useState } from "react";
-import { CommentProp } from "../../lib/propinterfaces";
+import {Card, Form, Button} from "react-bootstrap";
+import {createComment} from "../../lib/actions";
+import {useState} from "react";
+import {CommentProp} from "../../lib/propinterfaces";
 
 interface CreateCommentProps {
     postId: number,
     onCommentSubmitted: () => void,
 }
 
-export default function CreateComment({ postId, onCommentSubmitted }: CreateCommentProps) {
+export default function CreateComment({postId, onCommentSubmitted}: CreateCommentProps) {
+    const username = sessionStorage.getItem("curUn");
     const [content, setContent] = useState<string>("");
-    const [commentData, setCommentData] = useState<CommentProp>({
-        "content": null,
-        "post": {
-            "id": postId,
-        },
-    });
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        const payload = {
-            ...commentData,
-            "content": content,
-        };
+        const commentForm = {
+            username: username!,
+            content: content,
+            postId: postId,
+        }
 
         try {
-            await createComment(payload);
+            await createComment(commentForm);
             console.log("Comment created successfully!");
             setContent("");
             onCommentSubmitted();
