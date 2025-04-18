@@ -1,5 +1,5 @@
 import { Pie } from "react-chartjs-2";
-import { Chart, ArcElement, Tooltip, Legend } from "chart.js";
+import { Chart, ArcElement, Tooltip, Legend, ChartOptions } from "chart.js";
 import { DashboardStats } from "../../lib/definitions";
 
 Chart.register(ArcElement, Tooltip, Legend);
@@ -20,16 +20,16 @@ const PieChartComponent = ({ stats }: { stats: DashboardStats }) => {
     responsive: true,
     plugins: {
       legend: {
-        position: "bottom", 
+        position: "bottom",
         labels: {
-          boxWidth: 10, 
+          boxWidth: 10,
         },
       },
     },
   };
 
   return (
-    <div style={{ width: "350px", height: "350px" }}> 
+    <div style={{ width: "350px", height: "350px" }}>
       <Pie data={data} options={options} />
     </div>
   );

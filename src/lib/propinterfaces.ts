@@ -6,12 +6,12 @@ export interface LoginProp {
 }
 
 export interface UserProp {
-    user: {
-        username: string | null,
-        password: string | null,
-        bio: string | null,
-    },
-    file: File | null,
+    username: string,
+    password: string,
+    email: string,
+    bio: string,
+    base64Image: string,
+    isPublic: boolean,
 }
 
 export interface PostProp {
