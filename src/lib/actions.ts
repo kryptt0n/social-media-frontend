@@ -360,11 +360,11 @@ export async function followSelf(username: string): Promise<void> {
 
 export async function getAllUsers(): Promise<User[]> {
     try {
-        const response = await axios.get(`${domain}/api/admin/users`, {
+        const response = await axiosInstance.get(`/admin/users`, {
             headers: {
                 "Accept": "*/*",
                 "Content-Type": "application/json",
-                // "Authorization": `Bearer ${getCookie('token')}`,
+                "Authorization": `Bearer ${getCookie('token')}`,
             },
         });
         return response.data;
@@ -375,11 +375,11 @@ export async function getAllUsers(): Promise<User[]> {
 
 export async function getAllReportedPost(): Promise<Post[]> {
     try {
-        const response = await axios.get(`${domain}/api/admin/posts/reported`, {
+        const response = await axiosInstance.get(`/admin/posts/reported`, {
             headers: {
                 "Accept": "*/*",
                 "Content-Type": "application/json",
-                // "Authorization": `Bearer ${getCookie('token')}`,
+                "Authorization": `Bearer ${getCookie('token')}`,
             },
         });
         return response.data;
@@ -390,13 +390,14 @@ export async function getAllReportedPost(): Promise<Post[]> {
 
 export async function getStats(): Promise<DashboardStats> {
     try {
-        const response = await axios.get(`${domain}/api/admin/stats`, {
+        const response = await axiosInstance.get(`/admin/stats`, {
             headers: {
                 "Accept": "*/*",
                 "Content-Type": "application/json",
-                // "Authorization": `Bearer ${getCookie('token')}`,
+                "Authorization": `Bearer ${getCookie('token')}`,
             },
         });
+        console.log("Stats", response.data)
         return response.data;
     } catch (error: any) {
         throw new Error(error.message);
