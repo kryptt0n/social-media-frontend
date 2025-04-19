@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Button } from "react-bootstrap";
 import { Form } from "react-bootstrap";
 import type { Profile } from "../../../lib/definitions";
-import { deactivateUser, deleteUser, getUser, recoverUser, setPrivate, setPublic, updateUser } from "../../../lib/actions";
+import { deactivateUser, deleteUser, getUserProfile, recoverUser, setPrivate, setPublic, updateUser } from "../../../lib/actions";
 import { GrUser } from "react-icons/gr";
 import { redirect } from "react-router-dom";
 import { useAuth } from "../../../lib/authContext";
@@ -25,7 +25,7 @@ export default function ProfileEdit() {
     useEffect(() => {
         const fetchProfile = async () => {
             if (currentUser) {
-                const response = await getUser(currentUser);
+                const response = await getUserProfile(currentUser);
                 setProfile(response);
             }
         }

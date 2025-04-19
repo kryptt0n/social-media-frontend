@@ -1,62 +1,67 @@
-import { useState, useEffect } from "react";
-import type { User, Post, Profile } from "../../../lib/definitions";
-import { getUser, getUserPosts, followUser, unfollowUser } from "../../../lib/actions";
+import {useState, useEffect} from "react";
+import type {Post, Profile} from "../../../lib/definitions";
+import {getUserPosts, followUser, unfollowUser, getUserProfile} from "../../../lib/actions";
 import PostItem from "../../../components/post/PostComponent";
-import { useParams } from "react-router-dom";
-import { GrUser } from 'react-icons/gr';
-import { useNavigate } from "react-router-dom";
+import {useParams} from "react-router-dom";
+import {GrUser} from 'react-icons/gr';
+import {useNavigate} from "react-router-dom";
 
 export default function UserProfile() {
-    const { username } = useParams<{ username: string }>();
+    const {username} = useParams<{ username: string }>();
     const [postList, setPostList] = useState<Post[]>([]);
     const navigate = useNavigate();
     const [profile, setProfile] = useState<Profile>({} as Profile);
+    const [page, setPage] = useState(0);
+    const [totalPages, setTotalPages] = useState(0);
 
     useEffect(() => {
-        const loadProfile = async () => {
-            try {
-                if (username) {
-                    const profile = await getUser(username);
-                    setProfile(profile);
-                }
-            } catch (error) {
-                console.error(error);
-            }
-        }
-
-        const loadAllPosts = async () => {
-            try {
-                if (username) {
-                    const allPosts = await getUserPosts(username);
-                    setPostList(allPosts);
-                }
-            } catch (error) {
-                console.error(error);
-            }
-        }
-
         loadProfile();
-        loadAllPosts();
-    }, [username]);
+        loadUserPosts(page);
+    }, [username, page]);
 
-    const handleFollowClick = async () => {
+    const loadProfile = async () => {
         try {
             if (username) {
-                if (profile.isFollowed) {
-                    await unfollowUser(username);
-                    setProfile(prevUser => ({ ...prevUser, isFollowed: false }));
-                } else {
-                    await followUser(username);
-                    setProfile(prevUser => ({ ...prevUser, isFollowed: true }));
-                }
+                const profile = await getUserProfile(username);
+                setProfile(profile);
             }
         } catch (error) {
-            console.error('Error following:', error);
+            console.error(error);
+        }
+    }
+
+    const loadUserPosts = async (pageNumber: number) => {
+        try {
+            const response = await getUserPosts(username!, pageNumber);
+            setPostList(response.content);
+            setTotalPages(response.totalPages);
+        } catch (error) {
+            console.error(error);
         }
     };
 
+    // const handleFollowClick = async () => {
+    //     try {
+    //         if (username) {
+    //             if (profile.isFollowed) {
+    //                 await unfollowUser(username);
+    //                 setProfile(prevUser => ({...prevUser, isFollowed: false}));
+    //             } else {
+    //                 await followUser(username);
+    //                 setProfile(prevUser => ({...prevUser, isFollowed: true}));
+    //             }
+    //         }
+    //     } catch (error) {
+    //         console.error('Error following:', error);
+    //     }
+    // };
+
     const handlePostDeleted = (postId: number) => {
-        setPostList(prevPosts => prevPosts.filter(post => post.id !== postId));
+        setPostList(prevPosts => prevPosts.filter(post => post.postId !== postId));
+    };
+
+    const handlePageChange = (newPage: number) => {
+        setPage(newPage);
     };
 
     return (
@@ -69,8 +74,9 @@ export default function UserProfile() {
                         className="w-24 h-24 rounded-full object-cover"
                     />
                 ) : (
-                    <div className="w-24 h-24 rounded-lg object-cover border-2 border-gray-200 flex items-center justify-center aspect-square bg-slate-100">
-                        <GrUser className="h-full w-full text-gray-600 p-1" />
+                    <div
+                        className="w-24 h-24 rounded-lg object-cover border-2 border-gray-200 flex items-center justify-center aspect-square bg-slate-100">
+                        <GrUser className="h-full w-full text-gray-600 p-1"/>
                     </div>
                 )}
 
@@ -80,12 +86,13 @@ export default function UserProfile() {
                         {(profile.username !== sessionStorage.getItem("curUn")) ? (
                             <button
                                 className="px-4 py-1 text-white bg-blue-500 rounded-full hover:bg-blue-600"
-                                onClick={handleFollowClick}
+                                // onClick={handleFollowClick}
                             >
-                                {profile.isFollowed ? "Unfollow" : "Follow"}
+                                {/*{profile.isFollowed ? "Unfollow" : "Follow"}*/}
                             </button>
                         ) : (
-                            <a className="px-4 py-1 text-white bg-blue-500 rounded-full hover:bg-blue-600" href={`/profile-edit`}>Edit profile</a>
+                            <a className="px-4 py-1 text-white bg-blue-500 rounded-full hover:bg-blue-600"
+                               href={`/profile-edit`}>Edit profile</a>
                         )}
 
                     </div>
@@ -93,8 +100,13 @@ export default function UserProfile() {
                     <p className="text-gray-600">{profile.bio}</p>
 
                     <div className="flex flex-row space-x-3">
-                        <div onClick={() => navigate(`/following/${username}`)} className="cursor-pointer hover:underline text-gray-700">{profile.followingCount} Following</div>
-                        <div onClick={() => navigate(`/follower/${username}`)} className="cursor-pointer hover:underline text-gray-700">{profile.followersCount} Followers</div>
+                        <div onClick={() => navigate(`/following/${username}`)}
+                             className="cursor-pointer hover:underline text-gray-700">{profile.followingCount} Following
+                        </div>
+                        <div onClick={() => navigate(`/follower/${username}`)}
+                             className="cursor-pointer hover:underline text-gray-700">
+                            {profile.followerCount} Followers
+                        </div>
                     </div>
                 </div>
 
@@ -103,13 +115,28 @@ export default function UserProfile() {
 
             <div className="user-posts space-y-2">
                 {postList.length > 0 ? (
-                    postList.map((post) => <PostItem key={post.id} postData={post} allowDelete={true} onPostDeleted={handlePostDeleted} />)
+                    postList.map((post) => <PostItem key={post.postId} postData={post} allowDelete={true}
+                                                     onPostDeleted={handlePostDeleted}/>)
                 ) : (
                     <div className="no-posts text-center mt-10">
                         <p className="text-xl text-gray-700">This account doesn't have any posts.</p>
                     </div>
                 )}
             </div>
+
+            {totalPages > 1 && (
+                <div className="flex justify-center gap-2 mt-4">
+                    {Array.from({length: totalPages}, (_, idx) => (
+                        <button
+                            key={idx}
+                            className={`px-3 py-1 rounded ${idx === page ? "bg-blue-500 text-white" : "bg-gray-200 hover:bg-gray-300"}`}
+                            onClick={() => handlePageChange(idx)}
+                        >
+                            {idx + 1}
+                        </button>
+                    ))}
+                </div>
+            )}
         </div>
     );
 }
