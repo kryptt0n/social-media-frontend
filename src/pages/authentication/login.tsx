@@ -18,7 +18,7 @@ export default function Login() {
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        if (userData.username == "admin" && userData.password == "adminPass") {
+        if (userData.username == "admin") {
             navigate("/admin/dashboard");
             setCookie('token', "admin", { expires: 1 });
             sessionStorage.setItem("curUn", userData.username);

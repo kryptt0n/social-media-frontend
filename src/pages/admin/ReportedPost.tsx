@@ -2,7 +2,8 @@ import { DataGrid, GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import { useState, useEffect } from "react";
 import { Button, Dialog, DialogContent, DialogTitle, IconButton } from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
-import { getAllReportedPost } from "../../lib/actions";
+import { getAllReportedPost, deletePost } from "../../lib/actions";
+
 
 type ReportedPostRow = {
   id: number;
@@ -22,9 +23,9 @@ const ReportedPosts = () => {
     getAllReportedPost()
       .then(response => {
         const safePosts: ReportedPostRow[] = response.map(post => ({
-          id: post.id,
+          id: post.postId,
           content: post.content || 'N/A',
-          username: post.user?.username || 'N/A',
+          username: post.username || 'N/A',
           imageUrl: post.imageUrl ? String(post.imageUrl) : 'N/A',
         }));
         setReportedPosts(safePosts);
@@ -33,9 +34,8 @@ const ReportedPosts = () => {
   }, []);
 
   const handleDelete = (postId: number) => {
-    fetch(`/api/admin/posts/${postId}`, {
-      method: "DELETE",
-    }).then(() => {
+      deletePost(postId)
+          .then(() => {
       setReportedPosts(prev => prev.filter(post => post.id !== postId));
     });
   };

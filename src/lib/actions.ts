@@ -351,11 +351,11 @@ export async function getFollowed(username: string | null): Promise<Profile[]> {
 
 export async function getAllUsers(): Promise<User[]> {
     try {
-        const response = await axios.get(`${domain}/admin/users`, {
+        const response = await axiosInstance.get(`/admin/users`, {
             headers: {
                 "Accept": "*/*",
                 "Content-Type": "application/json",
-                // "Authorization": `Bearer ${getCookie('token')}`,
+                "Authorization": `Bearer ${getCookie('token')}`,
             },
         });
         return response.data;
@@ -366,7 +366,22 @@ export async function getAllUsers(): Promise<User[]> {
 
 export async function getAllReportedPost(): Promise<Post[]> {
     try {
-        const response = await axios.get(`${domain}/admin/posts/reported`, {
+        const response = await axiosInstance.get(`/admin/posts/reported`, {
+            headers: {
+                "Accept": "*/*",
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${getCookie('token')}`,
+            },
+        });
+        return response.data;
+    } catch (error: any) {
+        throw new Error(error.message);
+    }
+}
+
+export async function getStats(): Promise<DashboardStats> {
+    try {
+        const response = await axiosInstance.get(`/admin/stats`, {
             headers: {
                 "Accept": "*/*",
                 "Content-Type": "application/json",
@@ -379,20 +394,7 @@ export async function getAllReportedPost(): Promise<Post[]> {
     }
 }
 
-export async function getStats(): Promise<DashboardStats> {
-    try {
-        const response = await axios.get(`${domain}/admin/stats`, {
-            headers: {
-                "Accept": "*/*",
-                "Content-Type": "application/json",
-                // "Authorization": `Bearer ${getCookie('token')}`,
-            },
-        });
-        return response.data;
-    } catch (error: any) {
-        throw new Error(error.message);
-    }
-}
+
 
 // profile management
 export async function deactivateUser(username: string): Promise<void> {
