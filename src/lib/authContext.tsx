@@ -5,7 +5,6 @@ import {setCookie, getCookie, removeCookie} from 'typescript-cookie';
 
 interface AuthContextType {
     isAuthenticated: boolean | undefined;
-    isLoading: boolean,
     login: (formData: LoginProp) => Promise<string>;
     logout: () => void;
 }
@@ -18,7 +17,6 @@ interface AuthProviderProps {
 
 export const AuthProvider = ({children}: AuthProviderProps) => {
     const [isAuthenticated, setIsAuthenticated] = useState<boolean | undefined>(undefined);
-    const [isLoading, setIsLoading] = useState(true);
 
     // Update useEffect to redirect when authenticated
     useEffect(() => {
@@ -48,7 +46,6 @@ export const AuthProvider = ({children}: AuthProviderProps) => {
                 setIsAuthenticated(false);
             }
 
-            setIsLoading(false);
         };
 
         checkAuth();
@@ -82,7 +79,7 @@ export const AuthProvider = ({children}: AuthProviderProps) => {
     };
 
     return (
-        <AuthContext.Provider value={{isAuthenticated, isLoading, login: handleLogin, logout: handleLogout}}>
+        <AuthContext.Provider value={{isAuthenticated, login: handleLogin, logout: handleLogout}}>
             {children}
         </AuthContext.Provider>
     );

@@ -5,6 +5,7 @@ import PostItem from "../../../components/post/PostComponent";
 import {useParams} from "react-router-dom";
 import {GrUser} from 'react-icons/gr';
 import {useNavigate} from "react-router-dom";
+import FollowComponent from "../../../components/follow";
 
 export default function UserProfile() {
     const {username} = useParams<{ username: string }>();
@@ -13,6 +14,8 @@ export default function UserProfile() {
     const [profile, setProfile] = useState<Profile>({} as Profile);
     const [page, setPage] = useState(0);
     const [totalPages, setTotalPages] = useState(0);
+
+    const currentUser = sessionStorage.getItem("curUn");
 
     useEffect(() => {
         loadProfile();
@@ -40,28 +43,20 @@ export default function UserProfile() {
         }
     };
 
-    // const handleFollowClick = async () => {
-    //     try {
-    //         if (username) {
-    //             if (profile.isFollowed) {
-    //                 await unfollowUser(username);
-    //                 setProfile(prevUser => ({...prevUser, isFollowed: false}));
-    //             } else {
-    //                 await followUser(username);
-    //                 setProfile(prevUser => ({...prevUser, isFollowed: true}));
-    //             }
-    //         }
-    //     } catch (error) {
-    //         console.error('Error following:', error);
-    //     }
-    // };
-
     const handlePostDeleted = (postId: number) => {
         setPostList(prevPosts => prevPosts.filter(post => post.postId !== postId));
     };
 
     const handlePageChange = (newPage: number) => {
         setPage(newPage);
+    };
+
+    const handleFollow = () => {
+        setProfile((prev) => (prev ? { ...prev, isFollowed: true, followersCount: prev.followerCount + 1 } : prev));
+    };
+
+    const handleUnfollow = () => {
+        setProfile((prev) => (prev ? { ...prev, isFollowed: false, followersCount: prev.followerCount - 1 } : prev));
     };
 
     return (
@@ -84,12 +79,7 @@ export default function UserProfile() {
                     <div className="flex justify-between w-full">
                         <h1 className="text-2xl font-bold text-gray-800">{profile.username}</h1>
                         {(profile.username !== sessionStorage.getItem("curUn")) ? (
-                            <button
-                                className="px-4 py-1 text-white bg-blue-500 rounded-full hover:bg-blue-600"
-                                // onClick={handleFollowClick}
-                            >
-                                {/*{profile.isFollowed ? "Unfollow" : "Follow"}*/}
-                            </button>
+                            <FollowComponent currentUser={currentUser!} userToFollow={username!} onFollowed={handleFollow} onUnFollowed={handleUnfollow} />
                         ) : (
                             <a className="px-4 py-1 text-white bg-blue-500 rounded-full hover:bg-blue-600"
                                href={`/profile-edit`}>Edit profile</a>

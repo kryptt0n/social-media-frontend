@@ -1,15 +1,16 @@
 import { useEffect, useState } from "react";
 import type { Profile } from "../../../lib/definitions";
-import { Button, Image } from "react-bootstrap";
 import { getFollowers, followUser, unfollowUser } from "../../../lib/actions";
-import { GrUser } from "react-icons/gr";
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
+import UserItem from "../../../components/userItem";
 
 export default function Follower() {
     const { username } = useParams<{ username: string }>();
     const navigate = useNavigate();
     const [followerList, setFollowerList] = useState<Profile[]>([]);
+
+    const currentUser = sessionStorage.getItem("curUn");
 
     useEffect(() => {
         const loadAllFollower = async () => {
@@ -26,24 +27,6 @@ export default function Follower() {
         loadAllFollower();
     }, []);
 
-    const handleFollowToggle = async (follower: Profile) => {
-        try {
-            if (follower.isFollowed) {
-                await unfollowUser(follower.username);
-            } else {
-                await followUser(follower.username);
-            }
-            setFollowerList((prev) =>
-                prev.map((user) =>
-                    user.username === follower.username
-                        ? { ...user, isFollowed: !user.isFollowed }
-                        : user
-                )
-            );
-        } catch (error) {
-            console.error("Error updating follow status:", error);
-        }
-    };
 
     return (
         <div className="max-w-3xl mx-auto space-y-6">
@@ -51,41 +34,7 @@ export default function Follower() {
             <div className="space-y-1">
                 {followerList.length > 0 ? (
                     followerList.map((follower) => (
-                        <div className="user-header flex items-center justify-between bg-slate-50 p-3 border-2 border-gray-400 rounded-md cursor-pointer" >
-                            <div
-                                className="space-x-6 flex"
-                                onClick={() => navigate(`/profile/${follower.username}`)}
-                            >
-                                {follower.imageUrl ? (
-                                    <img
-                                        src={follower.imageUrl.toString()}
-                                        alt={`${follower.username}'s profile`}
-                                        className="w-10 h-10 rounded-full object-cover"
-                                    />
-                                ) : (
-                                    <div className="w-10 h-10 rounded-lg object-cover border-2 border-gray-200">
-                                        <GrUser className="h-full w-full text-gray-600 overflow-hidden" />
-                                    </div>
-                                )}
-                                <div className="flex flex-col space-y-1">
-                                    <h1 className="text-2xl font-bold text-gray-800">{follower.username}</h1>
-                                    <p className="text-gray-600">{follower.bio}</p>
-                                </div>
-                            </div>
-                            <div>
-                                {(follower.username !== sessionStorage.getItem("curUn")) && (
-                                    <button
-                                        className="follow-button px-4 py-1 text-white bg-blue-500 rounded-full hover:bg-blue-600"
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            handleFollowToggle(follower);
-                                        }}
-                                    >
-                                        {follower.isFollowed ? "Unfollow" : "Follow"}
-                                    </button>
-                                )}
-                            </div>
-                        </div>
+                        <UserItem currentUser={currentUser!} userData={follower}/>
                     ))
 
                 ) : (
