@@ -9,7 +9,7 @@ interface ProtectedRouteProps {
 const ProtectedRoute = () => {
   const auth = useAuth();
 
-  if (auth.isLoading) {
+  if (auth.isAuthenticated === undefined) {
     return <div>Loading...</div>;
   }
 

@@ -1,5 +1,3 @@
-import type { User, Post } from "./definitions";
-
 export interface LoginProp {
     username: string,
     password: string,
@@ -36,6 +34,10 @@ export interface LikeProp {
     postId: number,
 }
 
+export interface FollowProp {
+    followerName: string,
+    followedName: string,
+}
 export interface ForgotPasswordProp {
     email: string,
 }

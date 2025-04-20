@@ -1,9 +1,7 @@
-import axios from "axios";
 import axiosInstance from "./axiosInstance";
-import {domain} from "./axiosInstance"
 import type {Post, Comment, Profile, User, DashboardStats} from "./definitions";
 import {
-    CommentProp,
+    CommentProp, FollowProp,
     ForgotPasswordProp,
     LikeProp,
     LoginProp,
@@ -181,7 +179,7 @@ export async function deletePost(postId: number): Promise<void> {
 // Comment
 export async function getCommentsForPost(postId: number): Promise<Comment[]> {
     try {
-        const response = await axiosInstance.get(`/comment/post/${postId}`,
+        const response = await axiosInstance.get(`/posts/comment/post/${postId}`,
             {
                 headers: {
                     "Accept": "*/*",
@@ -198,7 +196,7 @@ export async function getCommentsForPost(postId: number): Promise<Comment[]> {
 
 export async function createComment(formData: CommentProp): Promise<void> {
     try {
-        await axiosInstance.post(`/comment`,
+        await axiosInstance.post(`/posts/comment`,
             formData,
             {
                 headers: {
@@ -215,7 +213,7 @@ export async function createComment(formData: CommentProp): Promise<void> {
 
 export async function deleteComment(commentId: number): Promise<void> {
     try {
-        await axiosInstance.delete(`/comment/${commentId}`,
+        await axiosInstance.delete(`/posts/comment/${commentId}`,
             {
                 headers: {
                     "Accept": "*/*",
@@ -249,7 +247,7 @@ export async function getLikeCount(postId: number): Promise<number> {
 
 export async function createLike(formData: LikeProp): Promise<void> {
     try {
-        await axiosInstance.post(`/likes`,
+        await axiosInstance.post(`/posts/like`,
             formData,
             {
                 headers: {
@@ -266,7 +264,7 @@ export async function createLike(formData: LikeProp): Promise<void> {
 
 export async function deleteLike(formData: LikeProp): Promise<void> {
     try {
-        await axiosInstance.delete(`/likes`,
+        await axiosInstance.delete(`/posts/unlike`,
             {
                 headers: {
                     "Accept": "*/*",
@@ -282,10 +280,30 @@ export async function deleteLike(formData: LikeProp): Promise<void> {
 }
 
 // Follow
-export async function followUser(username: string): Promise<void> {
+export async function isFollowed(currentUsername: string, username: string): Promise<boolean> {
     try {
-        await axiosInstance.post(`/follows/${username}`,
-            {},
+        const response = await axiosInstance.get(`/users/is-followed`, {
+            params: {
+                currentUsername,
+                username,
+            },
+            headers: {
+                "Accept": "*/*",
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${getCookie('token')}`,
+            },
+        });
+
+        return response.data;
+    } catch (error: any) {
+        throw new Error(error.message);
+    }
+}
+
+export async function followUser(formData: FollowProp): Promise<void> {
+    try {
+        await axiosInstance.post(`/users/follow`,
+            formData,
             {
                 headers: {
                     "Accept": "*/*",
@@ -299,9 +317,10 @@ export async function followUser(username: string): Promise<void> {
     }
 }
 
-export async function unfollowUser(username: string): Promise<void> {
+export async function unfollowUser(formData: FollowProp): Promise<void> {
     try {
-        await axiosInstance.delete(`/follows/${username}`,
+        await axiosInstance.post(`/users/unfollow`,
+            formData,
             {
                 headers: {
                     "Accept": "*/*",
@@ -315,9 +334,9 @@ export async function unfollowUser(username: string): Promise<void> {
     }
 }
 
-export async function getFollowers(username: string | null): Promise<Profile[]> {
+export async function getFollowers(username: string): Promise<Profile[]> {
     try {
-        const response = await axiosInstance.get(`/follows/followers/${username}`,
+        const response = await axiosInstance.get(`/users/followers/${username}`,
             {
                 headers: {
                     "Accept": "*/*",
@@ -332,9 +351,9 @@ export async function getFollowers(username: string | null): Promise<Profile[]> 
     }
 }
 
-export async function getFollowed(username: string | null): Promise<Profile[]> {
+export async function getFollowed(username: string): Promise<Profile[]> {
     try {
-        const response = await axiosInstance.get(`/follows/followed/${username}`,
+        const response = await axiosInstance.get(`/users/followed/${username}`,
             {
                 headers: {
                     "Accept": "*/*",
@@ -393,7 +412,6 @@ export async function getStats(): Promise<DashboardStats> {
         throw new Error(error.message);
     }
 }
-
 
 
 // profile management

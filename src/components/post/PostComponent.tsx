@@ -14,12 +14,15 @@ interface PostItemProps {
 }
 
 export default function PostItem({postData, allowDelete, onPostDeleted}: PostItemProps) {
+    const username = sessionStorage.getItem("curUn");
+
     const navigate = useNavigate();
     const formattedDate = new Date(postData.createdAt).toLocaleDateString();
     const [commentList, setCommentList] = useState<Comment[]>([]);
     const [showComment, setShowComment] = useState<boolean>(false);
     const [isLiked, setIsLiked] = useState<boolean>(postData.likeByCurrentUser);
     const [totalLikes, setTotalLikes] = useState<number>(postData.likeCount);
+
 
     const handleCommentClick = async () => {
       try {
@@ -35,21 +38,25 @@ export default function PostItem({postData, allowDelete, onPostDeleted}: PostIte
       }
     };
 
-    // const handleLikeClick = async () => {
-    //   try {
-    //     if (isLiked) {
-    //       await deleteLike({ post: { id: postData.postId } });
-    //       setIsLiked(false);
-    //       setTotalLikes(totalLikes - 1);
-    //     } else {
-    //       await createLike({ post: { id: postData.id } });
-    //       setIsLiked(true);
-    //       setTotalLikes(totalLikes + 1);
-    //     }
-    //   } catch (error) {
-    //     console.error('Error liking the post:', error);
-    //   }
-    // };
+    const handleLikeClick = async () => {
+      try {
+          const likeForm = {
+              username: username!,
+              postId: postData.postId,
+          }
+        if (isLiked) {
+          await deleteLike(likeForm);
+          setIsLiked(false);
+          setTotalLikes(totalLikes - 1);
+        } else {
+          await createLike( likeForm );
+          setIsLiked(true);
+          setTotalLikes(totalLikes + 1);
+        }
+      } catch (error) {
+        console.error('Error liking the post:', error);
+      }
+    };
 
     const handleReloadComments = async () => {
       try {
@@ -76,7 +83,7 @@ export default function PostItem({postData, allowDelete, onPostDeleted}: PostIte
                 onClick={() => navigate(`/profile/${postData.username}`)}>
                 {postData.avatarUrl ? (
                     <img
-                        src={postData.avatarUrl.toString()}
+                        src={postData.avatarUrl}
                         alt={`${postData.username}'s profile`}
                         className="w-10 h-10 rounded-full object-cover"
                     />
@@ -105,7 +112,7 @@ export default function PostItem({postData, allowDelete, onPostDeleted}: PostIte
             <div className="post-footer flex items-center justify-normal mt-4 pl-14 space-x-6">
                 <div
                     className={`post-like-icon flex items-center space-x-1 cursor-pointer ${isLiked ? 'text-red-500' : 'text-gray-500'}`}
-                    // onClick={handleLikeClick}
+                    onClick={handleLikeClick}
                 >
                     <span><GrLike/></span>
                     <span className="post-like-count text-sm">{totalLikes} likes</span>
@@ -113,7 +120,7 @@ export default function PostItem({postData, allowDelete, onPostDeleted}: PostIte
 
                 <div
                     className="post-like-icon flex items-center space-x-1 cursor-pointer text-gray-500"
-                    // onClick={handleCommentClick}
+                    onClick={handleCommentClick}
                 >
                     <span><GrContact/></span>
                     <span className="post-like-count text-sm">comments</span>
