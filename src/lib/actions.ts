@@ -504,7 +504,7 @@ export async function updateUser(username: string, formData: FormData): Promise<
 
 export async function sendForgotPassword(formData: ForgotPasswordProp): Promise<void> {
     try {
-        await axiosInstance.post(`/forgot-password`,
+        await axiosInstance.post(`/identity/forgot-password`,
             formData
         );
 
@@ -515,7 +515,7 @@ export async function sendForgotPassword(formData: ForgotPasswordProp): Promise<
 
 export async function resetPassword(resetToken: string, formData: ResetPasswordProp): Promise<void> {
     try {
-        await axiosInstance.post(`/reset`,
+        await axiosInstance.post(`/identity/reset`,
             formData,
             {
                 headers: {
