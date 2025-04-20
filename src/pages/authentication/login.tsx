@@ -19,9 +19,12 @@ export default function Login() {
         e.preventDefault();
 
         if (userData.username == "admin") {
-            navigate("/admin/dashboard");
-            setCookie('token', "admin", { expires: 1 });
-            sessionStorage.setItem("curUn", userData.username);
+            const response = await auth.login(userData);
+            if (response) {
+                navigate("/admin/dashboard");
+            } else {
+                setError("Incorrect credentials");
+            }
         } else {
             const response = await auth.login(userData);
 

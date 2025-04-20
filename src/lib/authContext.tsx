@@ -32,7 +32,6 @@ export const AuthProvider = ({children}: AuthProviderProps) => {
                         token: token,
                         username: username
                     };
-                    if(username !== "admin") {
                         const response = await validate(validateForm);
 
                         if (response) {
@@ -40,9 +39,7 @@ export const AuthProvider = ({children}: AuthProviderProps) => {
                         } else {
                             setIsAuthenticated(false);
                         }
-                    } else {
-                        setIsAuthenticated(true)
-                    }
+
                 } catch (err) {
                     console.error("Validation error:", err);
                     setIsAuthenticated(false);

@@ -1,11 +1,14 @@
 import type {Post} from '../../lib/definitions';
 import {GrUser, GrLike, GrContact, GrTrash} from 'react-icons/gr';
+import { MdReport } from 'react-icons/md';
 import CreateComment from '../comment/CreateComment';
 import CommentItem from '../comment/CommentComponent';
 import {useCallback, useEffect, useState} from 'react';
 import type {Comment} from '../../lib/definitions';
-import {getCommentsForPost, createLike, deleteLike, getLikeCount, deletePost} from '../../lib/actions';
+import {getCommentsForPost, createLike, deleteLike, getLikeCount, deletePost, reportPost} from '../../lib/actions';
 import {useNavigate} from 'react-router-dom';
+import { toast } from 'react-toastify';
+
 
 interface PostItemProps {
     postData: Post;
@@ -20,6 +23,8 @@ export default function PostItem({postData, allowDelete, onPostDeleted}: PostIte
     const [showComment, setShowComment] = useState<boolean>(false);
     const [isLiked, setIsLiked] = useState<boolean>(postData.likeByCurrentUser);
     const [totalLikes, setTotalLikes] = useState<number>(postData.likeCount);
+    const [isReported, setIsReported] = useState(false);
+
 
     const handleCommentClick = async () => {
       try {
@@ -66,6 +71,16 @@ export default function PostItem({postData, allowDelete, onPostDeleted}: PostIte
             onPostDeleted(postData.postId);
         } catch (error) {
             console.error('Error deleting the post:', error);
+        }
+    };
+
+    const handleReportPost = async () => {
+        try {
+            await reportPost(postData.postId);
+            alert(" Post reported successfully!");
+            setIsReported(true);
+        } catch (error) {
+            console.error('Error reporting the post:', error);
         }
     };
 
@@ -126,6 +141,15 @@ export default function PostItem({postData, allowDelete, onPostDeleted}: PostIte
                     >
                         <span><GrTrash/></span>
                         <span className="post-like-count text-sm">delete</span>
+                    </div>
+                )}
+                {!isReported && (
+                    <div
+                        className="post-like-icon flex items-center space-x-1 cursor-pointer text-gray-500"
+                        onClick={handleReportPost}
+                    >
+                        <span><MdReport /></span>
+                        <span className="post-like-count text-sm">report</span>
                     </div>
                 )}
             </div>

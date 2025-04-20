@@ -381,14 +381,32 @@ export async function getAllReportedPost(): Promise<Post[]> {
 
 export async function getStats(): Promise<DashboardStats> {
     try {
+        console.log("token auth", getCookie('token'))
         const response = await axiosInstance.get(`/admin/stats`, {
             headers: {
                 "Accept": "*/*",
                 "Content-Type": "application/json",
-                // "Authorization": `Bearer ${getCookie('token')}`,
+                "Authorization": `Bearer ${getCookie('token')}`,
             },
         });
         return response.data;
+    } catch (error: any) {
+        throw new Error(error.message);
+    }
+}
+
+export async function reportPost(postId: number): Promise<void> {
+    try {
+        await axiosInstance.post(`/posts/report/${postId}`,
+            {},
+            {
+                headers: {
+                    "Accept": "*/*",
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${getCookie('token')}`,
+                },
+            },
+        );
     } catch (error: any) {
         throw new Error(error.message);
     }
@@ -399,7 +417,7 @@ export async function getStats(): Promise<DashboardStats> {
 // profile management
 export async function deactivateUser(username: string): Promise<void> {
     try {
-        await axiosInstance.post(`/deactivate/${username}`,
+        await axiosInstance.post(`/users/deactivate/${username}`,
             {},
             {
                 headers: {

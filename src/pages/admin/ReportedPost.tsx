@@ -2,7 +2,7 @@ import { DataGrid, GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import { useState, useEffect } from "react";
 import { Button, Dialog, DialogContent, DialogTitle, IconButton } from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
-import { getAllReportedPost, deletePost } from "../../lib/actions";
+import {getAllReportedPost, deletePost, deactivateUser} from "../../lib/actions";
 
 
 type ReportedPostRow = {
@@ -40,10 +40,9 @@ const ReportedPosts = () => {
     });
   };
 
-  const handleIgnore = (postId: number) => {
-    fetch(`/api/admin/posts/${postId}/ignore`, {
-      method: "POST",
-    }).then(() => {
+  const handleDeactivate = (username: string, postId: number) => {
+      deactivateUser(username)
+    .then(() => {
       setReportedPosts(prev => prev.filter(post => post.id !== postId));
     });
   };
@@ -93,9 +92,9 @@ const ReportedPosts = () => {
             variant="contained"
             color="primary"
             size="small"
-            onClick={() => handleIgnore(params.row.id)}
+            onClick={() => handleDeactivate(params.row.username, params.row.id)}
           >
-            Ignore
+            Deactivate User
           </Button>
         </>
       ),
