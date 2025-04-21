@@ -7,21 +7,23 @@ import PostItem from "../../../components/post/PostComponent";
 export default function Home() {
     const [postList, setPostList] = useState<Post[]>([]);
 
-    const loadAllPosts = async () => {
-        try {
-            const allPosts = await getFollowedPosts();
-            setPostList(allPosts);
-        } catch (error) {
-            console.error(error);
-        }
-    };
-
+    const currentUser = sessionStorage.getItem("curUn");
     useEffect(() => {
         loadAllPosts();
     }, []);
+    
+    const loadAllPosts = async () => {
+        try {
+            if (currentUser) {
+                const allPosts = await getFollowedPosts(currentUser);
+                setPostList(allPosts);
+            }
+        } catch (error) {
+            console.error(error);        }
+    };    
 
     const handlePostDeleted = (postId: number) => {
-        setPostList(prevPosts => prevPosts.filter(post => post.id !== postId));
+        setPostList(prevPosts => prevPosts.filter(post => post.postId !== postId));
     };
 
     return (
@@ -30,7 +32,7 @@ export default function Home() {
             <div className="space-y-2">
                 {postList.length > 0 ? (
                     postList.map((post) => (
-                        <PostItem key={post.id} postData={post} allowDelete={false} onPostDeleted={handlePostDeleted} />
+                        <PostItem key={post.postId} postData={post} allowDelete={false} onPostDeleted={handlePostDeleted} />
                     ))
                 ) : (
                     <div className="flex justify-center mt-10">

@@ -125,19 +125,16 @@ export async function searchPosts(keyword: string = '', page: number = 0, size: 
     }
 }
 
-// todo
 export async function getFollowedPosts(username: string): Promise<Post[]> {
     try {
-        const response = await axiosInstance.get(`/posts/followed/${username}`,
-            {
-                headers: {
-                    "Accept": "*/*",
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${getCookie('token')}`,
-                },
+        const response = await axiosInstance.get(`/posts/followed/${username}`, {
+            headers: {
+                "Accept": "*/*",
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${getCookie('token')}`,
             },
-        );
-        return response.data;
+        });
+        return response.data.content ?? response.data;
     } catch (error: any) {
         throw new Error(error.message);
     }
