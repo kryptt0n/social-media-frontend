@@ -4,17 +4,22 @@ import { Form } from "react-bootstrap";
 import type { Profile } from "../../../lib/definitions";
 import { deactivateUser, deleteUser, getUserProfile, recoverUser, setPrivate, setPublic, updateUser } from "../../../lib/actions";
 import { GrUser } from "react-icons/gr";
-import { redirect } from "react-router-dom";
+// import { redirect } from "react-router-dom";
 import { useAuth } from "../../../lib/authContext";
+import {UpdateProp} from "../../../lib/propinterfaces";
+import imageEncoder from "../../../lib/imageEncoder";
+import {useNavigate} from "react-router-dom";
 
 export default function ProfileEdit() {
     const [profile, setProfile] = useState<Profile>({} as Profile);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
-    const currentUser = sessionStorage.getItem("curUn") || "";
+    const currentUser = sessionStorage.getItem("curUn");
 
     const [image, setImage] = useState<File | null>(null);
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
     const [isFileValid, setIsFileValid] = useState<boolean>(true);
+
+    const navigate = useNavigate();
 
     const reloadPage = () => {
         window.location.reload();
@@ -25,7 +30,7 @@ export default function ProfileEdit() {
     useEffect(() => {
         const fetchProfile = async () => {
             if (currentUser) {
-                const response = await getUserProfile(currentUser);
+                const response = await getUserProfile(currentUser!);
                 setProfile(response);
             }
         }
@@ -66,54 +71,34 @@ export default function ProfileEdit() {
             return;
         }
 
-        const formData = new FormData();
-
-        formData.append("user", new Blob([JSON.stringify({
+        const formData: UpdateProp = {
+            base64Image: image ? await imageEncoder(image) : "",
             bio: profile.bio,
-        })], { type: "application/json" }));
-
-        if (image) {
-            formData.append("file", image);
-        }
+        };
 
         try {
-            await updateUser(currentUser, formData);
+            await updateUser(currentUser!, formData);
             reloadPage();
         } catch (error) {
             console.error("Error:", error);
         }
     }
 
-    const handleTogglePublic = async () => {
-        if (profile.isPublic) {
-            await setPrivate();
-        } else {
-            await setPublic();
-        }
-        reloadPage();
-    }
-
-    const handleToggleActive = async () => {
-        if (currentUser) {
-            if (profile.isActive) {
-                const confirmDeactivate = window.confirm("Are you sure you want to deactivate your account? You will lost your access to your account.");
-
-                if (confirmDeactivate) {
-                    await deactivateUser(currentUser);
-                    auth.logout();
-                }
-            } else {
-                await recoverUser(currentUser);
-            }
-            reloadPage();
-        }
-    };
+    // const handleTogglePublic = async () => {
+    //     if (profile.isPublic) {
+    //         await setPrivate();
+    //     } else {
+    //         await setPublic();
+    //     }
+    //     reloadPage();
+    // }
 
     const handleDelete = async () => {
-        const confirmDelete = window.confirm("Are you sure you want to delete your account? You will lost all your data. This action cannot be undone.");
+        const confirmDelete = window.confirm("Are you sure you want to delete your account? You will lose all your data. This action cannot be undone.");
         if (confirmDelete) {
-            await deleteUser();
-            redirect("/");
+            await deleteUser(currentUser!);
+            sessionStorage.clear();
+            navigate("/");
         }
     }
 
@@ -131,7 +116,7 @@ export default function ProfileEdit() {
                         />
                     ) : profile.imageUrl ? (
                         <img
-                            src={profile.imageUrl.toString()}
+                            src={profile.imageUrl}
                             alt={`${profile.username}'s profile`}
                             className="w-24 h-24 rounded-full object-cover mx-auto"
                         />
@@ -160,12 +145,12 @@ export default function ProfileEdit() {
 
                 <div className="flex flex-col space-y-2 mt-4">
                     <Button variant="primary" type="submit">Update</Button>
-                    <Button variant="secondary" type="button" onClick={handleTogglePublic}>
-                        {profile.isPublic ? "Switch to Private" : "Switch to Public"}
-                    </Button>
-                    <Button variant="warning" type="button" onClick={handleToggleActive}>
-                        {profile.isActive ? "Lock Account" : "Recover Account"}
-                    </Button>
+                    {/*<Button variant="secondary" type="button" onClick={handleTogglePublic}>*/}
+                    {/*    {profile.isPublic ? "Switch to Private" : "Switch to Public"}*/}
+                    {/*</Button>*/}
+                    {/*<Button variant="warning" type="button" onClick={handleToggleActive}>*/}
+                    {/*    {profile.isActive ? "Lock Account" : "Recover Account"}*/}
+                    {/*</Button>*/}
                     <Button variant="danger" type="button" onClick={handleDelete}>
                         Delete Account
                     </Button>

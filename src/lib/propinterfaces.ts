@@ -17,6 +17,11 @@ export interface UserProp {
     isPublic: boolean,
 }
 
+export interface UpdateProp {
+    base64Image: string,
+    bio: string,
+}
+
 export interface PostProp {
     username: string,
     content: string,

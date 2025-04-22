@@ -6,7 +6,7 @@ import {
     LikeProp,
     LoginProp,
     PostProp,
-    ResetPasswordProp,
+    ResetPasswordProp, UpdateProp,
     UserProp, ValidateProp
 } from "./propinterfaces";
 import {getCookie} from 'typescript-cookie';
@@ -428,7 +428,6 @@ export async function reportPost(postId: number): Promise<void> {
     }
 }
 
-
 // profile management
 export async function deactivateUser(username: string): Promise<void> {
     try {
@@ -449,7 +448,7 @@ export async function deactivateUser(username: string): Promise<void> {
 
 export async function recoverUser(username: string): Promise<string> {
     try {
-        const response = await axiosInstance.post(`/recovery/${username}`,
+        const response = await axiosInstance.post(`/users/recovery/${username}`,
             {},
             {
                 headers: {
@@ -466,10 +465,43 @@ export async function recoverUser(username: string): Promise<string> {
     }
 }
 
-export async function setPublic(): Promise<void> {
+// export async function setPublic(): Promise<void> {
+//     try {
+//         await axiosInstance.post(`/set-public`,
+//             {},
+//             {
+//                 headers: {
+//                     "Accept": "*/*",
+//                     "Content-Type": "application/json",
+//                     "Authorization": `Bearer ${getCookie('token')}`,
+//                 },
+//             }
+//         );
+//     } catch (error: any) {
+//         throw new Error(error.message);
+//     }
+// }
+//
+// export async function setPrivate(): Promise<void> {
+//     try {
+//         await axiosInstance.post(`/set-private`,
+//             {},
+//             {
+//                 headers: {
+//                     "Accept": "*/*",
+//                     "Content-Type": "application/json",
+//                     "Authorization": `Bearer ${getCookie('token')}`,
+//                 },
+//             }
+//         );
+//     } catch (error: any) {
+//         throw new Error(error.message);
+//     }
+// }
+
+export async function deleteUser(username: string): Promise<void> {
     try {
-        await axiosInstance.post(`/set-public`,
-            {},
+        await axiosInstance.delete(`/users/delete-user/${username}`,
             {
                 headers: {
                     "Accept": "*/*",
@@ -483,48 +515,14 @@ export async function setPublic(): Promise<void> {
     }
 }
 
-export async function setPrivate(): Promise<void> {
+export async function updateUser(username: string, formData: UpdateProp): Promise<void> {
     try {
-        await axiosInstance.post(`/set-private`,
-            {},
-            {
-                headers: {
-                    "Accept": "*/*",
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${getCookie('token')}`,
-                },
-            }
-        );
-    } catch (error: any) {
-        throw new Error(error.message);
-    }
-}
-
-export async function deleteUser(): Promise<void> {
-    try {
-        await axiosInstance.post(`/delete-user`,
-            {},
-            {
-                headers: {
-                    "Accept": "*/*",
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${getCookie('token')}`,
-                },
-            }
-        );
-    } catch (error: any) {
-        throw new Error(error.message);
-    }
-}
-
-export async function updateUser(username: string, formData: FormData): Promise<void> {
-    try {
-        await axiosInstance.patch(`/update-profile/${username}`,
+        await axiosInstance.put(`/users/update-profile/${username}`,
             formData,
             {
                 headers: {
                     "Accept": "*/*",
-                    "Content-Type": "multipart/form-data",
+                    "Content-Type": "application/json",
                     "Authorization": `Bearer ${getCookie('token')}`,
                 },
             }
