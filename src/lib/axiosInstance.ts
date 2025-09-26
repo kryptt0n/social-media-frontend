@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export const domain = 'http://localhost:8080';
+export const domain = 'https://api.vitalysukhinin.com';
 
 const axiosInstance = axios.create({
     baseURL: domain,

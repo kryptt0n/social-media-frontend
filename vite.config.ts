@@ -68,6 +68,7 @@ function envPlugin(): Plugin {
 // https://vitejs.dev/config/server-options.html#server-https
 // https://vitejs.dev/config/server-options.html#server-port
 function devServerPlugin(): Plugin {
+	console.log('[VITE] allowing host sm.vitalysukhinin.com');
 	return {
 		name: "dev-server-plugin",
 		config(_, { mode }) {
@@ -82,15 +83,13 @@ function devServerPlugin(): Plugin {
 					host: HOST || "0.0.0.0",
 					// port: parseInt(PORT || "3000", 80),
 					port: 3000,
-					open: false,
-					...(https &&
-						SSL_CRT_FILE &&
-						SSL_KEY_FILE && {
-							https: {
-								cert: readFileSync(resolve(SSL_CRT_FILE)),
-								key: readFileSync(resolve(SSL_KEY_FILE)),
-							},
-						}),
+					allowedHosts: true, // <— allow your domain
+    					origin: 'https://sm.vitalysukhinin.com', // helps HMR URLs behind reverse proxy
+    					hmr: {
+      						protocol: 'wss',                // Cloudflare terminates TLS at the edge
+      						host: 'sm.vitalysukhinin.com',
+      						clientPort: 443                 // ensure the browser connects back over 443
+   					 }
 				},
 			};
 		},
