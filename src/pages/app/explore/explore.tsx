@@ -8,13 +8,12 @@ export default function Explore() {
     const [postList, setPostList] = useState<Post[]>([]);
     const [searchQuery, setSearchQuery] = useState("");
     const [page, setPage] = useState(0);
-    const [totalPages, setTotalPages] = useState(0);
+    // const [totalPages, setTotalPages] = useState(0);
 
     const fetchPosts = async (keyword = "", pageNumber = 0) => {
         try {
             const result = await searchPosts(keyword, pageNumber);
-            setPostList(result.content);
-            setTotalPages(result.totalPages);
+            setPostList(result.posts);
         } catch (error) {
             console.error(error);
         }
@@ -65,7 +64,10 @@ export default function Explore() {
                     </div>
                 )}
             </div>
-            {totalPages > 1 && (
+            {
+                //TODO: Add infinite scrolling
+            }
+            {/* {totalPages > 1 && (
                 <div className="flex justify-center gap-2 mt-4">
                     {Array.from({ length: totalPages }, (_, idx) => (
                         <Button
@@ -77,7 +79,7 @@ export default function Explore() {
                         </Button>
                     ))}
                 </div>
-            )}
+            )} */}
         </div>
     );
 }

@@ -13,7 +13,7 @@ export default function UserProfile() {
     const navigate = useNavigate();
     const [profile, setProfile] = useState<Profile>({} as Profile);
     const [page, setPage] = useState(0);
-    const [totalPages, setTotalPages] = useState(0);
+    // const [totalPages, setTotalPages] = useState(0);
 
     const currentUser = sessionStorage.getItem("curUn");
 
@@ -36,8 +36,7 @@ export default function UserProfile() {
     const loadUserPosts = async (pageNumber: number) => {
         try {
             const response = await getUserPosts(username!, pageNumber);
-            setPostList(response.content);
-            setTotalPages(response.totalPages);
+            setPostList(response.posts);
         } catch (error) {
             console.error(error);
         }
@@ -114,7 +113,10 @@ export default function UserProfile() {
                 )}
             </div>
 
-            {totalPages > 1 && (
+            {
+                //TODO: Add infinite scrolling
+            }
+            {/* {totalPages > 1 && (
                 <div className="flex justify-center gap-2 mt-4">
                     {Array.from({length: totalPages}, (_, idx) => (
                         <button
@@ -126,7 +128,7 @@ export default function UserProfile() {
                         </button>
                     ))}
                 </div>
-            )}
+            )} */}
         </div>
     );
 }

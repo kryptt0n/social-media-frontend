@@ -83,15 +83,13 @@ export async function getUserProfile(username: string): Promise<Profile> {
 
 
 // Posts
-export interface PaginatedResponse<T> {
-    content: T[];
-    totalElements: number;
-    totalPages: number;
-    size: number;
-    number: number;
+export interface ScrollablePostResponse {
+    posts: Post[];
+    hasMore: boolean;
+    cursor: string;
 }
 
-export async function getUserPosts(username: string, page: number = 0, size: number = 10): Promise<PaginatedResponse<Post>> {
+export async function getUserPosts(username: string, page: number = 0, size: number = 10): Promise<ScrollablePostResponse> {
     try {
         const response = await axiosInstance.get(`/posts/user/${username}`,
             {
@@ -109,7 +107,7 @@ export async function getUserPosts(username: string, page: number = 0, size: num
     }
 }
 
-export async function searchPosts(keyword: string = '', page: number = 0, size: number = 10): Promise<PaginatedResponse<Post>> {
+export async function searchPosts(keyword: string = '', page: number = 0, size: number = 10): Promise<ScrollablePostResponse> {
     try {
         const response = await axiosInstance.get(`/posts/search`, {
             params: {keyword, page, size},
