@@ -1,26 +1,29 @@
-import {useState, useEffect} from "react";
-import type {Post, Profile} from "../../../lib/definitions";
+import {useState, useEffect, useRef} from "react";
+import type {Post, Profile, ScrollablePostResponse} from "../../../lib/definitions";
 import {getUserPosts, followUser, unfollowUser, getUserProfile} from "../../../lib/actions";
 import PostItem from "../../../components/post/PostComponent";
 import {useParams} from "react-router-dom";
 import {GrUser} from 'react-icons/gr';
 import {useNavigate} from "react-router-dom";
 import FollowComponent from "../../../components/follow";
+import ScrollablePostComponent from "../../../components/post/ScrollablePostComponent";
 
 export default function UserProfile() {
     const {username} = useParams<{ username: string }>();
-    const [postList, setPostList] = useState<Post[]>([]);
+    const [posts, setPostList] = useState<Post[]>([]);
     const navigate = useNavigate();
     const [profile, setProfile] = useState<Profile>({} as Profile);
-    const [page, setPage] = useState(0);
-    // const [totalPages, setTotalPages] = useState(0);
+    const [hasMore, setHasMore] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [cursor, setCursor] = useState<string | null>(null);
+    const firstLoadDone = useRef(false);
 
     const currentUser = sessionStorage.getItem("curUn");
 
     useEffect(() => {
         loadProfile();
-        loadUserPosts(page);
-    }, [username, page]);
+        fetchPosts(null, true);
+    }, [username]);
 
     const loadProfile = async () => {
         try {
@@ -33,21 +36,34 @@ export default function UserProfile() {
         }
     }
 
-    const loadUserPosts = async (pageNumber: number) => {
+    const mergeAppend = (prev: Post[], next: Post[]) => {
+        const seen = new Set(prev.map(p => p.postId));
+        const merged = [...prev];
+        for (const p of next) if (!seen.has(p.postId)) merged.push(p);
+        return merged;
+    };
+
+    const fetchPosts = async (cur: string | null, replace = false) => {
         try {
-            const response = await getUserPosts(username!, pageNumber);
-            setPostList(response.posts);
+            setLoading(true);
+            const result: ScrollablePostResponse = await getUserPosts(username!, cur);
+            if (replace) {
+                setPostList(result.posts ?? []);
+            } else {
+                setPostList(prev => mergeAppend(prev, result.posts ?? []));
+            }
+
+            setCursor(result.cursor ?? null);
+            setHasMore(result.hasMore === true);
         } catch (error) {
             console.error(error);
+        } finally {
+            setLoading(false);
         }
     };
 
     const handlePostDeleted = (postId: number) => {
         setPostList(prevPosts => prevPosts.filter(post => post.postId !== postId));
-    };
-
-    const handlePageChange = (newPage: number) => {
-        setPage(newPage);
     };
 
     const handleFollow = () => {
@@ -103,32 +119,16 @@ export default function UserProfile() {
             </div>
 
             <div className="user-posts space-y-2">
-                {postList.length > 0 ? (
-                    postList.map((post) => <PostItem key={post.postId} postData={post} allowDelete={true}
-                                                     onPostDeleted={handlePostDeleted}/>)
-                ) : (
-                    <div className="no-posts text-center mt-10">
-                        <p className="text-xl text-gray-700">This account doesn't have any posts.</p>
-                    </div>
-                )}
+                <ScrollablePostComponent
+                    posts={posts}
+                    hasMore={hasMore}
+                    onScrollEnd={() => {
+                        if (!loading && hasMore) fetchPosts(cursor, false);
+                    }}
+                    onPostDeleted={handlePostDeleted}
+                />
             </div>
 
-            {
-                //TODO: Add infinite scrolling
-            }
-            {/* {totalPages > 1 && (
-                <div className="flex justify-center gap-2 mt-4">
-                    {Array.from({length: totalPages}, (_, idx) => (
-                        <button
-                            key={idx}
-                            className={`px-3 py-1 rounded ${idx === page ? "bg-blue-500 text-white" : "bg-gray-200 hover:bg-gray-300"}`}
-                            onClick={() => handlePageChange(idx)}
-                        >
-                            {idx + 1}
-                        </button>
-                    ))}
-                </div>
-            )} */}
         </div>
     );
 }

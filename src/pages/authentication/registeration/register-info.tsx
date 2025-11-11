@@ -47,6 +47,7 @@ export default function RegisterInfo() {
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        console.log("REgistering!")
 
         if (!isFileValid) {
             setErrorMessage("Please upload a valid profile.");
@@ -67,8 +68,8 @@ export default function RegisterInfo() {
             console.log("Registered successfully!");
 
             navigate('/register/fin');
-        } catch (error) {
-            console.error("Error creating post:", error);
+        } catch (error: any) {
+            setErrorMessage(error.message);
         }
     }
 

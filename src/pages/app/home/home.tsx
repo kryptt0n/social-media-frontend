@@ -32,7 +32,7 @@ export default function Home() {
             <div className="space-y-2">
                 {postList.length > 0 ? (
                     postList.map((post) => (
-                        <PostItem key={post.postId} postData={post} allowDelete={false} onPostDeleted={handlePostDeleted} />
+                        <PostItem key={post.postId} postData={post} onPostDeleted={handlePostDeleted} />
                     ))
                 ) : (
                     <div className="flex justify-center mt-10">

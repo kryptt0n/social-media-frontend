@@ -12,11 +12,10 @@ import { toast } from 'react-toastify';
 
 interface PostItemProps {
     postData: Post;
-    allowDelete: boolean;
     onPostDeleted: (postId: number) => void;
 }
 
-export default function PostItem({postData, allowDelete, onPostDeleted}: PostItemProps) {
+export default function PostItem({postData, onPostDeleted}: PostItemProps) {
     const username = sessionStorage.getItem("curUn");
 
     const navigate = useNavigate();
@@ -26,6 +25,7 @@ export default function PostItem({postData, allowDelete, onPostDeleted}: PostIte
     const [isLiked, setIsLiked] = useState<boolean>(postData.likeByCurrentUser);
     const [totalLikes, setTotalLikes] = useState<number>(postData.likeCount);
     const [isReported, setIsReported] = useState(false);
+    const allowDelete = postData.username == username;
 
 
 
@@ -119,7 +119,17 @@ export default function PostItem({postData, allowDelete, onPostDeleted}: PostIte
                     <img
                         src={postData.imageUrl.toString()}
                         alt="Post content"
-                        className="post-image w-full h-auto rounded-lg"
+                        className="
+                        max-w-[400px]        
+                        max-h-[300px]        
+                        w-auto
+                        h-auto
+                        object-cover         
+                        rounded-lg
+                        self-center          
+                        cursor-pointer       
+                        shadow-sm
+                        "
                     />
                 )}
             </div>
@@ -141,7 +151,7 @@ export default function PostItem({postData, allowDelete, onPostDeleted}: PostIte
                     <span className="post-like-count text-sm">comments</span>
                 </div>
 
-                {(postData.username == sessionStorage.getItem('curUn') && allowDelete) && (
+                {allowDelete && (
                     <div
                         className="post-like-icon flex items-center space-x-1 cursor-pointer text-gray-500"
                         onClick={handleDeletePost}

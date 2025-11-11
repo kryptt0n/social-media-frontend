@@ -73,3 +73,17 @@ export type DashboardStats = {
     dailyPosts: number;
     accountTypes: { public: number; private: number };
 }
+
+export interface ScrollablePostResponse {
+    posts: Post[];
+    hasMore: boolean;
+    cursor: string | null;
+}
+
+export interface ProblemDetail {
+    detail: string;
+    instance: string;
+    status: number;
+    title: string;
+    type: string;
+}

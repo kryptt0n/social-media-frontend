@@ -1,5 +1,6 @@
+import { isAxiosError } from "axios";
 import axiosInstance from "./axiosInstance";
-import type {Post, Comment, Profile, User, DashboardStats} from "./definitions";
+import type {Post, Comment, Profile, User, DashboardStats, ScrollablePostResponse, ProblemDetail} from "./definitions";
 import {
     CommentProp, FollowProp,
     ForgotPasswordProp,
@@ -25,7 +26,7 @@ export async function register(userForm: UserProp): Promise<void> {
             },
         );
     } catch (error: any) {
-        throw new Error(error.message);
+        handleAxiosError(error);
     }
 }
 
@@ -42,6 +43,7 @@ export async function login(formData: LoginProp): Promise<string> {
         );
         return response.data.key;
     } catch (error: any) {
+        console.log(error);
         throw new Error(error.message);
     }
 }
@@ -83,17 +85,12 @@ export async function getUserProfile(username: string): Promise<Profile> {
 
 
 // Posts
-export interface ScrollablePostResponse {
-    posts: Post[];
-    hasMore: boolean;
-    cursor: string;
-}
 
-export async function getUserPosts(username: string, page: number = 0, size: number = 10): Promise<ScrollablePostResponse> {
+export async function getUserPosts(username: string, cursor: string | null = null, size: number = 10): Promise<ScrollablePostResponse> {
     try {
         const response = await axiosInstance.get(`/posts/user/${username}`,
             {
-                params: {page, size},
+                params: {cursor, size},
                 headers: {
                     "Accept": "*/*",
                     "Content-Type": "application/json",
@@ -107,19 +104,23 @@ export async function getUserPosts(username: string, page: number = 0, size: num
     }
 }
 
-export async function searchPosts(keyword: string = '', page: number = 0, size: number = 10): Promise<ScrollablePostResponse> {
+export async function searchPosts(keyword: string | null = null, cursor: string | null = null): Promise<ScrollablePostResponse> {
     try {
-        const response = await axiosInstance.get(`/posts/search`, {
-            params: {keyword, page, size},
-            headers: {
-                "Accept": "*/*",
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${getCookie('token')}`,
-            },
-        });
-        return response.data;
+        const response = await axiosInstance.get<ScrollablePostResponse>("/posts/search", {
+        params: { 
+            keyword: keyword, 
+            cursor: cursor 
+        },
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${getCookie("token")}`,
+        },
+      });
+  
+      return response.data;
     } catch (error: any) {
-        throw new Error(error.message);
+      console.error("Error fetching posts:", error);
+      throw new Error(error?.response?.data?.message || error.message || "Failed to fetch posts");
     }
 }
 
@@ -556,4 +557,16 @@ export async function resetPassword(resetToken: string, formData: ResetPasswordP
     } catch (error: any) {
         throw new Error(error.message);
     }
+}
+
+function handleAxiosError(error: any) {
+
+    if (isAxiosError(error) && error.response) {
+        let errorData = error.response.data as ProblemDetail
+        if (errorData) {
+            throw new Error(errorData.detail);
+        }
+        throw new Error(error.message);
+    }
+    throw new Error(error.message);
 }

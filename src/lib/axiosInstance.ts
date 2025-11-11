@@ -13,8 +13,8 @@ axiosInstance.interceptors.response.use(
     (error) => {
         if (error.response && error.response.status === 401) {
             window.location.href = "/";
-            return Promise.reject(error);
         }
+        return Promise.reject(error);
     }
 );
 

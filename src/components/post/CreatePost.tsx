@@ -17,12 +17,22 @@ export default function CreatePost({onPostCreated}: CreatePostProps) {
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
     const [hasImage, setHasImage] = useState<boolean>(false);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
+    const MAX_FILE_SIZE_MB = 5;
 
     const currentUser = sessionStorage.getItem("curUn");
 
     const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const maxSizeBytes = MAX_FILE_SIZE_MB * 1024 * 1024;
         if (e.target.files && e.target.files[0]) {
             const file = e.target.files[0];
+
+            if (file.size > maxSizeBytes) {
+                setErrorMessage(`File is too large! Maximum size is ${MAX_FILE_SIZE_MB}MB.`);
+                setImage(null);
+                setHasImage(false);
+                setPreviewUrl(null);
+                return;
+            }
 
             const allowedExtensions = ["jpg", "jpeg", "png"];
             const fileExtension = file.name.split(".").pop()?.toLowerCase();
@@ -94,8 +104,20 @@ export default function CreatePost({onPostCreated}: CreatePostProps) {
                         <>
                             {previewUrl && (
                                 <>
-                                    <div className="mb-1 p-2 position-relative">
-                                        <img src={previewUrl} alt="Preview" className="w-full h-auto rounded-lg"/>
+                                    <div className="mb-1 p-2 relative flex justify-center">
+                                        <img src={previewUrl} 
+                                        alt="Preview" 
+                                        className="
+                                            max-w-[300px]        
+                                            max-h-[200px]        
+                                            w-auto
+                                            h-auto
+                                            object-cover         
+                                            rounded-lg
+                                            self-center          
+                                            cursor-pointer        
+                                            shadow-sm"
+                                        />
                                         <GrClose
                                             className="position-absolute top-4 end-4 cursor-pointer text-white bg-gray-700 rounded-full p-2 text-4xl"
                                             onClick={handleDeleteImage}/>
