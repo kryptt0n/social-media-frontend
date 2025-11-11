@@ -1,5 +1,5 @@
 import {createContext, useState, useEffect, ReactNode, useContext} from "react";
-import {login, validate} from "./actions";
+import {handleAxiosError, login, validate} from "./actions";
 import {LoginProp, ValidateProp} from "./propinterfaces";
 import {setCookie, getCookie, removeCookie} from 'typescript-cookie';
 
@@ -56,20 +56,17 @@ export const AuthProvider = ({children}: AuthProviderProps) => {
     }, [isAuthenticated]);
 
     const handleLogin = async (formData: LoginProp): Promise<string> => {
-        try {
-            const response = await login(formData);
-            if (response) {
-                setCookie('token', response, {expires: 1, path: "/"});
-                sessionStorage.setItem("curUn", formData.username);
-                setIsAuthenticated(true);
-                console.log(response);
-                return response;
-            }
-            return "unable to login";
-        } catch (error: any) {
-            console.error("Error during login:", error.message);
-            return "unable to login";
+    
+        const jwt = await login(formData);
+        if (jwt) {
+            setCookie('token', jwt, {expires: 1, path: "/"});
+            sessionStorage.setItem("curUn", formData.username);
+            setIsAuthenticated(true);
+            console.log(jwt);
+            return jwt;
         }
+        return "Incorrect email or password";    
+        
     };
 
     const handleLogout = () => {

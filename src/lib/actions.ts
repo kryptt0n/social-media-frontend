@@ -43,8 +43,8 @@ export async function login(formData: LoginProp): Promise<string> {
         );
         return response.data.key;
     } catch (error: any) {
-        console.log(error);
-        throw new Error(error.message);
+        handleAxiosError(error)
+        return "";
     }
 }
 
@@ -559,7 +559,7 @@ export async function resetPassword(resetToken: string, formData: ResetPasswordP
     }
 }
 
-function handleAxiosError(error: any) {
+export function handleAxiosError(error: any) {
 
     if (isAxiosError(error) && error.response) {
         let errorData = error.response.data as ProblemDetail

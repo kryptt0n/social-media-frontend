@@ -26,16 +26,22 @@ export default function Login() {
                 setError("Incorrect credentials");
             }
         } else {
-            const response = await auth.login(userData);
-
-            if (response.toString() === "locked") {
-                navigate("/recovery");
-            }
-
-            if (response) {
-                navigate("/home");
-            } else {
-                setError("Incorrect credentials");
+            try {
+                const response = await auth.login(userData);
+    
+                if (response.toString() === "locked") {
+                    navigate("/recovery");
+                }
+    
+                if (response) {
+                    navigate("/home");
+                } else {
+                    setError("Incorrect credentials");
+                }
+                
+            } catch (error: any) {
+                console.log(`Here caught a error ${error}`)
+                setError(error.message)
             }
         }
     };
