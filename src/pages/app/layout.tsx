@@ -1,4 +1,4 @@
-import { Outlet } from "react-router-dom";
+import { Outlet, NavLink } from "react-router-dom";
 import Nav from 'react-bootstrap/Nav';
 import { GrHome, GrSearch, GrNodes, GrUser, GrStatusGood, GrLogout } from "react-icons/gr";
 import { useNavigate } from "react-router-dom";
@@ -45,27 +45,38 @@ export default function Layout() {
     return (
         <>
             <div className="flex h-screen w-full">
-                <div className="flex-column space-y-5 w-[17.5%] h-screen text-xl border-r-2 border-gray-100 fixed top-0 overflow-hidden bg-[#e2e9ee] pt-10 px-1" >
-                    <Nav defaultActiveKey="/home" className="flex-column gap-3">
-
-                        {links.map(({ href, text, icon }) => (
-                            <Nav.Link key={href} href={href} className="flex items-center gap-2 h-12 hover:bg-blue-500 hover:text-white rounded-full py-2 justify-center md:justify-normal px-4 text-2xl md:text-lg lg:text-2xl overflow-hidden transition-all duration-300 ">
-                                {icon} <span className="md:block hidden overflow-hidden">{text}</span>
-                            </Nav.Link>
-                        ))}
-
-                        <Nav.Link
-                            as="button"
-                            className="flex items-center gap-2 h-12 hover:bg-blue-500 hover:text-white rounded-full py-2 justify-center md:justify-normal px-4 text-2xl md:text-lg lg:text-2xl overflow-hidden transition-all duration-300 text-red-400" onClick={handleLogout}
+                <div className="flex-column space-y-5 w-[17.5%] h-screen text-xl border-r-2 border-gray-100 fixed top-0 overflow-hidden bg-[#e2e9ee] pt-10 px-1">
+                    <div className="flex flex-col gap-3">
+                    {links.map(({ href, text, icon }) => (
+                        <NavLink
+                        key={href}
+                        to={href}
+                        end
+                        className={({ isActive }) =>
+                            [
+                            "flex items-center gap-2 h-12 rounded-full py-2 justify-center md:justify-normal px-4 text-2xl md:text-lg lg:text-2xl overflow-hidden transition-all duration-300",
+                            isActive ? "bg-blue-500 text-white" : "hover:bg-blue-500 hover:text-white",
+                            ].join(" ")
+                        }
                         >
-                            <GrLogout /><p className="md:block hidden overflow-hidden">Logout</p>
-                        </Nav.Link>
-                    </Nav>
+                        {icon} <span className="md:block hidden overflow-hidden">{text}</span>
+                        </NavLink>
+                    ))}
+
+                    <button
+                        onClick={handleLogout}
+                        className="flex items-center gap-2 h-12 hover:bg-blue-500 hover:text-white rounded-full py-2 justify-center md:justify-normal px-4 text-2xl md:text-lg lg:text-2xl overflow-hidden transition-all duration-300 text-red-400"
+                    >
+                        <GrLogout />
+                        <p className="md:block hidden overflow-hidden">Logout</p>
+                    </button>
+                    </div>
                 </div>
+
                 <div className="flex-1 transition-all duration-300 ml-[17.5%] px-4 pt-10">
                     <Outlet />
                 </div>
-            </div >
+            </div>
         </>
     );
 }

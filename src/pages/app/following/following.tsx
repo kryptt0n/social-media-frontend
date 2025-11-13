@@ -35,7 +35,7 @@ export default function Following() {
             <div className="space-y-1">
                 {followingList.length > 0 ? (
                     followingList.map((following) => (
-                        <UserItem currentUser={currentUser!} userData={following}/>
+                        <UserItem key={following.username} currentUser={currentUser!} userData={following}/>
                     ))
                 ) : (
                     <div className="flex justify-center">
