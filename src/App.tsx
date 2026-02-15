@@ -30,6 +30,8 @@ import UsersList from "./pages/admin/UserList";
 import ReportedPosts from "./pages/admin/ReportedPost";
 
 import RecoveryUser from './pages/authentication/recovery';
+import RegisterUsernameInfo from './pages/authentication/registeration/oauth-register';
+import SetPassword from './pages/authentication/set-password';
 
 function AppRoutes() {
   const router = createBrowserRouter([
@@ -45,6 +47,7 @@ function AppRoutes() {
         { path: "reset-password", element: <ResetNewPassword /> },
         { path: "reset-password/fin", element: <ResetFinish /> },
         { path: "recovery", element: <RecoveryUser /> },
+        { path: "oauth/:code", element: <RegisterUsernameInfo /> },
       ],
     },
     {
@@ -60,6 +63,7 @@ function AppRoutes() {
             { path: "following/:username", element: <Following /> },
             { path: "profile/:username", element: <UserProfile /> },
             { path: "profile-edit", element: <ProfileEdit /> },
+            { path: "set-password", element: <SetPassword />},
           ],
         },
         {
