@@ -1,13 +1,14 @@
 import { isAxiosError } from "axios";
 import axiosInstance from "./axiosInstance";
-import type {Post, Comment, Profile, User, DashboardStats, ScrollablePostResponse, ProblemDetail} from "./definitions";
+import type {Post, Comment, Profile, User, DashboardStats, ScrollablePostResponse, ProblemDetail, AuthMethod} from "./definitions";
 import {
     CommentProp, FollowProp,
     ForgotPasswordProp,
     LikeProp,
     LoginProp,
     PostProp,
-    ResetPasswordProp, UpdateProp,
+    ResetPasswordProp, SetOauthUsernameProp, UpdateProp,
+    UsernameProp,
     UserProp, ValidateProp
 } from "./propinterfaces";
 import {getCookie} from 'typescript-cookie';
@@ -25,6 +26,16 @@ export async function register(userForm: UserProp): Promise<void> {
                 },
             },
         );
+    } catch (error: any) {
+        handleAxiosError(error);
+    }
+}
+
+
+export async function createOauthUsername(username: string, code: string): Promise<void> {
+    try {
+        await axiosInstance.post(`/oauth/username/${code}`, {username});
+
     } catch (error: any) {
         handleAxiosError(error);
     }
@@ -52,15 +63,36 @@ export async function validate(formData: ValidateProp): Promise<String> {
     try {
         const response = await axiosInstance.post(`/identity/validate`,
             formData,
-            {
-                headers: {
-                    "Accept": "*/*",
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${getCookie('token')}`,
-                },
-            },
         );
         return response.data.key;
+    } catch (error: any) {
+        throw new Error(error.message);
+    }
+}
+
+export function oauthSignIn(provider: string) {
+    window.location.href = "http://localhost:8080/oauth/authorize?provider=" + provider;
+}
+
+export function oauthLink(provider: string) {
+    window.location.href = "http://localhost:8080/oauth/link?provider=" + provider;
+}
+
+export async function getUsernameByToken(): Promise<string> {
+    try {
+        const response = await axiosInstance.get(`/identity/me`);
+        return response.data.username;
+    } catch (error: any) {
+        throw new Error(error.message);
+    }
+}
+
+export async function setPassword(password: string): Promise<void> {
+    try {
+        const response = await axiosInstance.post(`/identity/set-password`,
+            {password}
+        );
+        return;
     } catch (error: any) {
         throw new Error(error.message);
     }
@@ -559,7 +591,17 @@ export async function resetPassword(resetToken: string, formData: ResetPasswordP
     }
 }
 
-export function handleAxiosError(error: any) {
+export async function retrieveAuthMethods(): Promise<AuthMethod[]> {
+
+    try {
+        const { data } = await axiosInstance.get<AuthMethod[]>("/oauth/auth-methods");
+        return data;
+    } catch (error: any) {
+        handleAxiosError(error)
+    }
+}
+
+export function handleAxiosError(error: any): never {
 
     if (isAxiosError(error) && error.response) {
         let errorData = error.response.data as ProblemDetail
@@ -570,3 +612,4 @@ export function handleAxiosError(error: any) {
     }
     throw new Error(error.message);
 }
+
