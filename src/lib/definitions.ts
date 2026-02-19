@@ -87,3 +87,11 @@ export interface ProblemDetail {
     title: string;
     type: string;
 }
+
+export interface AuthMethod {
+    type: string;
+    provider: string;
+    enabled: boolean;
+    canAdd: boolean;
+    canRemove: boolean;
+}
