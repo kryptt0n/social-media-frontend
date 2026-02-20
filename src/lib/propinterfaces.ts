@@ -4,7 +4,6 @@ export interface LoginProp {
 }
 
 export interface ValidateProp {
-    token: string,
     username: string,
 }
 
@@ -49,4 +48,13 @@ export interface ForgotPasswordProp {
 
 export interface ResetPasswordProp {
     newPassword: string,
+}
+
+export interface SetOauthUsernameProp {
+    username: string,
+    code: string,
+}
+
+export interface UsernameProp {
+    username: string,
 }
