@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
-import { Button } from "react-bootstrap";
+import { Badge, Button, Card } from "react-bootstrap";
 import { Form } from "react-bootstrap";
-import type { Profile } from "../../../lib/definitions";
-import { deactivateUser, deleteUser, getUserProfile, recoverUser, setPrivate, setPublic, updateUser } from "../../../lib/actions";
+import { AuthMethod, type Profile } from "../../../lib/definitions";
+import { deactivateUser, deleteUser, getUserProfile, oauthLink, recoverUser, retrieveAuthMethods, updateUser } from "../../../lib/actions";
 import { GrUser } from "react-icons/gr";
 // import { redirect } from "react-router-dom";
 import { useAuth } from "../../../lib/authContext";
@@ -14,6 +14,9 @@ export default function ProfileEdit() {
     const [profile, setProfile] = useState<Profile>({} as Profile);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const currentUser = sessionStorage.getItem("curUn");
+    const [authMethods, setAuthMethods] = useState<AuthMethod[]>([])
+    const [authMethodsLoading, setAuthMethodsLoading] = useState<boolean>(true);
+
 
     const [image, setImage] = useState<File | null>(null);
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -35,7 +38,21 @@ export default function ProfileEdit() {
             }
         }
 
+        const fetchAuthMethods = async() => {
+            try {
+                const authMethodsFetched = await retrieveAuthMethods();
+                setAuthMethods(authMethodsFetched);
+                console.log("Fetched auth methods:", authMethodsFetched);
+            } catch (error) {
+                console.error("Failed to fetch auth methods:", error);
+            } finally {
+                setAuthMethodsLoading(false);
+            }
+
+        }
+
         fetchProfile();
+        fetchAuthMethods();
     }, []);
 
     const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -102,6 +119,69 @@ export default function ProfileEdit() {
         }
     }
 
+    const renderAuthMethodAction = (method: AuthMethod) => {
+        if (method.type === "PASSWORD") {
+            if (method.enabled) {
+                return (
+                    <Button
+                        variant="outline-secondary"
+                        size="sm"
+                        onClick={() => navigate("/forgot-password")}
+                    >
+                        Change Password
+                    </Button>
+                );
+            }
+
+            if (method.canAdd) {
+                return (
+                    <Button variant="primary" size="sm" onClick={handleAddPassword}>
+                        Set Password
+                    </Button>
+                );
+            }
+        }
+
+        if (method.type === "OAUTH" && method.provider === "google-oauth2") {
+            if (method.enabled) {
+                return (
+                    <Badge bg="success" pill>
+                        Linked
+                    </Badge>
+                );
+            }
+
+            if (method.canAdd) {
+                return (
+                    <Button variant="outline-dark" size="sm" onClick={handleLinkGoogle}>
+                        Link Google
+                    </Button>
+                );
+            }
+        }
+
+        return null;
+    };
+
+    const renderAuthMethodLabel = (method: AuthMethod) => {
+        if (method.type === "PASSWORD") return "Password";
+        if (method.type === "OAUTH" && method.provider === "google-oauth2") return "Google";
+        return method.provider || method.type;
+    };
+
+    const renderAuthMethodStatus = (method: AuthMethod) => {
+        return method.enabled ? "Enabled" : "Not enabled";
+    };
+
+    const handleAddPassword = () => {
+        navigate("/set-password");
+    };
+
+    const handleLinkGoogle = () => {
+        oauthLink("google");
+    };
+
+
     return (
         <div className="max-w-3xl mx-auto space-y-6">
             <Form className="w-96 mx-auto p-4 bg-white"
@@ -142,6 +222,40 @@ export default function ProfileEdit() {
                         onChange={(e) => setProfile((prev) => ({ ...prev, bio: e.target.value }))}
                     />
                 </Form.FloatingLabel>
+
+                <Card className="mb-4">
+                    <Card.Body>
+                        <Card.Title className="text-lg mb-3">Sign-in Methods</Card.Title>
+
+                        {authMethodsLoading ? (
+                            <p className="text-sm text-gray-500 mb-0">Loading sign-in methods...</p>
+                        ) : authMethods.length === 0 ? (
+                            <p className="text-sm text-gray-500 mb-0">No sign-in methods found.</p>
+                        ) : (
+                            <div className="space-y-3">
+                                {authMethods.map((method, index) => (
+                                    <div
+                                        key={`${method.type}-${method.provider ?? "local"}-${index}`}
+                                        className="flex items-center justify-between border rounded p-3"
+                                    >
+                                        <div>
+                                            <div className="font-medium">
+                                                {renderAuthMethodLabel(method)}
+                                            </div>
+                                            <div className="text-sm text-gray-500">
+                                                {renderAuthMethodStatus(method)}
+                                            </div>
+                                        </div>
+
+                                        <div>
+                                            {renderAuthMethodAction(method)}
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </Card.Body>
+                </Card>
 
                 <div className="flex flex-col space-y-2 mt-4">
                     <Button variant="primary" type="submit">Update</Button>
