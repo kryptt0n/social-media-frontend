@@ -63,6 +63,8 @@ export default function RegisterInfo() {
             isPublic: true,
         };
 
+        console.log(formData);
+
         try {
             await register(formData);
             console.log("Registered successfully!");

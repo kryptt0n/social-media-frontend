@@ -3,6 +3,8 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../lib/authContext";
 import { setCookie } from "typescript-cookie";
+import GoogleButton from "react-google-button";
+import {oauthSignIn} from "../../lib/actions";
 
 export default function Login() {
     const [error, setError] = useState<string | null>(null);
@@ -45,6 +47,10 @@ export default function Login() {
             }
         }
     };
+
+    function handleGoogleLogin() {
+        oauthSignIn("google");
+    }
 
     return (
         <>
@@ -91,6 +97,31 @@ export default function Login() {
                 <p className="text-sm">Don't have an account? <a className="underline"
                                                                  href="/register/info">Register</a></p>
                 <a className="underline" href="/forgot-password">Forgot password</a>
+
+
+                <div className="flex items-center my-6">
+                    <div className="flex-grow border-t border-gray-300"></div>
+                    <span className="mx-4 text-gray-500">OR</span>
+                    <div className="flex-grow border-t border-gray-300"></div>
+                </div>
+
+
+                <div className="d-grid">
+                    <Button
+                        variant="light"
+                        className="flex items-center justify-center w-auto border border-gray-300 shadow-sm py-2"
+                        onClick={handleGoogleLogin}
+                    >
+                        <span className="mr-2 text-gray-700">Sign in with Google</span>
+
+
+                        <img
+                            src="https://www.gstatic.com/images/branding/product/1x/gsa_64dp.png"
+                            alt="Google"
+                            className="w-5 h-5"
+                        />
+                    </Button>
+                </div>
             </Form>
         </>
     );
